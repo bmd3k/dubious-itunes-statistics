@@ -1,2 +1,4 @@
-^\.project
-^\.classpath
+syntax: glob
+**/.classpath
+**/.project
+**/target

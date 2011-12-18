@@ -1,1 +1,5 @@
 Hello There.
+To investigate:
+
+[ ] Can I have multiple repositories but "switch" (like SVN) from one to another in a central location 
+    on disk so that I can easily use Eclipse across branches?
