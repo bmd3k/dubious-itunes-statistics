@@ -1,12 +1,11 @@
 package com.dubious.itunes.statistics.store.file;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
+import static org.apache.commons.io.FileUtils.lineIterator;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import org.apache.commons.io.LineIterator;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -39,6 +38,7 @@ public class SnapshotFileStore implements SnapshotStore {
 
     @Override
     public Snapshot getSnapshot(String snapshotName) throws StoreException {
+        LineIterator lines = null;
         try {
             // load file from the file store
             File snapshotFile =
@@ -46,12 +46,9 @@ public class SnapshotFileStore implements SnapshotStore {
             if (!snapshotFile.exists()) {
                 return null;
             }
-            BufferedReader snapshotReader = null;
+
             try {
-                snapshotReader =
-                        new BufferedReader(
-                                new InputStreamReader(new FileInputStream(snapshotFile),
-                                        Charset.forName(fileStoreProperties.getCharset())));
+                lines = lineIterator(snapshotFile, fileStoreProperties.getCharset());
             } catch (FileNotFoundException e) {
                 return null;
             }
@@ -64,14 +61,14 @@ public class SnapshotFileStore implements SnapshotStore {
                     new Snapshot().withName(snapshotName).withSnapshotDate(snapshotDate);
 
             // first line is the header, which we use as a bit of a sanity
-            String line = snapshotReader.readLine();
-            if (line == null) {
+            if (!lines.hasNext()) {
                 throw new FileStoreException("File contains no information.");
             }
-            checkHeader(line);
+            checkHeader(lines.nextLine());
             // other lines represent unique songs. parse the lines and convert them into song
             // statistics.
-            while ((line = snapshotReader.readLine()) != null) {
+            while (lines.hasNext()) {
+                String line = lines.next();
                 StatisticsFromLine statisticsFromLine = generateSongStatisticsFromLine(line);
                 snapshot
                         .addStatistic(statisticsFromLine.song, statisticsFromLine.songStatistics);
@@ -82,6 +79,8 @@ public class SnapshotFileStore implements SnapshotStore {
             throw e;
         } catch (Throwable t) {
             throw new FileStoreException("Unexpected error in file store.", t);
+        } finally {
+            lines.close();
         }
     }
 

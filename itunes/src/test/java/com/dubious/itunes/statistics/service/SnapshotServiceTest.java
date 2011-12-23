@@ -16,13 +16,13 @@ public class SnapshotServiceTest {
 
     private static FileStoreProperties fileStoreProperties;
     private static SnapshotStore snapshotFileStore;
-    private static SnapshotService analysisService;
+    private static SnapshotService snapshotService;
 
     @BeforeClass
     public static void beforeClass() {
         fileStoreProperties = new FileStoreProperties("test_files", "UTF-16");
         snapshotFileStore = new SnapshotFileStore(fileStoreProperties);
-        analysisService = new SnapshotServiceImpl(snapshotFileStore);
+        snapshotService = new SnapshotServiceImpl(snapshotFileStore);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class SnapshotServiceTest {
                                 .withSongName("Going Steady")
                                 .withEarliestPlayCount(55)
                                 .withLatestPlayCount(58)),
-                analysisService.compareSnapshots("111201 - Music.txt", "111205 - Music.txt"));
+                snapshotService.compareSnapshots("111201 - Music.txt", "111205 - Music.txt"));
         //@formatter:on
     }
 
@@ -78,7 +78,7 @@ public class SnapshotServiceTest {
                                 .withSongName("Going Steady")
                                 .withEarliestPlayCount(30)
                                 .withLatestPlayCount(55)),
-                analysisService.compareSnapshots("101201 - Music.txt", "111201 - Music.txt"));
+                snapshotService.compareSnapshots("101201 - Music.txt", "111201 - Music.txt"));
         //@formatter:on
     }
 
@@ -107,7 +107,7 @@ public class SnapshotServiceTest {
                                 .withSongName("Blankest Year")
                                 .withEarliestPlayCount(59)
                                 .withLatestPlayCount(59)),
-                analysisService.compareSnapshots("111205 - Music.txt", "111206 - Music.txt"));
+                snapshotService.compareSnapshots("111205 - Music.txt", "111206 - Music.txt"));
         //@formatter:on
     }
 
@@ -136,7 +136,7 @@ public class SnapshotServiceTest {
                                 .withSongName("Going Steady")
                                 .withEarliestPlayCount(55)
                                 .withLatestPlayCount(58)),
-                analysisService.compareSnapshots("111205 - Music.txt", "111201 - Music.txt"));
+                snapshotService.compareSnapshots("111205 - Music.txt", "111201 - Music.txt"));
         //@formatter:on
     }
 }

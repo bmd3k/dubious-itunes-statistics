@@ -53,11 +53,11 @@ public class SongHistory {
         return songName;
     }
 
-    public Integer getFirstPlayCount() {
+    public Integer getEarliestPlayCount() {
         return firstPlayCount;
     }
 
-    public Integer getSecondPlayCount() {
+    public Integer getLatestPlayCount() {
         return secondPlayCount;
     }
 
