@@ -139,4 +139,27 @@ public class SnapshotServiceTest {
                 snapshotService.compareSnapshots("111205 - Music.txt", "111201 - Music.txt"));
         //@formatter:on
     }
+
+    @Test
+    public void testWithPlayCountColumn() throws StatisticsException {
+        //@formatter:off
+        assertEquals(
+                new SnapshotsHistory()
+                        .withEarliestSnapshot("101130 - Music.txt")
+                        .withLatestSnapshot("101201 - Music.txt")
+                        .addSongHistory(new SongHistory()
+                                .withArtistName("Arctic Monkeys")
+                                .withAlbumName("Whatever People Say I Am, That's What I'm Not")
+                                .withSongName("Mardy Bum")
+                                .withEarliestPlayCount(34)
+                                .withLatestPlayCount(35))
+                        .addSongHistory(new SongHistory()
+                                .withArtistName("Death From Above 1979")
+                                .withAlbumName("You're A Woman I'm A Machine")
+                                .withSongName("Going Steady")
+                                .withEarliestPlayCount(30)
+                                .withLatestPlayCount(30)),
+                snapshotService.compareSnapshots("101130 - Music.txt", "101201 - Music.txt"));
+        //@formatter:on
+    }
 }

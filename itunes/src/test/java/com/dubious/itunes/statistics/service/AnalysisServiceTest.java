@@ -38,12 +38,24 @@ public class AnalysisServiceTest {
     }
 
     @Test
-    public void testWrite() throws StatisticsException, IOException {
+    public void testWriteAnalysis() throws StatisticsException, IOException {
         SnapshotsHistory history =
                 snapshotService.compareSnapshots("101201 - Music.txt", "111201 - Music.txt");
         analysisService.writeAnalysis(history, "test_files/output/output.txt");
 
-        assertTrue(contentEquals(new File("test_files/testAnalysisService/expected.txt"),
+        assertTrue(contentEquals(new File(
+                "test_files/testAnalysisService/testWriteAnalysis_expected.txt"), new File(
+                "test_files/output/output.txt")));
+    }
+
+    @Test
+    public void testWriteAnalysisOrderByDifference() throws StatisticsException, IOException {
+        SnapshotsHistory history =
+                snapshotService.compareSnapshots("101201 - Music.txt", "111201 - Music.txt");
+        analysisService.writeAnalysisOrderByDifference(history, "test_files/output/output.txt");
+
+        assertTrue(contentEquals(new File(
+                "test_files/testAnalysisService/testWriteAnalysisOrderByDifference_expected.txt"),
                 new File("test_files/output/output.txt")));
     }
 }

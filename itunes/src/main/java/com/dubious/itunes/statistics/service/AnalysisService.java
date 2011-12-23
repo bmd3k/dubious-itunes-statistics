@@ -5,6 +5,8 @@ import com.dubious.itunes.statistics.model.SnapshotsHistory;
 
 public interface AnalysisService {
 
-    void writeAnalysis(SnapshotsHistory history, String outputPath)
+    void writeAnalysis(SnapshotsHistory history, String outputPath) throws StatisticsException;
+
+    void writeAnalysisOrderByDifference(SnapshotsHistory history, String outputPath)
             throws StatisticsException;
 }

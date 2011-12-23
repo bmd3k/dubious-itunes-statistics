@@ -30,7 +30,9 @@ public class SnapshotFileStore implements SnapshotStore {
     private static final String COLUMN_SONG_NAME = "Name";
     private static final String COLUMN_ARTIST_NAME = "Artist";
     private static final String COLUMN_ALBUM_NAME = "Album";
-    private static final String COLUMN_PLAY_COUNT = "Plays";
+    // Note that some versions of the file have "Plays" column while others have "Play Count" column
+    private static final String COLUMN_PLAYS = "Plays";
+    private static final String COLUMN_PLAY_COUNT = "Play Count";
 
     public SnapshotFileStore(FileStoreProperties fileStoreProperties) {
         this.fileStoreProperties = fileStoreProperties;
@@ -96,7 +98,9 @@ public class SnapshotFileStore implements SnapshotStore {
         if (!columns[COLUMN_INDEX_ALBUM_NAME].equals(COLUMN_ALBUM_NAME)) {
             throw new FileStoreException("Column [Album] does not exist where it should exist.");
         }
-        if (!columns[COLUMN_INDEX_PLAY_COUNT].equals(COLUMN_PLAY_COUNT)) {
+        if (!columns[COLUMN_INDEX_PLAY_COUNT].equals(COLUMN_PLAYS)
+                && !columns[COLUMN_INDEX_PLAY_COUNT].equals(COLUMN_PLAY_COUNT)) {
+            // older versions of the file use a different column name
             throw new FileStoreException("Column [Plays] does not exist where it should exist.");
         }
     }
