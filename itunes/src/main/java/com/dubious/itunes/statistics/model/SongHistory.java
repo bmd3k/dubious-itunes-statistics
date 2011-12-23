@@ -1,38 +1,43 @@
-package com.dubious.itunes.model;
+package com.dubious.itunes.statistics.model;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.joda.time.DateTime;
 
 /**
- * A song.
+ * Statistical history of a song.
  */
-public class Song {
+public class SongHistory {
 
     private String artistName;
     private String albumName;
-    private String name;
-    private DateTime addDate;
+    private String songName;
+    private Integer firstPlayCount;
+    private Integer secondPlayCount;
 
-    public Song withArtistName(String artistName) {
+    public SongHistory withArtistName(String artistName) {
         this.artistName = artistName;
         return this;
     }
 
-    public Song withAlbumName(String albumName) {
+    public SongHistory withAlbumName(String albumName) {
         this.albumName = albumName;
         return this;
     }
 
-    public Song withName(String name) {
-        this.name = name;
+    public SongHistory withSongName(String songName) {
+        this.songName = songName;
         return this;
     }
 
-    public Song withAddDate(DateTime addDate) {
-        this.addDate = addDate;
+    public SongHistory withEarliestPlayCount(Integer firstPlayCount) {
+        this.firstPlayCount = firstPlayCount;
+        return this;
+    }
+
+    public SongHistory withLatestPlayCount(Integer secondPlayCount) {
+        this.secondPlayCount = secondPlayCount;
         return this;
     }
 
@@ -44,12 +49,16 @@ public class Song {
         return albumName;
     }
 
-    public String getName() {
-        return name;
+    public String getSongName() {
+        return songName;
     }
 
-    public DateTime getAddDate() {
-        return addDate;
+    public Integer getFirstPlayCount() {
+        return firstPlayCount;
+    }
+
+    public Integer getSecondPlayCount() {
+        return secondPlayCount;
     }
 
     @Override

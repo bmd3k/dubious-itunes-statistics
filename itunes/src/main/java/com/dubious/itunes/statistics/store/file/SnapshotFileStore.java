@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
+import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
 import com.dubious.itunes.statistics.store.SnapshotStore;
@@ -71,7 +72,9 @@ public class SnapshotFileStore implements SnapshotStore {
             // other lines represent unique songs. parse the lines and convert them into song
             // statistics.
             while ((line = snapshotReader.readLine()) != null) {
-                snapshot.addStatistic(generateSongStatisticsFromLine(line));
+                StatisticsFromLine statisticsFromLine = generateSongStatisticsFromLine(line);
+                snapshot
+                        .addStatistic(statisticsFromLine.song, statisticsFromLine.songStatistics);
             }
 
             return snapshot;
@@ -99,13 +102,24 @@ public class SnapshotFileStore implements SnapshotStore {
         }
     }
 
-    private SongStatistics generateSongStatisticsFromLine(String line) {
+    private StatisticsFromLine generateSongStatisticsFromLine(String line) {
         String[] columns = line.split("\t", -1);
-        return new SongStatistics()
+        return new StatisticsFromLine(new Song()
                 .withArtistName(columns[COLUMN_INDEX_ARTIST_NAME])
                 .withAlbumName(columns[COLUMN_INDEX_ALBUM_NAME])
-                .withSongName(columns[COLUMN_INDEX_SONG_NAME])
-                .withPlayCount(Integer.parseInt(columns[COLUMN_INDEX_PLAY_COUNT]));
+                .withName(columns[COLUMN_INDEX_SONG_NAME]),
+                new SongStatistics().withPlayCount(Integer
+                        .parseInt(columns[COLUMN_INDEX_PLAY_COUNT])));
+    }
+
+    private class StatisticsFromLine {
+        private Song song;
+        private SongStatistics songStatistics;
+
+        private StatisticsFromLine(Song song, SongStatistics songStatistics) {
+            this.song = song;
+            this.songStatistics = songStatistics;
+        }
     }
 
 }

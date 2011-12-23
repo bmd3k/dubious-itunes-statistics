@@ -8,31 +8,16 @@ import org.apache.commons.lang.builder.ToStringStyle;
 /**
  * Statistics for a song for a specific snapshot.
  */
-public class SongStatistics extends SongKey<SongStatistics> {
-    private String snapshotName;
+public class SongStatistics {
     Integer playCount;
-
-    public SongStatistics withSnapshotName(String snapshotName) {
-        this.snapshotName = snapshotName;
-        return this;
-    }
 
     public SongStatistics withPlayCount(Integer playCount) {
         this.playCount = playCount;
         return this;
     }
 
-    public String getSnapshotName() {
-        return snapshotName;
-    }
-
     public Integer getPlayCount() {
         return playCount;
-    }
-
-    @Override
-    public SongStatistics getThis() {
-        return this;
     }
 
     @Override

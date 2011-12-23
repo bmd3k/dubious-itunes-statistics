@@ -1,10 +1,13 @@
 package com.dubious.itunes.statistics.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import static java.util.Collections.unmodifiableMap;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.joda.time.DateTime;
+
+import com.dubious.itunes.model.Song;
 
 /**
  * A Snapshot of Itunes statistics.
@@ -13,10 +16,10 @@ public class Snapshot {
 
     private String name;
     private DateTime snapshotDate;
-    private Collection<SongStatistics> statistics;
+    private Map<Song, SongStatistics> statistics;
 
     public Snapshot() {
-        this.statistics = new ArrayList<SongStatistics>();
+        this.statistics = new LinkedHashMap<Song, SongStatistics>();
     }
 
     public Snapshot withName(String name) {
@@ -29,13 +32,13 @@ public class Snapshot {
         return this;
     }
 
-    public Snapshot addStatistic(SongStatistics statistic) {
-        this.statistics.add(statistic);
+    public Snapshot addStatistic(Song song, SongStatistics statistic) {
+        this.statistics.put(song, statistic);
         return this;
     }
 
-    public Snapshot addStatistics(Collection<SongStatistics> statistics) {
-        this.statistics.addAll(statistics);
+    public Snapshot addStatistics(Map<Song, SongStatistics> statistics) {
+        this.statistics.putAll(statistics);
         return this;
     }
 
@@ -47,7 +50,7 @@ public class Snapshot {
         return snapshotDate;
     }
 
-    public Collection<SongStatistics> getStatistics() {
-        return Collections.unmodifiableCollection(statistics);
+    public Map<Song, SongStatistics> getStatistics() {
+        return unmodifiableMap(statistics);
     }
 }

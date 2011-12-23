@@ -1,0 +1,74 @@
+package com.dubious.itunes.statistics.service;
+
+import java.util.Map;
+
+import com.dubious.itunes.model.Song;
+import com.dubious.itunes.model.StatisticsException;
+import com.dubious.itunes.statistics.model.Snapshot;
+import com.dubious.itunes.statistics.model.SnapshotsHistory;
+import com.dubious.itunes.statistics.model.SongHistory;
+import com.dubious.itunes.statistics.model.SongStatistics;
+import com.dubious.itunes.statistics.store.SnapshotStore;
+
+public class SnapshotServiceImpl implements SnapshotService {
+
+    private SnapshotStore snapshotStore;
+
+    public SnapshotServiceImpl(SnapshotStore snapshotStore) {
+        this.snapshotStore = snapshotStore;
+    }
+
+    @Override
+    public SnapshotsHistory compareSnapshots(String snapshotName1, String snapshotName2)
+            throws StatisticsException {
+
+        Snapshot snapshot1 = getSnapshotIfExists(snapshotName1);
+        Snapshot snapshot2 = getSnapshotIfExists(snapshotName2);
+
+        // choose the "latest" snapshot as the root of the search since we assume it has the
+        // superset of songs in which this is interested. the "earliest" snapshot may have some
+        // songs that the "latest" does not but these tend to be songs that have been deleted from
+        // the system.
+        Snapshot earliestSnapshot = snapshot1;
+        Snapshot latestSnapshot = snapshot2;
+        if (snapshot2.getSnapshotDate().isBefore(snapshot1.getSnapshotDate())) {
+            earliestSnapshot = snapshot2;
+            latestSnapshot = snapshot1;
+        }
+
+        SnapshotsHistory history =
+                new SnapshotsHistory()
+                        .withEarliestSnapshot(earliestSnapshot.getName())
+                        .withLatestSnapshot(latestSnapshot.getName());
+
+        for (Map.Entry<Song, SongStatistics> latestStatistic : latestSnapshot
+                .getStatistics()
+                .entrySet()) {
+            Song song = latestStatistic.getKey();
+            SongHistory songHistory =
+                    new SongHistory()
+                            .withArtistName(song.getArtistName())
+                            .withAlbumName(song.getAlbumName())
+                            .withSongName(song.getName())
+                            .withLatestPlayCount(latestStatistic.getValue().getPlayCount());
+
+            SongStatistics earliestStatistic = earliestSnapshot.getStatistics().get(song);
+            if (earliestStatistic != null) {
+                songHistory.withEarliestPlayCount(earliestStatistic.getPlayCount());
+            }
+
+            history.addSongHistory(songHistory);
+        }
+
+        return history;
+    }
+
+    private Snapshot getSnapshotIfExists(String snapshotName) throws StatisticsException {
+        Snapshot snapshot = snapshotStore.getSnapshot(snapshotName);
+        if (snapshot == null) {
+            throw new StatisticsException("Could not find snapshot with name [" + snapshotName
+                    + "]");
+        }
+        return snapshot;
+    }
+}
