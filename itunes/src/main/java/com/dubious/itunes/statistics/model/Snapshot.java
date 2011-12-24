@@ -22,44 +22,87 @@ public class Snapshot {
     private DateTime date;
     private Map<Song, SongStatistics> statistics;
 
+    /**
+     * Constructor.
+     */
     public Snapshot() {
         this.statistics = new LinkedHashMap<Song, SongStatistics>();
     }
 
-    public Snapshot withName(String name) {
+    /**
+     * Set the name of the snapshot.
+     * 
+     * @param name Name of the snapshot.
+     * @return This.
+     */
+    public final Snapshot withName(String name) {
         this.name = name;
         return this;
     }
 
-    public Snapshot withDate(DateTime date) {
+    /**
+     * Set the date of the snapshot.
+     * 
+     * @param date Date of the snapshot.
+     * @return This.
+     */
+    public final Snapshot withDate(DateTime date) {
         this.date = date;
         return this;
     }
 
-    public Snapshot addStatistic(Song song, SongStatistics statistic) {
+    /**
+     * Add statistics for a song to the snapshot.
+     * 
+     * @param song The song.
+     * @param statistic The song statistics.
+     * @return This.
+     */
+    public final Snapshot addStatistic(Song song, SongStatistics statistic) {
         this.statistics.put(song, statistic);
         return this;
     }
 
-    public Snapshot addStatistics(Map<Song, SongStatistics> statistics) {
+    /**
+     * Add statistics for songs to the snapshots.
+     * 
+     * @param statistics The song statistics.
+     * @return This.
+     */
+    public final Snapshot addStatistics(Map<Song, SongStatistics> statistics) {
         this.statistics.putAll(statistics);
         return this;
     }
 
-    public String getName() {
+    /**
+     * Get the name of the snapshot.
+     * 
+     * @return Name of the snapshot.
+     */
+    public final String getName() {
         return name;
     }
 
-    public DateTime getDate() {
+    /**
+     * Get the date of the snapshot.
+     * 
+     * @return Date of the snapshot.
+     */
+    public final DateTime getDate() {
         return date;
     }
 
-    public Map<Song, SongStatistics> getStatistics() {
+    /**
+     * Get the song statistics for the snapshot.
+     * 
+     * @return Song statistics for the snapshot.
+     */
+    public final Map<Song, SongStatistics> getStatistics() {
         return unmodifiableMap(statistics);
     }
 
     @Override
-    public boolean equals(Object refactor) {
+    public final boolean equals(Object refactor) {
         if (refactor == null) {
             return false;
         }
@@ -74,12 +117,12 @@ public class Snapshot {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
 }

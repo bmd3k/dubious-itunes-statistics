@@ -9,19 +9,30 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * Statistics for a song for a specific snapshot.
  */
 public class SongStatistics {
-    Integer playCount;
+    private Integer playCount;
 
-    public SongStatistics withPlayCount(Integer playCount) {
+    /**
+     * Set the play count for the song.
+     * 
+     * @param playCount Play count for the song.
+     * @return This.
+     */
+    public final SongStatistics withPlayCount(Integer playCount) {
         this.playCount = playCount;
         return this;
     }
 
-    public Integer getPlayCount() {
+    /**
+     * Get the play count for the song.
+     * 
+     * @return Play count for the song.
+     */
+    public final Integer getPlayCount() {
         return playCount;
     }
 
     @Override
-    public boolean equals(Object refactor) {
+    public final boolean equals(Object refactor) {
         if (refactor == null) {
             return false;
         }
@@ -36,12 +47,12 @@ public class SongStatistics {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
 }

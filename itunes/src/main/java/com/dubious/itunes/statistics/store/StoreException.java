@@ -1,19 +1,29 @@
 package com.dubious.itunes.statistics.store;
 
-import com.dubious.itunes.model.StatisticsException;
+import com.dubious.itunes.statistics.StatisticsException;
 
 /**
- * An exception in the storage layer. Specific implementations of the storage layer should extend
- * this class with their own implementation-specific exceptions.
+ * An exception in the storage layer.
  */
 public abstract class StoreException extends StatisticsException {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Constructor.
+     * 
+     * @param message Exception message.
+     */
     public StoreException(String message) {
         super(message);
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param message Exception message.
+     * @param cause Underlying cause of the exception.
+     */
     public StoreException(String message, Throwable cause) {
         super(message, cause);
     }

@@ -8,16 +8,32 @@ public class FileStoreProperties {
     private String fileStorePath;
     private String charset;
 
+    /**
+     * Constructor.
+     * 
+     * @param fileStorePath Path on disk to the file storage.
+     * @param charset The charset to use.
+     */
     public FileStoreProperties(String fileStorePath, String charset) {
         this.fileStorePath = fileStorePath;
         this.charset = charset;
     }
 
-    public String getFileStorePath() {
+    /**
+     * Get the path on disk to the file storage.
+     * 
+     * @return Path on disk to the file storage.
+     */
+    public final String getFileStorePath() {
         return fileStorePath;
     }
 
-    public String getCharset() {
+    /**
+     * Get the charset to use to write files.
+     * 
+     * @return Charset to use.
+     */
+    public final String getCharset() {
         return charset;
     }
 }

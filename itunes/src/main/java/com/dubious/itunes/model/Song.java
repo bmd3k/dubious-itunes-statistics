@@ -14,35 +14,68 @@ public class Song {
     private String albumName;
     private String name;
 
-    public Song withArtistName(String artistName) {
+    /**
+     * Name of the artist.
+     * 
+     * @param artistName Name of the artist.
+     * @return This.
+     */
+    public final Song withArtistName(String artistName) {
         this.artistName = artistName;
         return this;
     }
 
-    public Song withAlbumName(String albumName) {
+    /**
+     * Name of the album.
+     * 
+     * @param albumName Name of the album.
+     * @return This.
+     */
+    public final Song withAlbumName(String albumName) {
         this.albumName = albumName;
         return this;
     }
 
-    public Song withName(String name) {
+    /**
+     * Name of the song.
+     * 
+     * @param name Name of the song.
+     * @return This.
+     */
+    public final Song withName(String name) {
         this.name = name;
         return this;
     }
 
-    public String getArtistName() {
+    /**
+     * Get the name of the artist.
+     * 
+     * @return Name of the artist.
+     */
+    public final String getArtistName() {
         return artistName;
     }
 
-    public String getAlbumName() {
+    /**
+     * Get the name of the album.
+     * 
+     * @return Name of the album.
+     */
+    public final String getAlbumName() {
         return albumName;
     }
 
-    public String getName() {
+    /**
+     * Get the name of the song.
+     * 
+     * @return Name of the song.
+     */
+    public final String getName() {
         return name;
     }
 
     @Override
-    public boolean equals(Object refactor) {
+    public final boolean equals(Object refactor) {
         if (refactor == null) {
             return false;
         }
@@ -57,12 +90,12 @@ public class Song {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
 }

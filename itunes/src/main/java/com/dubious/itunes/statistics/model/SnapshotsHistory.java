@@ -3,7 +3,6 @@ package com.dubious.itunes.statistics.model;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -16,48 +15,90 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public class SnapshotsHistory {
 
-    private String firstSnapshot;
-    private String secondSnapshot;
+    private String earliestSnapshot;
+    private String latestSnapshot;
     private List<SongHistory> songHistories;
 
+    /**
+     * Constructor.
+     */
     public SnapshotsHistory() {
         songHistories = new ArrayList<SongHistory>();
     }
 
-    public SnapshotsHistory withEarliestSnapshot(String firstSnapshot) {
-        this.firstSnapshot = firstSnapshot;
+    /**
+     * Set the earliest of the snapshots.
+     * 
+     * @param earliestSnapshot The earliest snapshot.
+     * @return This.
+     */
+    public final SnapshotsHistory withEarliestSnapshot(String earliestSnapshot) {
+        this.earliestSnapshot = earliestSnapshot;
         return this;
     }
 
-    public SnapshotsHistory withLatestSnapshot(String secondSnapshot) {
-        this.secondSnapshot = secondSnapshot;
+    /**
+     * Set the latest of the snapshots.
+     * 
+     * @param latestSnapshot The latest snapshot.
+     * @return This.
+     */
+    public final SnapshotsHistory withLatestSnapshot(String latestSnapshot) {
+        this.latestSnapshot = latestSnapshot;
         return this;
     }
 
-    public SnapshotsHistory addSongHistory(SongHistory songHistory) {
+    /**
+     * Add history of a song related to the snapshots.
+     * 
+     * @param songHistory History of a song.
+     * @return This.
+     */
+    public final SnapshotsHistory addSongHistory(SongHistory songHistory) {
         this.songHistories.add(songHistory);
         return this;
     }
 
-    public SnapshotsHistory addSongHistories(Collection<SongHistory> songHistories) {
+    /**
+     * Add one or more histories of songs related to the snapshots.
+     * 
+     * @param songHistories Histories of songs.
+     * @return This.
+     */
+    public final SnapshotsHistory addSongHistories(List<SongHistory> songHistories) {
         this.songHistories.addAll(songHistories);
         return this;
     }
 
-    public String getFirstSnapshot() {
-        return firstSnapshot;
+    /**
+     * Retrieve the earliest of the snapshots.
+     * 
+     * @return The earliest of the snapshots.
+     */
+    public final String getEarliestSnapshot() {
+        return earliestSnapshot;
     }
 
-    public String getSecondSnapshot() {
-        return secondSnapshot;
+    /**
+     * Retrieve the latest of the snapshots.
+     * 
+     * @return The latest of the snapshots.
+     */
+    public final String getLatestSnapshot() {
+        return latestSnapshot;
     }
 
-    public List<SongHistory> getSongHistories() {
+    /**
+     * Retrieve the histories of songs related to the snapshots.
+     * 
+     * @return The histories of songs.
+     */
+    public final List<SongHistory> getSongHistories() {
         return unmodifiableList(songHistories);
     }
 
     @Override
-    public boolean equals(Object refactor) {
+    public final boolean equals(Object refactor) {
         if (refactor == null) {
             return false;
         }
@@ -72,12 +113,12 @@ public class SnapshotsHistory {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
 }

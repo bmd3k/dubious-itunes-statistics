@@ -13,56 +13,111 @@ public class SongHistory {
     private String artistName;
     private String albumName;
     private String songName;
-    private Integer firstPlayCount;
-    private Integer secondPlayCount;
+    private Integer earliestPlayCount;
+    private Integer latestPlayCount;
 
-    public SongHistory withArtistName(String artistName) {
+    /**
+     * Set the name of the artist.
+     * 
+     * @param artistName Name of the artist.
+     * @return This.
+     */
+    public final SongHistory withArtistName(String artistName) {
         this.artistName = artistName;
         return this;
     }
 
-    public SongHistory withAlbumName(String albumName) {
+    /**
+     * Set the name of the album.
+     * 
+     * @param albumName Name of the album.
+     * @return This.
+     */
+    public final SongHistory withAlbumName(String albumName) {
         this.albumName = albumName;
         return this;
     }
 
-    public SongHistory withSongName(String songName) {
+    /**
+     * Set the name of the song.
+     * 
+     * @param songName The name of the song.
+     * @return This.
+     */
+    public final SongHistory withSongName(String songName) {
         this.songName = songName;
         return this;
     }
 
-    public SongHistory withEarliestPlayCount(Integer firstPlayCount) {
-        this.firstPlayCount = firstPlayCount;
+    /**
+     * Set the playcount corresponding to the earliest snapshot.
+     * 
+     * @param earliestPlayCount Playcount corresponding to the earliest snapshot.
+     * @return This.
+     */
+    public final SongHistory withEarliestPlayCount(Integer earliestPlayCount) {
+        this.earliestPlayCount = earliestPlayCount;
         return this;
     }
 
-    public SongHistory withLatestPlayCount(Integer secondPlayCount) {
-        this.secondPlayCount = secondPlayCount;
+    /**
+     * Set the playcount corresponding to the latest snapshot.
+     * 
+     * @param latestPlayCount Playcount corresponding to the latest snapshot.
+     * @return This.
+     */
+    public final SongHistory withLatestPlayCount(Integer latestPlayCount) {
+        this.latestPlayCount = latestPlayCount;
         return this;
     }
 
-    public String getArtistName() {
+    /**
+     * Get the artist name.
+     * 
+     * @return Artist name.
+     */
+    public final String getArtistName() {
         return artistName;
     }
 
-    public String getAlbumName() {
+    /**
+     * Get the album name.
+     * 
+     * @return Album name.
+     */
+    public final String getAlbumName() {
         return albumName;
     }
 
-    public String getSongName() {
+    /**
+     * Get the song name.
+     * 
+     * @return Song name.
+     */
+    public final String getSongName() {
         return songName;
     }
 
-    public Integer getEarliestPlayCount() {
-        return firstPlayCount;
+    /**
+     * Get the play count corresponding to the earliest snapshot.
+     * 
+     * @return Play count corresponding to the earliest snapshot.
+     */
+    public final Integer getEarliestPlayCount() {
+        return earliestPlayCount;
     }
 
-    public Integer getLatestPlayCount() {
-        return secondPlayCount;
+    /**
+     * Get the play count corresponding to the latest snapshot.
+     * 
+     * @return Play count corresponding to the latest snapshot.
+     */
+    public final Integer getLatestPlayCount() {
+        return latestPlayCount;
     }
 
     @Override
-    public boolean equals(Object refactor) {
+    public final boolean equals(Object refactor) {
         if (refactor == null) {
             return false;
         }
@@ -77,12 +132,12 @@ public class SongHistory {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
 }

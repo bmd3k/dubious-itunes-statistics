@@ -34,12 +34,17 @@ public class FileSnapshotStore implements ReadOnlySnapshotStore {
     private static final String COLUMN_PLAYS = "Plays";
     private static final String COLUMN_PLAY_COUNT = "Play Count";
 
+    /**
+     * Constructor.
+     * 
+     * @param fileStoreProperties {@link FileStoreProperties} to inject.
+     */
     public FileSnapshotStore(FileStoreProperties fileStoreProperties) {
         this.fileStoreProperties = fileStoreProperties;
     }
 
     @Override
-    public Snapshot getSnapshot(String snapshotName) throws StoreException {
+    public final Snapshot getSnapshot(String snapshotName) throws StoreException {
         LineIterator lines = null;
         try {
             // load file from the file store
@@ -59,8 +64,7 @@ public class FileSnapshotStore implements ReadOnlySnapshotStore {
             DateTime snapshotDate =
                     DateTime.parse(snapshotName.substring(0, 6),
                             DateTimeFormat.forPattern("yyMMdd"));
-            Snapshot snapshot =
-                    new Snapshot().withName(snapshotName).withDate(snapshotDate);
+            Snapshot snapshot = new Snapshot().withName(snapshotName).withDate(snapshotDate);
 
             // first line is the header, which we use as a bit of a sanity
             if (!lines.hasNext()) {
@@ -86,6 +90,12 @@ public class FileSnapshotStore implements ReadOnlySnapshotStore {
         }
     }
 
+    /**
+     * Check the header line of the file to ensure columns are where they are expected to be.
+     * 
+     * @param headerLine The header from the file, to be checked.
+     * @throws FileStoreException When the check fails.
+     */
     private void checkHeader(String headerLine) throws FileStoreException {
         // check the fields of interest exist where we expect them to be
         String[] columns = headerLine.split("\t", -1);
@@ -105,6 +115,12 @@ public class FileSnapshotStore implements ReadOnlySnapshotStore {
         }
     }
 
+    /**
+     * Generate the statistics for a song from a line.
+     * 
+     * @param line The line.
+     * @return The statistics extracted from the line.
+     */
     private StatisticsFromLine generateSongStatisticsFromLine(String line) {
         String[] columns = line.split("\t", -1);
         return new StatisticsFromLine(new Song()
@@ -115,10 +131,19 @@ public class FileSnapshotStore implements ReadOnlySnapshotStore {
                         .parseInt(columns[COLUMN_INDEX_PLAY_COUNT])));
     }
 
-    private class StatisticsFromLine {
+    /**
+     * Represents parts of song statistics.
+     */
+    private final class StatisticsFromLine {
         private Song song;
         private SongStatistics songStatistics;
 
+        /**
+         * Constructor.
+         * 
+         * @param song The song.
+         * @param songStatistics The song statistics.
+         */
         private StatisticsFromLine(Song song, SongStatistics songStatistics) {
             this.song = song;
             this.songStatistics = songStatistics;

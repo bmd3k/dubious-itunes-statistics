@@ -1,4 +1,5 @@
 syntax: glob
+**/.checkstyle
 **/.classpath
 **/.project
 **/.settings

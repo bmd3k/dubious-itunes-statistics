@@ -34,12 +34,17 @@ public class MongoDbSnapshotStore implements SnapshotStore {
 
     private static final String STATISTICS_PLAY_COUNT = "play_count";
 
+    /**
+     * Constructor.
+     * 
+     * @param mongoDb The mongodb connection manager.
+     */
     public MongoDbSnapshotStore(DB mongoDb) {
         this.mongoDb = mongoDb;
     }
 
     @Override
-    public Snapshot getSnapshot(String snapshotName) throws StoreException {
+    public final Snapshot getSnapshot(String snapshotName) throws StoreException {
         DBCollection collection = mongoDb.getCollection(SNAPSHOT_COLLECTION_NAME);
 
         BasicDBObject query = new BasicDBObject();
@@ -71,7 +76,7 @@ public class MongoDbSnapshotStore implements SnapshotStore {
     }
 
     @Override
-    public void writeSnapshot(Snapshot snapshot) {
+    public final void writeSnapshot(Snapshot snapshot) {
         BasicDBObject snapshotDoc = new BasicDBObject();
         snapshotDoc.put(SNAPSHOT_NAME, snapshot.getName());
         snapshotDoc.put(SNAPSHOT_DATE, getDate(snapshot.getDate()));
@@ -93,11 +98,17 @@ public class MongoDbSnapshotStore implements SnapshotStore {
     }
 
     @Override
-    public void deleteAll() {
+    public final void deleteAll() {
         DBCollection collection = mongoDb.getCollection(SNAPSHOT_COLLECTION_NAME);
         collection.remove(new BasicDBObject());
     }
 
+    /**
+     * Get the {@link Date} corresponding to a joda {@link DateTime}.
+     * 
+     * @param jodaDateTime The joda date time.
+     * @return The date.
+     */
     private Date getDate(DateTime jodaDateTime) {
         if (jodaDateTime == null) {
             return null;
@@ -105,6 +116,12 @@ public class MongoDbSnapshotStore implements SnapshotStore {
         return jodaDateTime.toDate();
     }
 
+    /**
+     * Get the joda {@link DateTime} corresponding to a {@link Date}.
+     * 
+     * @param javaDate The java date.
+     * @return The joda date time.
+     */
     private DateTime getDateTime(Date javaDate) {
         if (javaDate == null) {
             return null;

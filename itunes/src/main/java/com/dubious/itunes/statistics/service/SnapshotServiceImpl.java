@@ -3,23 +3,31 @@ package com.dubious.itunes.statistics.service;
 import java.util.Map;
 
 import com.dubious.itunes.model.Song;
-import com.dubious.itunes.model.StatisticsException;
+import com.dubious.itunes.statistics.StatisticsException;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SnapshotsHistory;
 import com.dubious.itunes.statistics.model.SongHistory;
 import com.dubious.itunes.statistics.model.SongStatistics;
 import com.dubious.itunes.statistics.store.ReadOnlySnapshotStore;
 
+/**
+ * Implementation of service for providing historical information using statistical snapshots.
+ */
 public class SnapshotServiceImpl implements SnapshotService {
 
     private ReadOnlySnapshotStore snapshotStore;
 
+    /**
+     * Constructor.
+     * 
+     * @param snapshotStore {@link ReadOnlySnapshotStore} to inject.
+     */
     public SnapshotServiceImpl(ReadOnlySnapshotStore snapshotStore) {
         this.snapshotStore = snapshotStore;
     }
 
     @Override
-    public SnapshotsHistory compareSnapshots(String snapshotName1, String snapshotName2)
+    public final SnapshotsHistory compareSnapshots(String snapshotName1, String snapshotName2)
             throws StatisticsException {
 
         Snapshot snapshot1 = getSnapshotIfExists(snapshotName1);
@@ -63,6 +71,13 @@ public class SnapshotServiceImpl implements SnapshotService {
         return history;
     }
 
+    /**
+     * Retrieve a snapshot from the store if it exists.
+     * 
+     * @param snapshotName The name of the snapshot.
+     * @return The snapshot if it exists.
+     * @throws StatisticsException If the snapshot could not be found.
+     */
     private Snapshot getSnapshotIfExists(String snapshotName) throws StatisticsException {
         Snapshot snapshot = snapshotStore.getSnapshot(snapshotName);
         if (snapshot == null) {

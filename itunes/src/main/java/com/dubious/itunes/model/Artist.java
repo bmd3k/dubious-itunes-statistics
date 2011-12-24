@@ -6,12 +6,23 @@ package com.dubious.itunes.model;
 public class Artist {
     private String name;
 
-    public Artist withName(String name) {
+    /**
+     * Set the name of the artist.
+     * 
+     * @param name Name of the artist.
+     * @return This.
+     */
+    public final Artist withName(String name) {
         this.name = name;
         return this;
     }
 
-    public String getName() {
+    /**
+     * Get the name of the artist.
+     * 
+     * @return Name of the artist.
+     */
+    public final String getName() {
         return name;
     }
 }
