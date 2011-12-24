@@ -13,18 +13,18 @@ import org.junit.Test;
 import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
-import com.dubious.itunes.statistics.store.SnapshotStore;
+import com.dubious.itunes.statistics.store.ReadOnlySnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
 
-public class SnapshotFileStoreTest {
+public class FileSnapshotStoreTest {
 
     private static FileStoreProperties fileStoreProperties;
-    private static SnapshotStore snapshotFileStore;
+    private static ReadOnlySnapshotStore snapshotFileStore;
 
     @BeforeClass
     public static void beforeClass() {
         fileStoreProperties = new FileStoreProperties("test_files", "UTF-16");
-        snapshotFileStore = new SnapshotFileStore(fileStoreProperties);
+        snapshotFileStore = new FileSnapshotStore(fileStoreProperties);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class SnapshotFileStoreTest {
         Snapshot snapshot = snapshotFileStore.getSnapshot("111201 - Music.txt");
 
         assertEquals("111201 - Music.txt", snapshot.getName());
-        assertEquals(new DateTime(2011, 12, 1, 0, 0), snapshot.getSnapshotDate());
+        assertEquals(new DateTime(2011, 12, 1, 0, 0), snapshot.getDate());
         Map<Song, SongStatistics> statistics = snapshot.getStatistics();
         assertEquals(3, statistics.size());
         Assert.assertEquals(new SongStatistics().withPlayCount(61),

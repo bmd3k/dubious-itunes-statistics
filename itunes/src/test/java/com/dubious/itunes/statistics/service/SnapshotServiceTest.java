@@ -8,20 +8,20 @@ import org.junit.Test;
 import com.dubious.itunes.model.StatisticsException;
 import com.dubious.itunes.statistics.model.SnapshotsHistory;
 import com.dubious.itunes.statistics.model.SongHistory;
-import com.dubious.itunes.statistics.store.SnapshotStore;
+import com.dubious.itunes.statistics.store.ReadOnlySnapshotStore;
 import com.dubious.itunes.statistics.store.file.FileStoreProperties;
-import com.dubious.itunes.statistics.store.file.SnapshotFileStore;
+import com.dubious.itunes.statistics.store.file.FileSnapshotStore;
 
 public class SnapshotServiceTest {
 
     private static FileStoreProperties fileStoreProperties;
-    private static SnapshotStore snapshotFileStore;
+    private static ReadOnlySnapshotStore snapshotFileStore;
     private static SnapshotService snapshotService;
 
     @BeforeClass
     public static void beforeClass() {
         fileStoreProperties = new FileStoreProperties("test_files", "UTF-16");
-        snapshotFileStore = new SnapshotFileStore(fileStoreProperties);
+        snapshotFileStore = new FileSnapshotStore(fileStoreProperties);
         snapshotService = new SnapshotServiceImpl(snapshotFileStore);
     }
 

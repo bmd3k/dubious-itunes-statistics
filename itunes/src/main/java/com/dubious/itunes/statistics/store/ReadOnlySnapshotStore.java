@@ -3,9 +3,9 @@ package com.dubious.itunes.statistics.store;
 import com.dubious.itunes.statistics.model.Snapshot;
 
 /**
- * Describes storage of snapshots.
+ * Describes read-only storage of snapshots.
  */
-public interface SnapshotStore {
+public interface ReadOnlySnapshotStore {
 
     /**
      * Get a snapshot.

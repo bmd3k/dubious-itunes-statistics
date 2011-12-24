@@ -12,13 +12,13 @@ import org.joda.time.format.DateTimeFormat;
 import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
-import com.dubious.itunes.statistics.store.SnapshotStore;
+import com.dubious.itunes.statistics.store.ReadOnlySnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
 
 /**
  * File-based storage of snapshots.
  */
-public class SnapshotFileStore implements SnapshotStore {
+public class FileSnapshotStore implements ReadOnlySnapshotStore {
 
     private FileStoreProperties fileStoreProperties;
 
@@ -34,7 +34,7 @@ public class SnapshotFileStore implements SnapshotStore {
     private static final String COLUMN_PLAYS = "Plays";
     private static final String COLUMN_PLAY_COUNT = "Play Count";
 
-    public SnapshotFileStore(FileStoreProperties fileStoreProperties) {
+    public FileSnapshotStore(FileStoreProperties fileStoreProperties) {
         this.fileStoreProperties = fileStoreProperties;
     }
 
@@ -60,7 +60,7 @@ public class SnapshotFileStore implements SnapshotStore {
                     DateTime.parse(snapshotName.substring(0, 6),
                             DateTimeFormat.forPattern("yyMMdd"));
             Snapshot snapshot =
-                    new Snapshot().withName(snapshotName).withSnapshotDate(snapshotDate);
+                    new Snapshot().withName(snapshotName).withDate(snapshotDate);
 
             // first line is the header, which we use as a bit of a sanity
             if (!lines.hasNext()) {

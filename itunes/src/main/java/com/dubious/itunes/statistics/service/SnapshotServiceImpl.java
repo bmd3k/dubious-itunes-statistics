@@ -8,13 +8,13 @@ import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SnapshotsHistory;
 import com.dubious.itunes.statistics.model.SongHistory;
 import com.dubious.itunes.statistics.model.SongStatistics;
-import com.dubious.itunes.statistics.store.SnapshotStore;
+import com.dubious.itunes.statistics.store.ReadOnlySnapshotStore;
 
 public class SnapshotServiceImpl implements SnapshotService {
 
-    private SnapshotStore snapshotStore;
+    private ReadOnlySnapshotStore snapshotStore;
 
-    public SnapshotServiceImpl(SnapshotStore snapshotStore) {
+    public SnapshotServiceImpl(ReadOnlySnapshotStore snapshotStore) {
         this.snapshotStore = snapshotStore;
     }
 
@@ -31,7 +31,7 @@ public class SnapshotServiceImpl implements SnapshotService {
         // the system.
         Snapshot earliestSnapshot = snapshot1;
         Snapshot latestSnapshot = snapshot2;
-        if (snapshot2.getSnapshotDate().isBefore(snapshot1.getSnapshotDate())) {
+        if (snapshot2.getDate().isBefore(snapshot1.getDate())) {
             earliestSnapshot = snapshot2;
             latestSnapshot = snapshot1;
         }
