@@ -1,5 +1,11 @@
 package com.dubious.itunes.statistics.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -13,8 +19,13 @@ public class SongHistory {
     private String artistName;
     private String albumName;
     private String songName;
-    private Integer earliestPlayCount;
-    private Integer latestPlayCount;
+    private List<String> snapshotNames;
+    private Map<String, SongStatistics> songStatistics;
+
+    public SongHistory() {
+        this.snapshotNames = new ArrayList<String>();
+        this.songStatistics = new LinkedHashMap<String, SongStatistics>();
+    }
 
     /**
      * Set the name of the artist.
@@ -49,25 +60,9 @@ public class SongHistory {
         return this;
     }
 
-    /**
-     * Set the playcount corresponding to the earliest snapshot.
-     * 
-     * @param earliestPlayCount Playcount corresponding to the earliest snapshot.
-     * @return This.
-     */
-    public final SongHistory withEarliestPlayCount(Integer earliestPlayCount) {
-        this.earliestPlayCount = earliestPlayCount;
-        return this;
-    }
-
-    /**
-     * Set the playcount corresponding to the latest snapshot.
-     * 
-     * @param latestPlayCount Playcount corresponding to the latest snapshot.
-     * @return This.
-     */
-    public final SongHistory withLatestPlayCount(Integer latestPlayCount) {
-        this.latestPlayCount = latestPlayCount;
+    public final SongHistory addSongStatistics(String snapshotName, SongStatistics songStatistics) {
+        snapshotNames.add(snapshotName);
+        this.songStatistics.put(snapshotName, songStatistics);
         return this;
     }
 
@@ -98,22 +93,12 @@ public class SongHistory {
         return songName;
     }
 
-    /**
-     * Get the play count corresponding to the earliest snapshot.
-     * 
-     * @return Play count corresponding to the earliest snapshot.
-     */
-    public final Integer getEarliestPlayCount() {
-        return earliestPlayCount;
+    public final List<String> getSnapshots() {
+        return Collections.unmodifiableList(snapshotNames);
     }
 
-    /**
-     * Get the play count corresponding to the latest snapshot.
-     * 
-     * @return Play count corresponding to the latest snapshot.
-     */
-    public final Integer getLatestPlayCount() {
-        return latestPlayCount;
+    public final Map<String, SongStatistics> getSongStatistics() {
+        return Collections.unmodifiableMap(songStatistics);
     }
 
     @Override

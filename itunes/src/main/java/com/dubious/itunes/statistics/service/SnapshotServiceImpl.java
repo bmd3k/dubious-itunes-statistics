@@ -53,19 +53,14 @@ public class SnapshotServiceImpl implements SnapshotService {
                 .getStatistics()
                 .entrySet()) {
             Song song = latestStatistic.getKey();
-            SongHistory songHistory =
-                    new SongHistory()
-                            .withArtistName(song.getArtistName())
-                            .withAlbumName(song.getAlbumName())
-                            .withSongName(song.getName())
-                            .withLatestPlayCount(latestStatistic.getValue().getPlayCount());
-
-            SongStatistics earliestStatistic = earliestSnapshot.getStatistics().get(song);
-            if (earliestStatistic != null) {
-                songHistory.withEarliestPlayCount(earliestStatistic.getPlayCount());
-            }
-
-            history.addSongHistory(songHistory);
+            history.addSongHistory(new SongHistory()
+                    .withArtistName(song.getArtistName())
+                    .withAlbumName(song.getAlbumName())
+                    .withSongName(song.getName())
+                    .addSongStatistics(earliestSnapshot.getName(),
+                            earliestSnapshot.getStatistics().get(song))
+                    .addSongStatistics(latestSnapshot.getName(),
+                            latestSnapshot.getStatistics().get(song)));
         }
 
         return history;

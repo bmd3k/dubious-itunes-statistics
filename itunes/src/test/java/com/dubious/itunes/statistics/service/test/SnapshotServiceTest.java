@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.dubious.itunes.statistics.StatisticsException;
 import com.dubious.itunes.statistics.model.SnapshotsHistory;
 import com.dubious.itunes.statistics.model.SongHistory;
+import com.dubious.itunes.statistics.model.SongStatistics;
 import com.dubious.itunes.statistics.service.SnapshotService;
 import com.dubious.itunes.statistics.service.SnapshotServiceImpl;
 import com.dubious.itunes.statistics.store.ReadOnlySnapshotStore;
@@ -40,29 +41,31 @@ public class SnapshotServiceTest {
      */
     @Test
     public final void testBasicHistory() throws StatisticsException {
+        String earliestSnapshot = "111201 - Music.txt";
+        String latestSnapshot = "111205 - Music.txt";
         //@formatter:off
         assertEquals(
                 new SnapshotsHistory()
-                        .withEarliestSnapshot("111201 - Music.txt")
-                        .withLatestSnapshot("111205 - Music.txt")
+                        .withEarliestSnapshot(earliestSnapshot)
+                        .withLatestSnapshot(latestSnapshot)
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Arctic Monkeys")
                                 .withAlbumName("Whatever People Say I Am, That's What I'm Not")
                                 .withSongName("Mardy Bum")
-                                .withEarliestPlayCount(61)
-                                .withLatestPlayCount(62))
+                                .addSongStatistics(earliestSnapshot, new SongStatistics().withPlayCount(61))
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(62)))
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Nada Surf")
                                 .withAlbumName("The Weight is a Gift")
                                 .withSongName("Blankest Year")
-                                .withEarliestPlayCount(56)
-                                .withLatestPlayCount(59))
+                                .addSongStatistics(earliestSnapshot, new SongStatistics().withPlayCount(56))
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(59)))
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Death From Above 1979")
                                 .withAlbumName("You're A Woman I'm A Machine")
                                 .withSongName("Going Steady")
-                                .withEarliestPlayCount(55)
-                                .withLatestPlayCount(58)),
+                                .addSongStatistics(earliestSnapshot, new SongStatistics().withPlayCount(55))
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(58))),
                 snapshotService.compareSnapshots("111201 - Music.txt", "111205 - Music.txt"));
         //@formatter:on
     }
@@ -74,28 +77,31 @@ public class SnapshotServiceTest {
      */
     @Test
     public final void testLatestHasUniqueSongs() throws StatisticsException {
+        String earliestSnapshot = "101201 - Music.txt";
+        String latestSnapshot = "111201 - Music.txt";
         //@formatter:off
         assertEquals(
                 new SnapshotsHistory()
-                        .withEarliestSnapshot("101201 - Music.txt")
-                        .withLatestSnapshot("111201 - Music.txt")
+                        .withEarliestSnapshot(earliestSnapshot)
+                        .withLatestSnapshot(latestSnapshot)
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Arctic Monkeys")
                                 .withAlbumName("Whatever People Say I Am, That's What I'm Not")
                                 .withSongName("Mardy Bum")
-                                .withEarliestPlayCount(35)
-                                .withLatestPlayCount(61))
+                                .addSongStatistics(earliestSnapshot, new SongStatistics().withPlayCount(35))
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(61)))
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Nada Surf")
                                 .withAlbumName("The Weight is a Gift")
                                 .withSongName("Blankest Year")
-                                .withLatestPlayCount(56))
+                                .addSongStatistics(earliestSnapshot, null)
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(56)))
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Death From Above 1979")
                                 .withAlbumName("You're A Woman I'm A Machine")
                                 .withSongName("Going Steady")
-                                .withEarliestPlayCount(30)
-                                .withLatestPlayCount(55)),
+                                .addSongStatistics(earliestSnapshot, new SongStatistics().withPlayCount(30))
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(55))),
                 snapshotService.compareSnapshots("101201 - Music.txt", "111201 - Music.txt"));
         //@formatter:on
     }
@@ -107,29 +113,31 @@ public class SnapshotServiceTest {
      */
     @Test
     public final void testDifferentSongOrders() throws StatisticsException {
+        String earliestSnapshot = "111205 - Music.txt";
+        String latestSnapshot = "111206 - Music.txt";
         //@formatter:off
         assertEquals(
                 new SnapshotsHistory()
-                        .withEarliestSnapshot("111205 - Music.txt")
-                        .withLatestSnapshot("111206 - Music.txt")
+                        .withEarliestSnapshot(earliestSnapshot)
+                        .withLatestSnapshot(latestSnapshot)
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Death From Above 1979")
                                 .withAlbumName("You're A Woman I'm A Machine")
                                 .withSongName("Going Steady")
-                                .withEarliestPlayCount(58)
-                                .withLatestPlayCount(80))
+                                .addSongStatistics(earliestSnapshot, new SongStatistics().withPlayCount(58))
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(80)))
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Arctic Monkeys")
                                 .withAlbumName("Whatever People Say I Am, That's What I'm Not")
                                 .withSongName("Mardy Bum")
-                                .withEarliestPlayCount(62)
-                                .withLatestPlayCount(63))
+                                .addSongStatistics(earliestSnapshot, new SongStatistics().withPlayCount(62))
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(63)))
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Nada Surf")
                                 .withAlbumName("The Weight is a Gift")
                                 .withSongName("Blankest Year")
-                                .withEarliestPlayCount(59)
-                                .withLatestPlayCount(59)),
+                                .addSongStatistics(earliestSnapshot, new SongStatistics().withPlayCount(59))
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(59))),
                 snapshotService.compareSnapshots("111205 - Music.txt", "111206 - Music.txt"));
         //@formatter:on
     }
@@ -142,29 +150,31 @@ public class SnapshotServiceTest {
      */
     @Test
     public final void testSnapshot1IsLatest() throws StatisticsException {
+        String earliestSnapshot = "111201 - Music.txt";
+        String latestSnapshot = "111205 - Music.txt";
         //@formatter:off
         assertEquals(
                 new SnapshotsHistory()
-                        .withEarliestSnapshot("111201 - Music.txt")
-                        .withLatestSnapshot("111205 - Music.txt")
+                        .withEarliestSnapshot(earliestSnapshot)
+                        .withLatestSnapshot(latestSnapshot)
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Arctic Monkeys")
                                 .withAlbumName("Whatever People Say I Am, That's What I'm Not")
                                 .withSongName("Mardy Bum")
-                                .withEarliestPlayCount(61)
-                                .withLatestPlayCount(62))
+                                .addSongStatistics(earliestSnapshot, new SongStatistics().withPlayCount(61))
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(62)))
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Nada Surf")
                                 .withAlbumName("The Weight is a Gift")
                                 .withSongName("Blankest Year")
-                                .withEarliestPlayCount(56)
-                                .withLatestPlayCount(59))
+                                .addSongStatistics(earliestSnapshot, new SongStatistics().withPlayCount(56))
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(59)))
                         .addSongHistory(new SongHistory()
                                 .withArtistName("Death From Above 1979")
                                 .withAlbumName("You're A Woman I'm A Machine")
                                 .withSongName("Going Steady")
-                                .withEarliestPlayCount(55)
-                                .withLatestPlayCount(58)),
+                                .addSongStatistics(earliestSnapshot, new SongStatistics().withPlayCount(55))
+                                .addSongStatistics(latestSnapshot, new SongStatistics().withPlayCount(58))),
                 snapshotService.compareSnapshots("111205 - Music.txt", "111201 - Music.txt"));
         //@formatter:on
     }

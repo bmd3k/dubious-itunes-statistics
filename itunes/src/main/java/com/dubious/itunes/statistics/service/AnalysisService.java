@@ -1,7 +1,10 @@
 package com.dubious.itunes.statistics.service;
 
+import java.util.List;
+
 import com.dubious.itunes.statistics.StatisticsException;
 import com.dubious.itunes.statistics.model.SnapshotsHistory;
+import com.dubious.itunes.statistics.model.SongHistory;
 
 /**
  * Snapshot-based statistical analysis.
@@ -26,4 +29,6 @@ public interface AnalysisService {
      */
     void writeAnalysisOrderByDifference(SnapshotsHistory history, String outputPath)
             throws StatisticsException;
+
+    SongHistory getSongHistory(List<String> snapshotNames);
 }
