@@ -15,6 +15,7 @@ import com.dubious.itunes.statistics.store.StoreException;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 
 /**
  * MongoDb storage of snapshots.
@@ -24,7 +25,7 @@ public class MongoDbSnapshotStore implements SnapshotStore {
     private DB mongoDb;
 
     private static final String SNAPSHOT_COLLECTION_NAME = "snapshot";
-    private static final String SNAPSHOT_NAME = "name";
+    private static final String SNAPSHOT_NAME = "_id";
     private static final String SNAPSHOT_DATE = "date";
     private static final String SNAPSHOT_STATISTICS = "statistics";
 
@@ -49,10 +50,15 @@ public class MongoDbSnapshotStore implements SnapshotStore {
 
         BasicDBObject query = new BasicDBObject();
         query.put(SNAPSHOT_NAME, snapshotName);
-        BasicDBObject snapshotDoc = (BasicDBObject) collection.findOne(query);
+        DBCursor resultSet = collection.find(query);
 
+        BasicDBObject snapshotDoc =
+                resultSet.hasNext() ? (BasicDBObject) resultSet.next() : null;
         if (snapshotDoc == null) {
             return null;
+        }
+        if (resultSet.hasNext()) {
+            throw new MongoDbStoreException("Found multiple results for snapshot");
         }
 
         Snapshot snapshot =
