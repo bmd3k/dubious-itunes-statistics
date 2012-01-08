@@ -9,6 +9,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.dubious.itunes.model.Song;
+
 /**
  * Statistical history of a song.
  */
@@ -57,6 +59,18 @@ public class SongHistory {
     public final SongHistory withSongName(String songName) {
         this.songName = songName;
         return this;
+    }
+
+    /**
+     * Populate song-specific information using a given song. This is a shortcut method.
+     * 
+     * @param song The song with the information.
+     * @return This.
+     */
+    public final SongHistory withSong(Song song) {
+        return withArtistName(song.getArtistName())
+                .withAlbumName(song.getAlbumName())
+                .withSongName(song.getName());
     }
 
     /**
