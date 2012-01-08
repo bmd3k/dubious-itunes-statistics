@@ -130,7 +130,8 @@ public class FileSnapshotStore implements ReadOnlySnapshotStore {
                 .withAlbumName(columns[COLUMN_INDEX_ALBUM_NAME])
                 .withName(columns[COLUMN_INDEX_SONG_NAME]),
                 new SongStatistics().withPlayCount(Integer
-                        .parseInt(columns[COLUMN_INDEX_PLAY_COUNT])));
+                        .parseInt(columns[COLUMN_INDEX_PLAY_COUNT].length() == 0 ? "0"
+                                : columns[COLUMN_INDEX_PLAY_COUNT])));
     }
 
     /**

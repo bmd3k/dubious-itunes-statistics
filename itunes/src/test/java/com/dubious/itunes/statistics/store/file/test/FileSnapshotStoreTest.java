@@ -82,4 +82,27 @@ public class FileSnapshotStoreTest {
                         new SongStatistics().withPlayCount(30)),
                 snapshotFileStore.getSnapshot("101130 - Music.txt"));
     }
+
+    /**
+     * Test load of snapshot from file where a line has empty play count. It represents 0.
+     * 
+     * @throws StoreException On unexpected error.
+     */
+    @Test
+    public final void testWithEmptyPlayCount() throws StoreException {
+        assertEquals(new Snapshot()
+                .withName("091130 - Music.txt")
+                .withDate(new DateTime(2009, 11, 30, 0, 0))
+                .addStatistic(new Song()
+                        .withArtistName("Arctic Monkeys")
+                        .withAlbumName("Whatever People Say I Am, That's What I'm Not")
+                        .withName("Mardy Bum"),
+                        new SongStatistics().withPlayCount(4))
+                .addStatistic(new Song()
+                        .withArtistName("Death From Above 1979")
+                        .withAlbumName("You're A Woman I'm A Machine")
+                        .withName("Going Steady"),
+                        new SongStatistics().withPlayCount(0)),
+                snapshotFileStore.getSnapshot("091130 - Music.txt"));
+    }
 }
