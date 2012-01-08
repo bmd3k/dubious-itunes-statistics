@@ -1,9 +1,9 @@
 package com.dubious.itunes.statistics.service.test;
 
 import static java.util.Arrays.asList;
-import static junit.framework.Assert.assertTrue;
-import static org.apache.commons.io.FileUtils.contentEquals;
 import static org.apache.commons.io.FileUtils.deleteDirectory;
+import static org.apache.commons.io.FileUtils.readLines;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class AnalysisServiceTest {
     }
 
     /**
-     * Test the ability to write an analysis with default order.
+     * Test the ability to write an analysis of history of two snapshots with default order.
      * 
      * @throws StatisticsException On unexpected error.
      * @throws IOException On unexpected error.
@@ -67,16 +67,33 @@ public class AnalysisServiceTest {
                         "111201 - Music.txt"));
         analysisService.writeAnalysis(history, "test_files/output/output.txt");
 
-        assertTrue(contentEquals(new File(
+        assertEquals(readLines(new File(
                 "test_files/AnalysisServiceTest/testWriteAnalysisWithTwoSnapshots_expected.txt"),
-                new File("test_files/output/output.txt")));
+                "UTF-8"),
+                readLines(new File("test_files/output/output.txt"), "UTF-8"));
     }
 
-    // TODO:
-    // @Test
-    // public final void testWriteAnalysisWithManySnapshots() {
-    // fail("not yet implemented");
-    // }
+    /**
+     * Test the ability to write an analysis of history of many snapshots with default order.
+     * 
+     * @throws StatisticsException On unexpected error.
+     * @throws IOException On unexpected error.
+     */
+    @Test
+    public final void testWriteAnalysisWithManySnapshots() throws StatisticsException,
+            IOException {
+        SnapshotsHistory history =
+                snapshotService.compareSnapshots(asList("101130 - Music.txt",
+                        "111201 - Music.txt",
+                        "111205 - Music.txt",
+                        "111206 - Music.txt"));
+        analysisService.writeAnalysis(history, "test_files/output/output.txt");
+
+        assertEquals(readLines(new File(
+                "test_files/AnalysisServiceTest/testWriteAnalysisWithManySnapshots_expected.txt"),
+                "UTF-8"),
+                readLines(new File("test_files/output/output.txt"), "UTF-8"));
+    }
 
     /**
      * Test the ability to write an analysis, ordered by the difference between the earliest and
@@ -88,15 +105,16 @@ public class AnalysisServiceTest {
     @Test
     public final void testWriteAnalysisOrderByDifference() throws StatisticsException,
             IOException {
-        // TODO: fail("must convert this test");
-
         SnapshotsHistory history =
-                snapshotService.compareSnapshots(asList("101201 - Music.txt",
-                        "111201 - Music.txt"));
+                snapshotService.compareSnapshots(asList("101130 - Music.txt",
+                        "111201 - Music.txt",
+                        "111205 - Music.txt",
+                        "111206 - Music.txt"));
         analysisService.writeAnalysisOrderByDifference(history, "test_files/output/output.txt");
 
-        assertTrue(contentEquals(new File(
+        assertEquals(readLines(new File(
                 "test_files/AnalysisServiceTest/testWriteAnalysisOrderByDifference_expected.txt"),
-                new File("test_files/output/output.txt")));
+                "UTF-8"),
+                readLines(new File("test_files/output/output.txt"), "UTF-8"));
     }
 }

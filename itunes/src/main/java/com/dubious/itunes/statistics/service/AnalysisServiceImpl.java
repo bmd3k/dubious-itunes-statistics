@@ -23,9 +23,7 @@ public class AnalysisServiceImpl implements AnalysisService {
     @Override
     public final void writeAnalysis(SnapshotsHistory history, String outputPath)
             throws StatisticsException {
-        writeAnalysis(history.getSongHistories(), history.getSnapshots().get(0), history
-                .getSnapshots()
-                .get(history.getSnapshots().size() - 1), outputPath);
+        writeAnalysis(history.getSnapshots(), history.getSongHistories(), outputPath);
     }
 
     @Override
@@ -47,29 +45,25 @@ public class AnalysisServiceImpl implements AnalysisService {
                                 history.getSnapshots().get(history.getSnapshots().size() - 1));
             }
         });
-        writeAnalysis(sortedSongHistories, history.getSnapshots().get(0), history
-                .getSnapshots()
-                .get(history.getSnapshots().size() - 1), outputPath);
+        writeAnalysis(history.getSnapshots(), sortedSongHistories, outputPath);
     }
 
     /**
      * Write analysis to file.
      * 
+     * @param snapshots The snapshots to consider in the analysis.
      * @param songHistories The histories to use in the analysis.
-     * @param earliestSnapshot The earliest snapshot to consider.
-     * @param latestSnapshot The latest snapshot to consider.
      * @param outputPath The file output path.
      * @throws StatisticsException On error.
      */
     private void writeAnalysis(
+            List<String> snapshots,
             List<SongHistory> songHistories,
-            String earliestSnapshot,
-            String latestSnapshot,
             String outputPath) throws StatisticsException {
         try {
             writeLines(new File(outputPath),
                     "UTF-8",
-                    getDataToWrite(songHistories, earliestSnapshot, latestSnapshot),
+                    getDataToWrite(snapshots, songHistories),
                     false);
         } catch (IOException t) {
             throw new FileCouldNotBeWrittenException(outputPath, t);
@@ -79,25 +73,53 @@ public class AnalysisServiceImpl implements AnalysisService {
     /**
      * Retrieve the analysis to write.
      * 
+     * @param snapshots The snapshots to consider in the analysis.
      * @param songHistories The histories to use in the analysis.
-     * @param earliestSnapshot The earliest snapshot to consider.
-     * @param latestSnapshot The latest snapshot to consider.
      * @return The lines to write.
      */
-    private List<String> getDataToWrite(
-            List<SongHistory> songHistories,
-            String earliestSnapshot,
-            String latestSnapshot) {
+    private List<String> getDataToWrite(List<String> snapshots, List<SongHistory> songHistories) {
         List<String> lines = new ArrayList<String>(songHistories.size());
         for (SongHistory songHistory : songHistories) {
             //@formatter:off
-            lines.add(
+            StringBuilder line = new StringBuilder(
                     songHistory.getArtistName() + "\t" 
                     + songHistory.getAlbumName() + "\t" 
-                    + songHistory.getSongName() + "\t"
-                    + songHistory.getSongStatistics().get(latestSnapshot).getPlayCount() + "\t"
-                    + calculatePlayDifference(songHistory, earliestSnapshot, latestSnapshot));
+                    + songHistory.getSongName() + "\t");
             //@formatter:on
+
+            // write play count from earliest snapshot
+            SongStatistics earliestStatistics =
+                    songHistory.getSongStatistics().get(snapshots.get(0));
+            line.append(earliestStatistics == null ? "(0)" : "("
+                    + earliestStatistics.getPlayCount() + ")");
+            line.append("\t");
+
+            // write differences in play count between each snapshot
+            line.append("(");
+            int index = 0;
+            int totalDifference = 0;
+            for (index = 1; index < snapshots.size(); index++) {
+                int difference =
+                        calculatePlayDifference(songHistory,
+                                snapshots.get(index - 1),
+                                snapshots.get(index));
+                totalDifference += difference;
+                line.append(difference + ",");
+            }
+            line.deleteCharAt(line.length() - 1);
+            // if have more than one difference then output a total of the differences.
+            if (index > 2) {
+                line.append("=" + totalDifference);
+            }
+            line.append(")\t");
+
+            // write playcount from the latest snapshot
+            SongStatistics latestStatistics =
+                    songHistory.getSongStatistics().get(snapshots.get(snapshots.size() - 1));
+            line.append(latestStatistics == null ? "(0)" : "(" + latestStatistics.getPlayCount()
+                    + ")");
+
+            lines.add(line.toString());
         }
 
         return lines;
