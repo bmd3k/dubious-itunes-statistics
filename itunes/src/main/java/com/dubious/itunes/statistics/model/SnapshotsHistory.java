@@ -15,36 +15,36 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public class SnapshotsHistory {
 
-    private String earliestSnapshot;
-    private String latestSnapshot;
+    private List<String> snapshots;
     private List<SongHistory> songHistories;
 
     /**
      * Constructor.
      */
     public SnapshotsHistory() {
+        snapshots = new ArrayList<String>();
         songHistories = new ArrayList<SongHistory>();
     }
 
     /**
-     * Set the earliest of the snapshots.
+     * Add the name of a snapshot represented in this history.
      * 
-     * @param earliestSnapshot The earliest snapshot.
+     * @param snapshot The name of a snapshot represented in this history.
      * @return This.
      */
-    public final SnapshotsHistory withEarliestSnapshot(String earliestSnapshot) {
-        this.earliestSnapshot = earliestSnapshot;
+    public final SnapshotsHistory addSnapshot(String snapshot) {
+        this.snapshots.add(snapshot);
         return this;
     }
 
     /**
-     * Set the latest of the snapshots.
+     * Add a group of names of snapshots represented in this history.
      * 
-     * @param latestSnapshot The latest snapshot.
+     * @param snapshots The names of snapshots represented in this history.
      * @return This.
      */
-    public final SnapshotsHistory withLatestSnapshot(String latestSnapshot) {
-        this.latestSnapshot = latestSnapshot;
+    public final SnapshotsHistory addSnapshots(List<String> snapshots) {
+        this.snapshots.addAll(snapshots);
         return this;
     }
 
@@ -71,21 +71,12 @@ public class SnapshotsHistory {
     }
 
     /**
-     * Retrieve the earliest of the snapshots.
+     * Retrieve the names of snapshots represented in this history.
      * 
-     * @return The earliest of the snapshots.
+     * @return The names of snapshots represented in this history.
      */
-    public final String getEarliestSnapshot() {
-        return earliestSnapshot;
-    }
-
-    /**
-     * Retrieve the latest of the snapshots.
-     * 
-     * @return The latest of the snapshots.
-     */
-    public final String getLatestSnapshot() {
-        return latestSnapshot;
+    public final List<String> getSnapshots() {
+        return unmodifiableList(snapshots);
     }
 
     /**
@@ -98,18 +89,18 @@ public class SnapshotsHistory {
     }
 
     @Override
-    public final boolean equals(Object refactor) {
-        if (refactor == null) {
+    public final boolean equals(Object other) {
+        if (other == null) {
             return false;
         }
-        if (refactor == this) {
+        if (other == this) {
             return true;
         }
-        if (refactor.getClass() != getClass()) {
+        if (other.getClass() != getClass()) {
             return false;
         }
 
-        return EqualsBuilder.reflectionEquals(this, refactor);
+        return EqualsBuilder.reflectionEquals(this, other);
     }
 
     @Override

@@ -1,9 +1,7 @@
 package com.dubious.itunes.statistics.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -19,11 +17,12 @@ public class SongHistory {
     private String artistName;
     private String albumName;
     private String songName;
-    private List<String> snapshotNames;
     private Map<String, SongStatistics> songStatistics;
 
+    /**
+     * Constructor.
+     */
     public SongHistory() {
-        this.snapshotNames = new ArrayList<String>();
         this.songStatistics = new LinkedHashMap<String, SongStatistics>();
     }
 
@@ -60,8 +59,14 @@ public class SongHistory {
         return this;
     }
 
+    /**
+     * Add statistics for the song from a snapshot.
+     * 
+     * @param snapshotName The name of the snapshot.
+     * @param songStatistics The statistics of the song from the snapshot.
+     * @return This.
+     */
     public final SongHistory addSongStatistics(String snapshotName, SongStatistics songStatistics) {
-        snapshotNames.add(snapshotName);
         this.songStatistics.put(snapshotName, songStatistics);
         return this;
     }
@@ -93,27 +98,28 @@ public class SongHistory {
         return songName;
     }
 
-    public final List<String> getSnapshots() {
-        return Collections.unmodifiableList(snapshotNames);
-    }
-
+    /**
+     * Get the map of snapshot to statistics.
+     * 
+     * @return The map of snapshot to statistics.
+     */
     public final Map<String, SongStatistics> getSongStatistics() {
         return Collections.unmodifiableMap(songStatistics);
     }
 
     @Override
-    public final boolean equals(Object refactor) {
-        if (refactor == null) {
+    public final boolean equals(Object other) {
+        if (other == null) {
             return false;
         }
-        if (refactor == this) {
+        if (other == this) {
             return true;
         }
-        if (refactor.getClass() != getClass()) {
+        if (other.getClass() != getClass()) {
             return false;
         }
 
-        return EqualsBuilder.reflectionEquals(this, refactor);
+        return EqualsBuilder.reflectionEquals(this, other);
     }
 
     @Override

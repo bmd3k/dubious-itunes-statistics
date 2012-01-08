@@ -86,7 +86,9 @@ public class FileSnapshotStore implements ReadOnlySnapshotStore {
         } catch (Throwable t) {
             throw new FileStoreException("Unexpected error in file store.", t);
         } finally {
-            lines.close();
+            if (lines != null) {
+                lines.close();
+            }
         }
     }
 

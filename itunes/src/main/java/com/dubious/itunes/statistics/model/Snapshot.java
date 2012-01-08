@@ -102,18 +102,18 @@ public class Snapshot {
     }
 
     @Override
-    public final boolean equals(Object refactor) {
-        if (refactor == null) {
+    public final boolean equals(Object other) {
+        if (other == null) {
             return false;
         }
-        if (refactor == this) {
+        if (other == this) {
             return true;
         }
-        if (refactor.getClass() != getClass()) {
+        if (other.getClass() != getClass()) {
             return false;
         }
 
-        return EqualsBuilder.reflectionEquals(this, refactor);
+        return EqualsBuilder.reflectionEquals(this, other);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.dubious.itunes.statistics.store;
 
-import com.dubious.itunes.statistics.StatisticsException;
+import com.dubious.itunes.statistics.exception.StatisticsException;
 
 /**
  * An exception in the storage layer.
