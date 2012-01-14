@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.UnknownHostException;
 
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
@@ -25,8 +24,9 @@ import com.dubious.itunes.statistics.service.AnalysisServiceImpl;
 import com.dubious.itunes.statistics.service.HistoryService;
 import com.dubious.itunes.statistics.service.HistoryServiceImpl;
 import com.dubious.itunes.statistics.store.SnapshotStore;
+import com.dubious.itunes.statistics.store.mongodb.MongoDbDataSource;
 import com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore;
-import com.mongodb.Mongo;
+import com.dubious.itunes.statistics.store.mongodb.MongoDbStoreException;
 
 /**
  * Tests for the {@link AnalysisService}.
@@ -61,11 +61,11 @@ public class AnalysisServiceTest {
     /**
      * Setup at the class level.
      * 
-     * @throws UnknownHostException On unexpected error.
+     * @throws MongoDbStoreException On unexpected error.
      */
     @BeforeClass
-    public static void beforeClass() throws UnknownHostException {
-        snapshotStore = new MongoDbSnapshotStore(new Mongo().getDB("someDb"));
+    public static void beforeClass() throws MongoDbStoreException {
+        snapshotStore = new MongoDbSnapshotStore(new MongoDbDataSource("localhost", "testdb"));
         snapshotService = new HistoryServiceImpl(snapshotStore);
         analysisService = new AnalysisServiceImpl();
     }
@@ -123,13 +123,16 @@ public class AnalysisServiceTest {
     @Test
     public final void testWriteAnalysisWithTwoSnapshots() throws StatisticsException,
             IOException {
-        analysisService.writeAnalysis(snapshotService.generateSnapshotHistory(asList(snapshot3,
-                snapshot4)), "test_files/output/output.txt");
+        analysisService.writeAnalysis(
+                snapshotService.generateSnapshotHistory(asList(snapshot3, snapshot4)),
+                "test_files/output/output.txt");
 
+        //@formatter:off
         assertEquals(readLines(new File(
                 "test_files/AnalysisServiceTest/testWriteAnalysisWithTwoSnapshots_expected.txt"),
                 "UTF-8"),
                 readLines(new File("test_files/output/output.txt"), "UTF-8"));
+        //@formatter:on
     }
 
     /**
@@ -141,15 +144,18 @@ public class AnalysisServiceTest {
     @Test
     public final void testWriteAnalysisWithManySnapshots() throws StatisticsException,
             IOException {
-        analysisService.writeAnalysis(snapshotService.generateSnapshotHistory(asList(snapshot1,
+        analysisService.writeAnalysis(snapshotService.generateSnapshotHistory(asList(
+                snapshot1,
                 snapshot2,
                 snapshot3,
                 snapshot4)), "test_files/output/output.txt");
 
+        //@formatter:off
         assertEquals(readLines(new File(
                 "test_files/AnalysisServiceTest/testWriteAnalysisWithManySnapshots_expected.txt"),
                 "UTF-8"),
                 readLines(new File("test_files/output/output.txt"), "UTF-8"));
+        //@formatter:on
     }
 
     /**
@@ -162,13 +168,19 @@ public class AnalysisServiceTest {
     @Test
     public final void testWriteAnalysisOrderByDifference() throws StatisticsException,
             IOException {
-        analysisService.writeAnalysisOrderByDifference(snapshotService
-                .generateSnapshotHistory(asList(snapshot1, snapshot2, snapshot3, snapshot4)),
+        analysisService.writeAnalysisOrderByDifference(
+                snapshotService.generateSnapshotHistory(asList(
+                        snapshot1,
+                        snapshot2,
+                        snapshot3,
+                        snapshot4)),
                 "test_files/output/output.txt");
 
+        //@formatter:off
         assertEquals(readLines(new File(
                 "test_files/AnalysisServiceTest/testWriteAnalysisOrderByDifference_expected.txt"),
                 "UTF-8"),
                 readLines(new File("test_files/output/output.txt"), "UTF-8"));
+        //@formatter:on
     }
 }

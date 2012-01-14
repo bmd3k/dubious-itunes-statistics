@@ -4,7 +4,6 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.net.UnknownHostException;
 import java.util.Collections;
 
 import org.joda.time.DateMidnight;
@@ -25,8 +24,9 @@ import com.dubious.itunes.statistics.service.HistoryService;
 import com.dubious.itunes.statistics.service.HistoryServiceImpl;
 import com.dubious.itunes.statistics.store.SnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
+import com.dubious.itunes.statistics.store.mongodb.MongoDbDataSource;
 import com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore;
-import com.mongodb.Mongo;
+import com.dubious.itunes.statistics.store.mongodb.MongoDbStoreException;
 
 /**
  * Tests of {@link HistoryService#generateSnapshotHistory(java.util.List)}.
@@ -56,11 +56,11 @@ public class HistoryServiceSongHistoryTest {
     /**
      * Setup at the class level.
      * 
-     * @throws UnknownHostException On unexpected error.
+     * @throws MongoDbStoreException On unexpected error.
      */
     @BeforeClass
-    public static void beforeClass() throws UnknownHostException {
-        snapshotStore = new MongoDbSnapshotStore(new Mongo().getDB("someDb"));
+    public static void beforeClass() throws MongoDbStoreException {
+        snapshotStore = new MongoDbSnapshotStore(new MongoDbDataSource("localhost", "testdb"));
         snapshotService = new HistoryServiceImpl(snapshotStore);
     }
 

@@ -45,10 +45,10 @@ public class MongoDbSnapshotStore implements SnapshotStore {
     /**
      * Constructor.
      * 
-     * @param mongoDb The mongodb connection manager.
+     * @param mongoDbDataSource The mongodb data source.
      */
-    public MongoDbSnapshotStore(DB mongoDb) {
-        this.mongoDb = mongoDb;
+    public MongoDbSnapshotStore(MongoDbDataSource mongoDbDataSource) {
+        this.mongoDb = mongoDbDataSource.getDB();
         snapshotCollection = mongoDb.getCollection(SNAPSHOT_COLLECTION_NAME);
         snapshotCollection.setWriteConcern(WriteConcern.SAFE);
         songStatisticsCollection = mongoDb.getCollection(SONG_STATISTICS_COLLECTION_NAME);

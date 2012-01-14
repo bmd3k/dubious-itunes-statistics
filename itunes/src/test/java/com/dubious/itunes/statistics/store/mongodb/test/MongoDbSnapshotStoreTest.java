@@ -5,8 +5,6 @@ import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.net.UnknownHostException;
-
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -18,8 +16,9 @@ import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
 import com.dubious.itunes.statistics.store.SnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
+import com.dubious.itunes.statistics.store.mongodb.MongoDbDataSource;
 import com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore;
-import com.mongodb.Mongo;
+import com.dubious.itunes.statistics.store.mongodb.MongoDbStoreException;
 import com.mongodb.MongoException;
 
 /**
@@ -34,11 +33,11 @@ public class MongoDbSnapshotStoreTest {
     /**
      * Class-level setup.
      * 
-     * @throws UnknownHostException On unexpected error.
+     * @throws MongoDbStoreException On unexpected error.
      */
     @BeforeClass
-    public static void beforeClass() throws UnknownHostException {
-        snapshotStore = new MongoDbSnapshotStore(new Mongo().getDB("someDb"));
+    public static void beforeClass() throws MongoDbStoreException {
+        snapshotStore = new MongoDbSnapshotStore(new MongoDbDataSource("localhost", "testdb"));
     }
 
     /**
@@ -100,10 +99,11 @@ public class MongoDbSnapshotStoreTest {
                 new Snapshot()
                         .withName("A Snapshot")
                         .withDate(new DateTime())
-                        .addStatistic(new Song()
-                                .withArtistName("Artist")
-                                .withAlbumName("Album")
-                                .withName("Song"),
+                        .addStatistic(
+                                new Song()
+                                        .withArtistName("Artist")
+                                        .withAlbumName("Album")
+                                        .withName("Song"),
                                 new SongStatistics().withPlayCount(12));
         snapshotStore.writeSnapshot(snapshot);
 
@@ -122,20 +122,23 @@ public class MongoDbSnapshotStoreTest {
                 new Snapshot()
                         .withName("A Snapshot")
                         .withDate(new DateTime())
-                        .addStatistic(new Song()
-                                .withArtistName("Artist")
-                                .withAlbumName("Album")
-                                .withName("Song"),
+                        .addStatistic(
+                                new Song()
+                                        .withArtistName("Artist")
+                                        .withAlbumName("Album")
+                                        .withName("Song"),
                                 new SongStatistics().withPlayCount(12))
-                        .addStatistic(new Song()
-                                .withArtistName("Artist2")
-                                .withAlbumName("Album2")
-                                .withName("Song2"),
+                        .addStatistic(
+                                new Song()
+                                        .withArtistName("Artist2")
+                                        .withAlbumName("Album2")
+                                        .withName("Song2"),
                                 new SongStatistics().withPlayCount(1))
-                        .addStatistic(new Song()
-                                .withArtistName("Artist3")
-                                .withAlbumName("Album3")
-                                .withName("Song3"),
+                        .addStatistic(
+                                new Song()
+                                        .withArtistName("Artist3")
+                                        .withAlbumName("Album3")
+                                        .withName("Song3"),
                                 new SongStatistics().withPlayCount(500));
         snapshotStore.writeSnapshot(snapshot);
 
@@ -176,40 +179,45 @@ public class MongoDbSnapshotStoreTest {
                 new Snapshot()
                         .withName("Snapshot1")
                         .withDate(new DateTime())
-                        .addStatistic(new Song()
-                                .withArtistName("Artist")
-                                .withAlbumName("Album")
-                                .withName("Song"),
+                        .addStatistic(
+                                new Song()
+                                        .withArtistName("Artist")
+                                        .withAlbumName("Album")
+                                        .withName("Song"),
                                 new SongStatistics().withPlayCount(12));
         snapshotStore.writeSnapshot(snapshot1);
         Snapshot snapshot2 =
                 new Snapshot()
                         .withName("Snapshot2")
                         .withDate(yesterday)
-                        .addStatistic(new Song()
-                                .withArtistName("Artist1")
-                                .withAlbumName("Album1")
-                                .withName("Song1"),
+                        .addStatistic(
+                                new Song()
+                                        .withArtistName("Artist1")
+                                        .withAlbumName("Album1")
+                                        .withName("Song1"),
                                 new SongStatistics().withPlayCount(1))
-                        .addStatistic(new Song()
-                                .withArtistName("Artist2")
-                                .withAlbumName("Album2")
-                                .withName("Song2"),
+                        .addStatistic(
+                                new Song()
+                                        .withArtistName("Artist2")
+                                        .withAlbumName("Album2")
+                                        .withName("Song2"),
                                 new SongStatistics().withPlayCount(2));
         snapshotStore.writeSnapshot(snapshot2);
         Snapshot snapshot3 =
                 new Snapshot()
                         .withName("Snapshot3")
                         .withDate(yesterday)
-                        .addStatistic(new Song()
-                                .withArtistName("Artist1")
-                                .withAlbumName("Album1")
-                                .withName("Song2"),
+                        .addStatistic(
+                                new Song()
+                                        .withArtistName("Artist1")
+                                        .withAlbumName("Album1")
+                                        .withName("Song2"),
                                 new SongStatistics().withPlayCount(400))
-                        .addStatistic(new Song()
-                                .withArtistName("Artist3")
-                                .withAlbumName("Album3")
-                                .withName("Song3"),
+                        .addStatistic(
+                                new Song()
+                                        .withArtistName("Artist3")
+                                        .withAlbumName("Album3")
+                                        .withName("Song3"),
                                 new SongStatistics().withPlayCount(35));
         snapshotStore.writeSnapshot(snapshot3);
 
@@ -230,10 +238,11 @@ public class MongoDbSnapshotStoreTest {
         snapshotStore.writeSnapshot(new Snapshot()
                 .withName(snapshotName)
                 .withDate(new DateTime())
-                .addStatistic(new Song()
-                        .withArtistName("Artist")
-                        .withAlbumName("Album")
-                        .withName("Song"),
+                .addStatistic(
+                        new Song()
+                                .withArtistName("Artist")
+                                .withAlbumName("Album")
+                                .withName("Song"),
                         new SongStatistics().withPlayCount(1)));
         // sanity check
         assertNotNull(snapshotStore.getSnapshot(snapshotName));
@@ -252,12 +261,10 @@ public class MongoDbSnapshotStoreTest {
         String snapshotName1 = "Snapshot";
         String snapshotName2 = "Snapshot2";
 
-        snapshotStore.writeSnapshot(new Snapshot()
-                .withName(snapshotName1)
-                .withDate(new DateTime()));
-        snapshotStore.writeSnapshot(new Snapshot()
-                .withName(snapshotName2)
-                .withDate(new DateTime()));
+        snapshotStore.writeSnapshot(new Snapshot().withName(snapshotName1).withDate(
+                new DateTime()));
+        snapshotStore.writeSnapshot(new Snapshot().withName(snapshotName2).withDate(
+                new DateTime()));
         // sanity check
         assertNotNull(snapshotStore.getSnapshot(snapshotName1));
         assertNotNull(snapshotStore.getSnapshot(snapshotName2));
