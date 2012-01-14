@@ -21,49 +21,61 @@ import com.dubious.itunes.statistics.model.SongStatistics;
 public class AnalysisServiceImpl implements AnalysisService {
 
     @Override
-    public final void writeAnalysis(SnapshotsHistory history, String outputPath)
+    public final void writeAnalysis(final SnapshotsHistory history, String outputPath)
             throws StatisticsException {
-        writeAnalysis(history.getSnapshots(), history.getSongHistories(), outputPath);
+        writeAnalysis(history, outputPath, new Comparator<SongHistory>() {
+            @Override
+            public int compare(SongHistory songHistory1, SongHistory songHistory2) {
+                String latestSnapshot =
+                        history.getSnapshots().get(history.getSnapshots().size() - 1);
+
+                return calculatePlayDifference(
+                        songHistory1.getSongStatistics().get(latestSnapshot),
+                        songHistory2.getSongStatistics().get(latestSnapshot));
+            }
+        });
     }
 
     @Override
     public final void writeAnalysisOrderByDifference(
             final SnapshotsHistory history,
             String outputPath) throws StatisticsException {
-        // need to make a copy of the list to be sorted as the one passed to us is unmodifiable
-        List<SongHistory> sortedSongHistories =
-                new ArrayList<SongHistory>(history.getSongHistories());
-        Collections.sort(sortedSongHistories, new Comparator<SongHistory>() {
-
+        writeAnalysis(history, outputPath, new Comparator<SongHistory>() {
             @Override
             public int compare(SongHistory songHistory1, SongHistory songHistory2) {
-                return calculatePlayDifference(songHistory2,
+                return calculatePlayDifference(
+                        songHistory2,
                         history.getSnapshots().get(0),
                         history.getSnapshots().get(history.getSnapshots().size() - 1))
-                        - calculatePlayDifference(songHistory1,
+                        - calculatePlayDifference(
+                                songHistory1,
                                 history.getSnapshots().get(0),
                                 history.getSnapshots().get(history.getSnapshots().size() - 1));
             }
         });
-        writeAnalysis(history.getSnapshots(), sortedSongHistories, outputPath);
     }
 
     /**
      * Write analysis to file.
      * 
-     * @param snapshots The snapshots to consider in the analysis.
-     * @param songHistories The histories to use in the analysis.
+     * @param history The history data for which to write the analysis.
      * @param outputPath The file output path.
+     * @param comparator Describes how to sort the songs in the output of the analysis.
      * @throws StatisticsException On error.
      */
     private void writeAnalysis(
-            List<String> snapshots,
-            List<SongHistory> songHistories,
-            String outputPath) throws StatisticsException {
+            SnapshotsHistory history,
+            String outputPath,
+            Comparator<SongHistory> comparator) throws StatisticsException {
+        List<SongHistory> sortedSongHistories =
+                new ArrayList<SongHistory>(history.getSongHistories());
+        Collections.sort(sortedSongHistories, comparator);
+
         try {
-            writeLines(new File(outputPath),
+            writeLines(
+                    new File(outputPath),
                     "UTF-8",
-                    getDataToWrite(snapshots, songHistories),
+                    getDataToWrite(history.getSnapshots(), sortedSongHistories),
                     false);
         } catch (IOException t) {
             throw new FileCouldNotBeWrittenException(outputPath, t);
@@ -100,7 +112,8 @@ public class AnalysisServiceImpl implements AnalysisService {
             int totalDifference = 0;
             for (index = 1; index < snapshots.size(); index++) {
                 int difference =
-                        calculatePlayDifference(songHistory,
+                        calculatePlayDifference(
+                                songHistory,
                                 snapshots.get(index - 1),
                                 snapshots.get(index));
                 totalDifference += difference;
@@ -137,9 +150,19 @@ public class AnalysisServiceImpl implements AnalysisService {
             SongHistory songHistory,
             String earliestSnapshot,
             String latestSnapshot) {
-        SongStatistics earliest = songHistory.getSongStatistics().get(earliestSnapshot);
-        SongStatistics latest = songHistory.getSongStatistics().get(latestSnapshot);
+        return calculatePlayDifference(
+                songHistory.getSongStatistics().get(earliestSnapshot),
+                songHistory.getSongStatistics().get(latestSnapshot));
+    }
 
+    /**
+     * Calculate the play difference between two song statistics.
+     * 
+     * @param earliest The earliest statistics to consider.
+     * @param latest The latest statistics to consider.
+     * @return The difference in play counts between the earliest and latest statistics.
+     */
+    private int calculatePlayDifference(SongStatistics earliest, SongStatistics latest) {
         if (earliest != null && latest != null) {
             return latest.getPlayCount() - earliest.getPlayCount();
         } else if (latest != null) {

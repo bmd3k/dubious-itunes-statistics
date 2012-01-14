@@ -29,9 +29,9 @@ import com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore;
 import com.mongodb.Mongo;
 
 /**
- * Tests of the {@link HistoryService}.
+ * Tests of {@link HistoryService#generateSnapshotHistory(java.util.List)}.
  */
-public class HistoryServiceTest {
+public class HistoryServiceSnapshotHistoryTest {
 
     private static SnapshotStore snapshotStore;
     private static HistoryService snapshotService;
@@ -84,7 +84,9 @@ public class HistoryServiceTest {
     @Test
     public final void testSnapshotDoesNotExist() throws StatisticsException {
         try {
-            snapshotService.compareSnapshots(asList("091201 - Music.txt", "111201 - Music.txt"));
+            snapshotService.generateSnapshotHistory(asList(
+                    "091201 - Music.txt",
+                    "111201 - Music.txt"));
             fail("expected exception not thrown");
         } catch (SnapshotDoesNotExistException e) {
             assertEquals(e, new SnapshotDoesNotExistException("091201 - Music.txt"));
@@ -99,10 +101,11 @@ public class HistoryServiceTest {
     @Test
     public final void testWithNoSnapshots() throws StatisticsException {
         try {
-            snapshotService.compareSnapshots(Collections.<String>emptyList());
+            snapshotService.generateSnapshotHistory(Collections.<String>emptyList());
             fail("expected exception not thrown");
         } catch (InsufficientSnapshotsSpecifiedException e) {
-            assertEquals(e,
+            assertEquals(
+                    e,
                     new InsufficientSnapshotsSpecifiedException(2, Collections
                             .<String>emptyList()));
         }
@@ -116,10 +119,11 @@ public class HistoryServiceTest {
     @Test
     public final void testWith1Snapshot() throws StatisticsException {
         try {
-            snapshotService.compareSnapshots(asList("111201 - Music.txt"));
+            snapshotService.generateSnapshotHistory(asList("111201 - Music.txt"));
             fail("expected exception not thrown");
         } catch (InsufficientSnapshotsSpecifiedException e) {
-            assertEquals(e, new InsufficientSnapshotsSpecifiedException(2,
+            assertEquals(e, new InsufficientSnapshotsSpecifiedException(
+                    2,
                     asList("111201 - Music.txt")));
         }
     }
@@ -161,7 +165,7 @@ public class HistoryServiceTest {
                                 .withSong(song3)
                                 .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(55))
                                 .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(58))),
-                snapshotService.compareSnapshots(asList(snapshot1, snapshot2)));
+                snapshotService.generateSnapshotHistory(asList(snapshot1, snapshot2)));
         //@formatter:on
     }
 
@@ -211,7 +215,7 @@ public class HistoryServiceTest {
                                 .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(56))
                                 .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(59))
                                 .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(59))),
-                snapshotService.compareSnapshots(asList(snapshot1, snapshot2, snapshot3)));
+                snapshotService.generateSnapshotHistory(asList(snapshot1, snapshot2, snapshot3)));
         //@formatter:on
     }
 
@@ -249,7 +253,7 @@ public class HistoryServiceTest {
                                 .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(61))
                                 .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(62))
                                 .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(64))),
-                snapshotService.compareSnapshots(asList(snapshot1, snapshot2, snapshot3)));
+                snapshotService.generateSnapshotHistory(asList(snapshot1, snapshot2, snapshot3)));
         //@formatter:on
     }
 
@@ -301,7 +305,7 @@ public class HistoryServiceTest {
                                 .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(15))
                                 .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(17))
                                 .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(18))),
-                snapshotService.compareSnapshots(asList(snapshot1, snapshot2, snapshot3)));
+                snapshotService.generateSnapshotHistory(asList(snapshot1, snapshot2, snapshot3)));
         //@formatter:on
     }
 
@@ -330,7 +334,7 @@ public class HistoryServiceTest {
                                 .withSong(song1)
                                 .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(9))
                                 .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(10))),
-                snapshotService.compareSnapshots(asList(snapshot1, snapshot2)));
+                snapshotService.generateSnapshotHistory(asList(snapshot1, snapshot2)));
         //@formatter:on
     }
 }

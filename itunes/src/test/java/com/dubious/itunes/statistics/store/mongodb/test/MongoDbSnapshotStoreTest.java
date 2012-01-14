@@ -3,6 +3,7 @@ package com.dubious.itunes.statistics.store.mongodb.test;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.net.UnknownHostException;
 
@@ -19,6 +20,7 @@ import com.dubious.itunes.statistics.store.SnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
 import com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore;
 import com.mongodb.Mongo;
+import com.mongodb.MongoException;
 
 /**
  * Tests for MongoDb snapshot store.
@@ -149,39 +151,18 @@ public class MongoDbSnapshotStoreTest {
      */
     @Test
     public final void testWriteSnapshotMultipleTimes() throws StoreException {
-        Snapshot snapshot1 =
-                new Snapshot()
-                        .withName("Snapshot")
-                        .withDate(new DateTime())
-                        .addStatistic(new Song()
-                                .withArtistName("Artist")
-                                .withAlbumName("Album")
-                                .withName("Song"),
-                                new SongStatistics().withPlayCount(12));
-        snapshotStore.writeSnapshot(snapshot1);
+        Snapshot snapshot = new Snapshot().withName("Snapshot").withDate(new DateTime());
+        snapshotStore.writeSnapshot(snapshot);
 
-        Snapshot snapshotGet1 = snapshotStore.getSnapshot("Snapshot");
-        assertEquals(snapshot1, snapshotGet1);
+        try {
+            snapshotStore.writeSnapshot(new Snapshot().withName("Snapshot").withDate(yesterday));
+            fail("expected exception not thrown");
+        } catch (MongoException.DuplicateKey e) {
+            // expected this exception
+        }
 
-        Snapshot snapshot2 =
-                new Snapshot()
-                        .withName("Snapshot")
-                        .withDate(yesterday)
-                        .addStatistic(new Song()
-                                .withArtistName("Artist Updated")
-                                .withAlbumName("Album Updated")
-                                .withName("Song Updated"),
-                                new SongStatistics().withPlayCount(5))
-                        .addStatistic(new Song()
-                                .withArtistName("Artist")
-                                .withAlbumName("Album")
-                                .withName("Song"),
-                                new SongStatistics().withPlayCount(13));
-        snapshotStore.writeSnapshot(snapshot2);
-
-        // attempts to overwrite fail quietly
-        Snapshot snapshotGet2 = snapshotStore.getSnapshot("Snapshot");
-        assertEquals(snapshot1, snapshotGet2);
+        Snapshot snapshotGet = snapshotStore.getSnapshot("Snapshot");
+        assertEquals(snapshot, snapshotGet);
     }
 
     /**

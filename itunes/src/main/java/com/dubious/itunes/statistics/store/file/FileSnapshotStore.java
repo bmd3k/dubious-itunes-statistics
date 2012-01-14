@@ -4,6 +4,8 @@ import static org.apache.commons.io.FileUtils.lineIterator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.LineIterator;
 import org.joda.time.DateTime;
@@ -12,13 +14,13 @@ import org.joda.time.format.DateTimeFormat;
 import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
-import com.dubious.itunes.statistics.store.ReadOnlySnapshotStore;
+import com.dubious.itunes.statistics.store.SnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
 
 /**
  * File-based storage of snapshots.
  */
-public class FileSnapshotStore implements ReadOnlySnapshotStore {
+public class FileSnapshotStore implements SnapshotStore {
 
     private FileStoreProperties fileStoreProperties;
 
@@ -62,7 +64,8 @@ public class FileSnapshotStore implements ReadOnlySnapshotStore {
 
             // assume that the snapshot date is written in the first 6 characters of the name
             DateTime snapshotDate =
-                    DateTime.parse(snapshotName.substring(0, 6),
+                    DateTime.parse(
+                            snapshotName.substring(0, 6),
                             DateTimeFormat.forPattern("yyMMdd"));
             Snapshot snapshot = new Snapshot().withName(snapshotName).withDate(snapshotDate);
 
@@ -125,10 +128,11 @@ public class FileSnapshotStore implements ReadOnlySnapshotStore {
      */
     private StatisticsFromLine generateSongStatisticsFromLine(String line) {
         String[] columns = line.split("\t", -1);
-        return new StatisticsFromLine(new Song()
-                .withArtistName(columns[COLUMN_INDEX_ARTIST_NAME])
-                .withAlbumName(columns[COLUMN_INDEX_ALBUM_NAME])
-                .withName(columns[COLUMN_INDEX_SONG_NAME]),
+        return new StatisticsFromLine(
+                new Song()
+                        .withArtistName(columns[COLUMN_INDEX_ARTIST_NAME])
+                        .withAlbumName(columns[COLUMN_INDEX_ALBUM_NAME])
+                        .withName(columns[COLUMN_INDEX_SONG_NAME]),
                 new SongStatistics().withPlayCount(Integer
                         .parseInt(columns[COLUMN_INDEX_PLAY_COUNT].length() == 0 ? "0"
                                 : columns[COLUMN_INDEX_PLAY_COUNT])));
@@ -151,6 +155,31 @@ public class FileSnapshotStore implements ReadOnlySnapshotStore {
             this.song = song;
             this.songStatistics = songStatistics;
         }
+    }
+
+    @Override
+    public final Map<String, Snapshot> getSnapshotsWithoutStatistics(List<String> snapshotNames) {
+        throw new UnsupportedOperationException("Not Supported");
+    }
+
+    @Override
+    public final Map<String, SongStatistics> getSongStatisticsFromSnapshots(
+            String artistName,
+            String albumName,
+            String songName,
+            List<String> snapshotNames) {
+        throw new UnsupportedOperationException("Not Supported");
+    }
+
+    @Override
+    public final void writeSnapshot(Snapshot snapshot) throws StoreException {
+        throw new UnsupportedOperationException("Not Supported");
+
+    }
+
+    @Override
+    public final void deleteAll() throws StoreException {
+        throw new UnsupportedOperationException("Not Supported");
     }
 
 }

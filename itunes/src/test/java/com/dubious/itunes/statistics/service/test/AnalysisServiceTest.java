@@ -123,7 +123,7 @@ public class AnalysisServiceTest {
     @Test
     public final void testWriteAnalysisWithTwoSnapshots() throws StatisticsException,
             IOException {
-        analysisService.writeAnalysis(snapshotService.compareSnapshots(asList(snapshot3,
+        analysisService.writeAnalysis(snapshotService.generateSnapshotHistory(asList(snapshot3,
                 snapshot4)), "test_files/output/output.txt");
 
         assertEquals(readLines(new File(
@@ -141,7 +141,7 @@ public class AnalysisServiceTest {
     @Test
     public final void testWriteAnalysisWithManySnapshots() throws StatisticsException,
             IOException {
-        analysisService.writeAnalysis(snapshotService.compareSnapshots(asList(snapshot1,
+        analysisService.writeAnalysis(snapshotService.generateSnapshotHistory(asList(snapshot1,
                 snapshot2,
                 snapshot3,
                 snapshot4)), "test_files/output/output.txt");
@@ -163,7 +163,7 @@ public class AnalysisServiceTest {
     public final void testWriteAnalysisOrderByDifference() throws StatisticsException,
             IOException {
         analysisService.writeAnalysisOrderByDifference(snapshotService
-                .compareSnapshots(asList(snapshot1, snapshot2, snapshot3, snapshot4)),
+                .generateSnapshotHistory(asList(snapshot1, snapshot2, snapshot3, snapshot4)),
                 "test_files/output/output.txt");
 
         assertEquals(readLines(new File(

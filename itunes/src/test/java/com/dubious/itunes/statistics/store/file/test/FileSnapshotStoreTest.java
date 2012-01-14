@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
-import com.dubious.itunes.statistics.store.ReadOnlySnapshotStore;
+import com.dubious.itunes.statistics.store.SnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
 import com.dubious.itunes.statistics.store.file.FileSnapshotStore;
 import com.dubious.itunes.statistics.store.file.FileStoreProperties;
@@ -20,7 +20,7 @@ import com.dubious.itunes.statistics.store.file.FileStoreProperties;
 public class FileSnapshotStoreTest {
 
     private static FileStoreProperties fileStoreProperties;
-    private static ReadOnlySnapshotStore snapshotFileStore;
+    private static SnapshotStore snapshotFileStore;
 
     /**
      * Setup at the class level.
