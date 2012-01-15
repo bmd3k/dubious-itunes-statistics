@@ -5,6 +5,9 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean name="/snapshot/updateSnapshots.do" class="com.dubious.itunes.web.UpdateSnapshotsController"/>
-    
+    <import resource="classpath:com/dubious/itunes/itunes-context.xml"/>
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:com/dubious/itunes/test/itunes.properties"/>
+    </bean>    
 </beans>

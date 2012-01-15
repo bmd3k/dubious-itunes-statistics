@@ -5,40 +5,34 @@ import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import javax.annotation.Resource;
+
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
 import com.dubious.itunes.statistics.store.SnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
-import com.dubious.itunes.statistics.store.mongodb.MongoDbDataSource;
-import com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore;
-import com.dubious.itunes.statistics.store.mongodb.MongoDbStoreException;
 import com.mongodb.MongoException;
 
 /**
  * Tests for MongoDb snapshot store.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:com/dubious/itunes/test/itunes-test-context.xml" })
 public class MongoDbSnapshotStoreTest {
 
-    private static SnapshotStore snapshotStore;
+    @Resource(name = "mongoDbSnapshotStore")
+    private SnapshotStore snapshotStore;
 
     private DateTime yesterday = new DateMidnight().minusDays(1).toDateTime();
-
-    /**
-     * Class-level setup.
-     * 
-     * @throws MongoDbStoreException On unexpected error.
-     */
-    @BeforeClass
-    public static void beforeClass() throws MongoDbStoreException {
-        snapshotStore = new MongoDbSnapshotStore(new MongoDbDataSource("localhost", "testdb"));
-    }
 
     /**
      * Tear down tests.

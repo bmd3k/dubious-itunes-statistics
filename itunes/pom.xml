@@ -7,9 +7,12 @@
   <version>1.0-SNAPSHOT</version>
   <name>itunes</name>
   <url>http://maven.apache.org</url>
+  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
   </properties>
+  
   <dependencies>
     <dependency>
       <groupId>commons-io</groupId>
@@ -40,6 +43,17 @@
       <artifactId>mongo-java-driver</artifactId> 
       <version>2.7.2</version>
       <scope>compile</scope>   
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${org.springframework.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${org.springframework.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>

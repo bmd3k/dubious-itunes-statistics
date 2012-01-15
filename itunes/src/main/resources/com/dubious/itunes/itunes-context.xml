@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean name="analysisService" class="com.dubious.itunes.statistics.service.AnalysisServiceImpl">
+    </bean>
+
+    <bean name="historyService" class="com.dubious.itunes.statistics.service.HistoryServiceImpl">
+        <constructor-arg name="snapshotStore" ref="mongoDbSnapshotStore"/>
+    </bean>
+    
+    <bean name="mongoDbSnapshotStore" class="com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore">
+        <constructor-arg name="mongoDbDataSource" ref="mongoDbDataSource"/>
+    </bean>
+    
+    <bean name="mongoDbDataSource" class="com.dubious.itunes.statistics.store.mongodb.MongoDbDataSource">
+        <constructor-arg name="host" value="${store.mongodb.host}"/>
+        <constructor-arg name="dbName" value="${store.mongodb.db.name}"/>
+    </bean>
+    
+    <bean name="fileSnapshotStore" class="com.dubious.itunes.statistics.store.file.FileSnapshotStore">
+        <constructor-arg name="fileStoreProperties" ref="fileStoreProperties"/>
+    </bean>
+    
+    <bean name="fileStoreProperties" class="com.dubious.itunes.statistics.store.file.FileStoreProperties">
+        <constructor-arg name="fileStorePath" value="${store.file.path}"/>
+        <constructor-arg name="charset" value="${store.file.charset}"/>
+    </bean>
+    
+</beans>

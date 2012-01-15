@@ -2,34 +2,29 @@ package com.dubious.itunes.statistics.store.file.test;
 
 import static junit.framework.Assert.assertEquals;
 
+import javax.annotation.Resource;
+
 import org.joda.time.DateTime;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
 import com.dubious.itunes.statistics.store.SnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
-import com.dubious.itunes.statistics.store.file.FileSnapshotStore;
-import com.dubious.itunes.statistics.store.file.FileStoreProperties;
 
 /**
- * Tests of {@link FileSnapshotStore}.
+ * Tests of {@link com.dubious.itunes.statistics.store.file.FileSnapshotStore}.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:com/dubious/itunes/test/itunes-test-context.xml" })
 public class FileSnapshotStoreTest {
 
-    private static FileStoreProperties fileStoreProperties;
-    private static SnapshotStore snapshotFileStore;
-
-    /**
-     * Setup at the class level.
-     */
-    @BeforeClass
-    public static void beforeClass() {
-        fileStoreProperties = new FileStoreProperties("test_files", "UTF-16");
-        snapshotFileStore = new FileSnapshotStore(fileStoreProperties);
-    }
+    @Resource(name = "fileSnapshotStore")
+    private SnapshotStore fileSnapshotStore;
 
     /**
      * Test loading a snapshot from file store.
@@ -38,6 +33,7 @@ public class FileSnapshotStoreTest {
      */
     @Test
     public final void testFileStore() throws StoreException {
+        //@formatter:off
         assertEquals(new Snapshot()
                 .withName("111201 - Music.txt")
                 .withDate(new DateTime(2011, 12, 1, 0, 0))
@@ -56,7 +52,8 @@ public class FileSnapshotStoreTest {
                         .withAlbumName("You're A Woman I'm A Machine")
                         .withName("Going Steady"),
                         new SongStatistics().withPlayCount(55)),
-                snapshotFileStore.getSnapshot("111201 - Music.txt"));
+                fileSnapshotStore.getSnapshot("111201 - Music.txt"));
+        //@formatter:on
     }
 
     /**
@@ -67,6 +64,7 @@ public class FileSnapshotStoreTest {
      */
     @Test
     public final void testWithPlayCountColumn() throws StoreException {
+        //@formatter:off
         assertEquals(new Snapshot()
                 .withName("101130 - Music.txt")
                 .withDate(new DateTime(2010, 11, 30, 0, 0))
@@ -80,7 +78,8 @@ public class FileSnapshotStoreTest {
                         .withAlbumName("You're A Woman I'm A Machine")
                         .withName("Going Steady"),
                         new SongStatistics().withPlayCount(30)),
-                snapshotFileStore.getSnapshot("101130 - Music.txt"));
+                fileSnapshotStore.getSnapshot("101130 - Music.txt"));
+        //@formatter:on
     }
 
     /**
@@ -90,6 +89,7 @@ public class FileSnapshotStoreTest {
      */
     @Test
     public final void testWithEmptyPlayCount() throws StoreException {
+        //@formatter:off
         assertEquals(new Snapshot()
                 .withName("091130 - Music.txt")
                 .withDate(new DateTime(2009, 11, 30, 0, 0))
@@ -103,6 +103,7 @@ public class FileSnapshotStoreTest {
                         .withAlbumName("You're A Woman I'm A Machine")
                         .withName("Going Steady"),
                         new SongStatistics().withPlayCount(0)),
-                snapshotFileStore.getSnapshot("091130 - Music.txt"));
+                fileSnapshotStore.getSnapshot("091130 - Music.txt"));
+        //@formatter:on
     }
 }

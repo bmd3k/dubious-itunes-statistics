@@ -6,11 +6,15 @@ import static org.junit.Assert.fail;
 
 import java.util.Collections;
 
+import javax.annotation.Resource;
+
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.exception.InsufficientSnapshotsSpecifiedException;
@@ -21,20 +25,20 @@ import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongHistory;
 import com.dubious.itunes.statistics.model.SongStatistics;
 import com.dubious.itunes.statistics.service.HistoryService;
-import com.dubious.itunes.statistics.service.HistoryServiceImpl;
 import com.dubious.itunes.statistics.store.SnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
-import com.dubious.itunes.statistics.store.mongodb.MongoDbDataSource;
-import com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore;
-import com.dubious.itunes.statistics.store.mongodb.MongoDbStoreException;
 
 /**
  * Tests of {@link HistoryService#generateSnapshotHistory(java.util.List)}.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:com/dubious/itunes/test/itunes-test-context.xml" })
 public class HistoryServiceSongHistoryTest {
 
-    private static SnapshotStore snapshotStore;
-    private static HistoryService snapshotService;
+    @Resource(name = "mongoDbSnapshotStore")
+    private SnapshotStore snapshotStore;
+    @Resource(name = "historyService")
+    private HistoryService historyService;
 
     private String snapshot1 = "snapshot1";
     private String snapshot2 = "snapshot2";
@@ -54,17 +58,6 @@ public class HistoryServiceSongHistoryTest {
             .withName("Mass Romantic");
 
     /**
-     * Setup at the class level.
-     * 
-     * @throws MongoDbStoreException On unexpected error.
-     */
-    @BeforeClass
-    public static void beforeClass() throws MongoDbStoreException {
-        snapshotStore = new MongoDbSnapshotStore(new MongoDbDataSource("localhost", "testdb"));
-        snapshotService = new HistoryServiceImpl(snapshotStore);
-    }
-
-    /**
      * Tear down tests.
      * 
      * @throws StoreException On unexpected error.
@@ -82,7 +75,7 @@ public class HistoryServiceSongHistoryTest {
     @Test
     public final void testWithNoSnapshots() throws StatisticsException {
         try {
-            snapshotService.generateSongHistory(
+            historyService.generateSongHistory(
                     song1.getArtistName(),
                     song1.getAlbumName(),
                     song1.getName(),
@@ -104,7 +97,7 @@ public class HistoryServiceSongHistoryTest {
     @Test
     public final void testWith1Snapshot() throws StatisticsException {
         try {
-            snapshotService.generateSongHistory(
+            historyService.generateSongHistory(
                     song1.getArtistName(),
                     song1.getAlbumName(),
                     song1.getName(),
@@ -123,7 +116,7 @@ public class HistoryServiceSongHistoryTest {
     @Test
     public final void testSnapshotDoesNotExist() throws StatisticsException {
         try {
-            snapshotService.generateSongHistory(
+            historyService.generateSongHistory(
                     song1.getArtistName(),
                     song1.getAlbumName(),
                     song1.getName(),
@@ -148,7 +141,7 @@ public class HistoryServiceSongHistoryTest {
         snapshotStore.writeSnapshot(new Snapshot().withName(snapshot2).withDate(december1));
 
         try {
-            snapshotService.generateSongHistory(
+            historyService.generateSongHistory(
                     song1.getArtistName(),
                     song1.getAlbumName(),
                     song1.getName(),
@@ -184,7 +177,7 @@ public class HistoryServiceSongHistoryTest {
                         .withSong(song1)
                         .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(5))
                         .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(8)),
-                snapshotService.generateSongHistory(
+                historyService.generateSongHistory(
                         song1.getArtistName(),
                         song1.getAlbumName(),
                         song1.getName(),
@@ -223,7 +216,7 @@ public class HistoryServiceSongHistoryTest {
                         .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(8))
                         .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(8))
                         .addSongStatistics(snapshot4, new SongStatistics().withPlayCount(9)),
-                snapshotService.generateSongHistory(
+                historyService.generateSongHistory(
                         song1.getArtistName(),
                         song1.getAlbumName(),
                         song1.getName(),
@@ -235,7 +228,7 @@ public class HistoryServiceSongHistoryTest {
                         .withSong(song1)
                         .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(5))
                         .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(8)),
-                snapshotService.generateSongHistory(
+                historyService.generateSongHistory(
                         song1.getArtistName(),
                         song1.getAlbumName(),
                         song1.getName(),
@@ -278,7 +271,7 @@ public class HistoryServiceSongHistoryTest {
                         .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(8))
                         .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(8))
                         .addSongStatistics(snapshot4, new SongStatistics().withPlayCount(9)),
-                snapshotService.generateSongHistory(
+                historyService.generateSongHistory(
                         song1.getArtistName(),
                         song1.getAlbumName(),
                         song1.getName(),
@@ -291,7 +284,7 @@ public class HistoryServiceSongHistoryTest {
                         .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(3))
                         .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(6))
                         .addSongStatistics(snapshot4, new SongStatistics().withPlayCount(12)),
-                snapshotService.generateSongHistory(
+                historyService.generateSongHistory(
                         song2.getArtistName(),
                         song2.getAlbumName(),
                         song2.getName(),
@@ -327,7 +320,7 @@ public class HistoryServiceSongHistoryTest {
                         .addSongStatistics(snapshot2, null)
                         .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(8))
                         .addSongStatistics(snapshot4, new SongStatistics().withPlayCount(9)),
-                snapshotService.generateSongHistory(
+                historyService.generateSongHistory(
                         song1.getArtistName(),
                         song1.getAlbumName(),
                         song1.getName(),
@@ -356,7 +349,7 @@ public class HistoryServiceSongHistoryTest {
                         .withSong(song1)
                         .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(9))
                         .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(10)),
-                snapshotService.generateSongHistory(song1.getArtistName(),
+                historyService.generateSongHistory(song1.getArtistName(),
                         song1.getAlbumName(),
                         song1.getName(),
                         asList(snapshot1, snapshot2)));

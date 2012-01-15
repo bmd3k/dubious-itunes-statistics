@@ -8,34 +8,38 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 
+import javax.annotation.Resource;
+
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.exception.StatisticsException;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
 import com.dubious.itunes.statistics.service.AnalysisService;
-import com.dubious.itunes.statistics.service.AnalysisServiceImpl;
 import com.dubious.itunes.statistics.service.HistoryService;
-import com.dubious.itunes.statistics.service.HistoryServiceImpl;
 import com.dubious.itunes.statistics.store.SnapshotStore;
-import com.dubious.itunes.statistics.store.mongodb.MongoDbDataSource;
-import com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore;
-import com.dubious.itunes.statistics.store.mongodb.MongoDbStoreException;
 
 /**
  * Tests for the {@link AnalysisService}.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:com/dubious/itunes/test/itunes-test-context.xml" })
 public class AnalysisServiceTest {
 
-    private static SnapshotStore snapshotStore;
-    private static HistoryService snapshotService;
-    private static AnalysisService analysisService;
+    @Resource(name = "mongoDbSnapshotStore")
+    private SnapshotStore snapshotStore;
+    @Resource(name = "historyService")
+    private HistoryService historyService;
+    @Resource(name = "analysisService")
+    private AnalysisService analysisService;
 
     private String snapshot1 = "snapshot1";
     private String snapshot2 = "snapshot2";
@@ -57,18 +61,6 @@ public class AnalysisServiceTest {
             .withArtistName("Death From Above 1979")
             .withAlbumName("You're A Woman I'm A Machine")
             .withName("Going Steady");
-
-    /**
-     * Setup at the class level.
-     * 
-     * @throws MongoDbStoreException On unexpected error.
-     */
-    @BeforeClass
-    public static void beforeClass() throws MongoDbStoreException {
-        snapshotStore = new MongoDbSnapshotStore(new MongoDbDataSource("localhost", "testdb"));
-        snapshotService = new HistoryServiceImpl(snapshotStore);
-        analysisService = new AnalysisServiceImpl();
-    }
 
     /**
      * Setup of tests.
@@ -124,7 +116,7 @@ public class AnalysisServiceTest {
     public final void testWriteAnalysisWithTwoSnapshots() throws StatisticsException,
             IOException {
         analysisService.writeAnalysis(
-                snapshotService.generateSnapshotHistory(asList(snapshot3, snapshot4)),
+                historyService.generateSnapshotHistory(asList(snapshot3, snapshot4)),
                 "test_files/output/output.txt");
 
         //@formatter:off
@@ -144,7 +136,7 @@ public class AnalysisServiceTest {
     @Test
     public final void testWriteAnalysisWithManySnapshots() throws StatisticsException,
             IOException {
-        analysisService.writeAnalysis(snapshotService.generateSnapshotHistory(asList(
+        analysisService.writeAnalysis(historyService.generateSnapshotHistory(asList(
                 snapshot1,
                 snapshot2,
                 snapshot3,
@@ -169,7 +161,7 @@ public class AnalysisServiceTest {
     public final void testWriteAnalysisOrderByDifference() throws StatisticsException,
             IOException {
         analysisService.writeAnalysisOrderByDifference(
-                snapshotService.generateSnapshotHistory(asList(
+                historyService.generateSnapshotHistory(asList(
                         snapshot1,
                         snapshot2,
                         snapshot3,
