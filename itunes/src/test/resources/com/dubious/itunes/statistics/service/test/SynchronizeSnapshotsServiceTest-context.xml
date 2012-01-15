@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <import resource="classpath:com/dubious/itunes/test/itunes-test-context.xml"/>
+    
+    <bean name="testSnapshotSynchronizeService" 
+        class="com.dubious.itunes.statistics.service.SnapshotSynchronizeServiceImpl">
+        <constructor-arg name="sourceSnapshotStore" ref="testSourceMongoDbSnapshotStore"/>
+        <constructor-arg name="targetSnapshotStore" ref="mongoDbSnapshotStore"/>
+    </bean>
+    
+    <bean id="testSourceMongoDbSnapshotStore" parent="mongoDbSnapshotStore">
+        <constructor-arg name="mongoDbDataSource" ref="testSourceMongoDbDataSource"/>
+    </bean>  
+    
+    <bean name="testSourceMongoDbDataSource" parent="mongoDbDataSource">
+        <constructor-arg name="dbName" value="${store.mongodb.db.name}-2"/>
+    </bean>
+</beans>

@@ -57,9 +57,10 @@ public class MongoDbSnapshotStore implements SnapshotStore {
 
     @Override
     public final Snapshot getSnapshot(String snapshotName) throws StoreException {
-        BasicDBObject query = new BasicDBObject();
-        query.put(SNAPSHOT_NAME, snapshotName);
-        DBCursor resultSet = snapshotCollection.find(query);
+        DBCursor resultSet =
+                snapshotCollection.find(new BasicDBObjectBuilder().add(
+                        SNAPSHOT_NAME,
+                        snapshotName).get());
 
         BasicDBObject snapshotDoc =
                 resultSet.hasNext() ? (BasicDBObject) resultSet.next() : null;
@@ -71,10 +72,23 @@ public class MongoDbSnapshotStore implements SnapshotStore {
         }
 
         Snapshot snapshot = constructSnapshotFromDBObject(snapshotDoc);
-
         getSongStatistics(snapshot);
-
         return snapshot;
+    }
+
+    @Override
+    public final List<Snapshot> getSnapshots() {
+        DBCursor resultSet =
+                snapshotCollection.find().sort(
+                        new BasicDBObjectBuilder().add(SNAPSHOT_DATE, 1).get());
+
+        List<Snapshot> snapshots = new ArrayList<Snapshot>(resultSet.size());
+        while (resultSet.hasNext()) {
+            Snapshot snapshot = constructSnapshotFromDBObject((BasicDBObject) resultSet.next());
+            getSongStatistics(snapshot);
+            snapshots.add(snapshot);
+        }
+        return snapshots;
     }
 
     /**
@@ -202,6 +216,19 @@ public class MongoDbSnapshotStore implements SnapshotStore {
             snapshots.put(snapshot.getName(), snapshot);
         }
 
+        return snapshots;
+    }
+
+    @Override
+    public final List<Snapshot> getSnapshotsWithoutStatistics() {
+        DBCursor resultSet =
+                snapshotCollection.find().sort(
+                        new BasicDBObjectBuilder().add(SNAPSHOT_DATE, 1).get());
+
+        List<Snapshot> snapshots = new ArrayList<Snapshot>(resultSet.size());
+        while (resultSet.hasNext()) {
+            snapshots.add(constructSnapshotFromDBObject((BasicDBObject) resultSet.next()));
+        }
         return snapshots;
     }
 

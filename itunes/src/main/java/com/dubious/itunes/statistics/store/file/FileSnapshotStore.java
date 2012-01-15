@@ -1,13 +1,19 @@
 package com.dubious.itunes.statistics.store.file;
 
 import static org.apache.commons.io.FileUtils.lineIterator;
+import static org.apache.commons.io.FileUtils.listFiles;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -36,6 +42,8 @@ public class FileSnapshotStore implements SnapshotStore {
     private static final String COLUMN_PLAYS = "Plays";
     private static final String COLUMN_PLAY_COUNT = "Play Count";
 
+    private static final String MATCHING_FILE_PATTERN = "\\d\\d\\d\\d\\d\\d - Music.txt";
+
     /**
      * Constructor.
      * 
@@ -62,12 +70,7 @@ public class FileSnapshotStore implements SnapshotStore {
                 return null;
             }
 
-            // assume that the snapshot date is written in the first 6 characters of the name
-            DateTime snapshotDate =
-                    DateTime.parse(
-                            snapshotName.substring(0, 6),
-                            DateTimeFormat.forPattern("yyMMdd"));
-            Snapshot snapshot = new Snapshot().withName(snapshotName).withDate(snapshotDate);
+            Snapshot snapshot = getSnapshotBase(snapshotFile.getName());
 
             // first line is the header, which we use as a bit of a sanity
             if (!lines.hasNext()) {
@@ -93,6 +96,75 @@ public class FileSnapshotStore implements SnapshotStore {
                 lines.close();
             }
         }
+    }
+
+    @Override
+    public final List<Snapshot> getSnapshots() throws StoreException {
+        try {
+            List<Snapshot> snapshots = new ArrayList<Snapshot>();
+            for (File snapshotFile : listSnapshotFiles()) {
+                snapshots.add(getSnapshot(snapshotFile.getName()));
+            }
+
+            sortByDate(snapshots);
+            return snapshots;
+        } catch (FileStoreException e) {
+            throw e;
+        } catch (Throwable t) {
+            throw new FileStoreException("Unexpected error in file store.", t);
+        }
+    }
+
+    @Override
+    public final List<Snapshot> getSnapshotsWithoutStatistics() throws StoreException {
+        try {
+            // find the files in the file store directory that are snapshots
+            List<Snapshot> snapshots = new ArrayList<Snapshot>();
+            for (File snapshotFile : listSnapshotFiles()) {
+                snapshots.add(getSnapshotBase(snapshotFile.getName()));
+            }
+
+            sortByDate(snapshots);
+            return snapshots;
+        } catch (Throwable t) {
+            throw new FileStoreException("Unexpected error in file store.", t);
+        }
+    }
+
+    /**
+     * List all snapshot files in the file store.
+     * 
+     * @return All snapshot files in the file store.
+     */
+    private Collection<File> listSnapshotFiles() {
+        return listFiles(new File(fileStoreProperties.getFileStorePath()), new RegexFileFilter(
+                MATCHING_FILE_PATTERN), null);
+    }
+
+    /**
+     * Get the base snapshot information from a snapshot file.
+     * 
+     * @param fileName The name of the snapshot file.
+     * @return Base snapshot information.
+     */
+    private Snapshot getSnapshotBase(String fileName) {
+        // assume that the snapshot date is written in the first 6 characters of the name
+        return new Snapshot().withName(fileName).withDate(
+                DateTime.parse(fileName.substring(0, 6), DateTimeFormat.forPattern("yyMMdd")));
+    }
+
+    /**
+     * Sort snapshots by their dates.
+     * 
+     * @param snapshots The snapshots to sort.
+     */
+    private void sortByDate(List<Snapshot> snapshots) {
+        Collections.sort(snapshots, new Comparator<Snapshot>() {
+            @Override
+            public int compare(Snapshot snapshot1, Snapshot snapshot2) {
+                return snapshot1.getDate().compareTo(snapshot2.getDate());
+            }
+        });
     }
 
     /**

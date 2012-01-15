@@ -1,5 +1,6 @@
 package com.dubious.itunes.statistics.store.file.test;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 
 import javax.annotation.Resource;
@@ -26,6 +27,56 @@ public class FileSnapshotStoreTest {
     @Resource(name = "fileSnapshotStore")
     private SnapshotStore fileSnapshotStore;
 
+    //@formatter:off
+    private Snapshot snapshot111201 = 
+            new Snapshot()
+                    .withName("111201 - Music.txt")
+                    .withDate(new DateTime(2011, 12, 1, 0, 0))
+                    .addStatistic(new Song()
+                            .withArtistName("Arctic Monkeys")
+                            .withAlbumName("Whatever People Say I Am, That's What I'm Not")
+                            .withName("Mardy Bum"),
+                            new SongStatistics().withPlayCount(61))
+                    .addStatistic(new Song()
+                            .withArtistName("Nada Surf")
+                            .withAlbumName("The Weight is a Gift")
+                            .withName("Blankest Year"),
+                            new SongStatistics().withPlayCount(56))
+                    .addStatistic(new Song()
+                            .withArtistName("Death From Above 1979")
+                            .withAlbumName("You're A Woman I'm A Machine")
+                            .withName("Going Steady"),
+                            new SongStatistics().withPlayCount(55));
+    private Snapshot snapshot101130 = 
+            new Snapshot()
+                    .withName("101130 - Music.txt")
+                    .withDate(new DateTime(2010, 11, 30, 0, 0))
+                    .addStatistic(new Song()
+                            .withArtistName("Arctic Monkeys")
+                            .withAlbumName("Whatever People Say I Am, That's What I'm Not")
+                            .withName("Mardy Bum"),
+                            new SongStatistics().withPlayCount(34))
+                    .addStatistic(new Song()
+                            .withArtistName("Death From Above 1979")
+                            .withAlbumName("You're A Woman I'm A Machine")
+                            .withName("Going Steady"),
+                            new SongStatistics().withPlayCount(30));
+    private Snapshot snapshot091130 = 
+            new Snapshot()
+                    .withName("091130 - Music.txt")
+                    .withDate(new DateTime(2009, 11, 30, 0, 0))
+                    .addStatistic(new Song()
+                            .withArtistName("Arctic Monkeys")
+                            .withAlbumName("Whatever People Say I Am, That's What I'm Not")
+                            .withName("Mardy Bum"),
+                            new SongStatistics().withPlayCount(4))
+                    .addStatistic(new Song()
+                            .withArtistName("Death From Above 1979")
+                            .withAlbumName("You're A Woman I'm A Machine")
+                            .withName("Going Steady"),
+                            new SongStatistics().withPlayCount(0));
+    //@formatter:on
+
     /**
      * Test loading a snapshot from file store.
      * 
@@ -33,27 +84,7 @@ public class FileSnapshotStoreTest {
      */
     @Test
     public final void testFileStore() throws StoreException {
-        //@formatter:off
-        assertEquals(new Snapshot()
-                .withName("111201 - Music.txt")
-                .withDate(new DateTime(2011, 12, 1, 0, 0))
-                .addStatistic(new Song()
-                        .withArtistName("Arctic Monkeys")
-                        .withAlbumName("Whatever People Say I Am, That's What I'm Not")
-                        .withName("Mardy Bum"),
-                        new SongStatistics().withPlayCount(61))
-                .addStatistic(new Song()
-                        .withArtistName("Nada Surf")
-                        .withAlbumName("The Weight is a Gift")
-                        .withName("Blankest Year"),
-                        new SongStatistics().withPlayCount(56))
-                .addStatistic(new Song()
-                        .withArtistName("Death From Above 1979")
-                        .withAlbumName("You're A Woman I'm A Machine")
-                        .withName("Going Steady"),
-                        new SongStatistics().withPlayCount(55)),
-                fileSnapshotStore.getSnapshot("111201 - Music.txt"));
-        //@formatter:on
+        assertEquals(snapshot111201, fileSnapshotStore.getSnapshot(snapshot111201.getName()));
     }
 
     /**
@@ -64,22 +95,7 @@ public class FileSnapshotStoreTest {
      */
     @Test
     public final void testWithPlayCountColumn() throws StoreException {
-        //@formatter:off
-        assertEquals(new Snapshot()
-                .withName("101130 - Music.txt")
-                .withDate(new DateTime(2010, 11, 30, 0, 0))
-                .addStatistic(new Song()
-                        .withArtistName("Arctic Monkeys")
-                        .withAlbumName("Whatever People Say I Am, That's What I'm Not")
-                        .withName("Mardy Bum"),
-                        new SongStatistics().withPlayCount(34))
-                .addStatistic(new Song()
-                        .withArtistName("Death From Above 1979")
-                        .withAlbumName("You're A Woman I'm A Machine")
-                        .withName("Going Steady"),
-                        new SongStatistics().withPlayCount(30)),
-                fileSnapshotStore.getSnapshot("101130 - Music.txt"));
-        //@formatter:on
+        assertEquals(snapshot101130, fileSnapshotStore.getSnapshot(snapshot101130.getName()));
     }
 
     /**
@@ -89,21 +105,36 @@ public class FileSnapshotStoreTest {
      */
     @Test
     public final void testWithEmptyPlayCount() throws StoreException {
-        //@formatter:off
-        assertEquals(new Snapshot()
-                .withName("091130 - Music.txt")
-                .withDate(new DateTime(2009, 11, 30, 0, 0))
-                .addStatistic(new Song()
-                        .withArtistName("Arctic Monkeys")
-                        .withAlbumName("Whatever People Say I Am, That's What I'm Not")
-                        .withName("Mardy Bum"),
-                        new SongStatistics().withPlayCount(4))
-                .addStatistic(new Song()
-                        .withArtistName("Death From Above 1979")
-                        .withAlbumName("You're A Woman I'm A Machine")
-                        .withName("Going Steady"),
-                        new SongStatistics().withPlayCount(0)),
-                fileSnapshotStore.getSnapshot("091130 - Music.txt"));
-        //@formatter:on
+        assertEquals(snapshot091130, fileSnapshotStore.getSnapshot(snapshot091130.getName()));
+    }
+
+    /**
+     * Test retrieval all snapshots in the store.
+     * 
+     * @throws StoreException On unexpected error.
+     */
+    @Test
+    public final void testGetSnapshots() throws StoreException {
+        assertEquals(
+                asList(snapshot091130, snapshot101130, snapshot111201),
+                fileSnapshotStore.getSnapshots());
+    }
+
+    /**
+     * Test retrieval of all snapshots but without statistics.
+     * 
+     * @throws StoreException On unexpected error.
+     */
+    @Test
+    public final void testGetSnapshotsWithoutStatistics() throws StoreException {
+        assertEquals(
+                asList(
+                        new Snapshot().withName(snapshot091130.getName()).withDate(
+                                snapshot091130.getDate()),
+                        new Snapshot().withName(snapshot101130.getName()).withDate(
+                                snapshot101130.getDate()),
+                        new Snapshot().withName(snapshot111201.getName()).withDate(
+                                snapshot111201.getDate())),
+                fileSnapshotStore.getSnapshotsWithoutStatistics());
     }
 }

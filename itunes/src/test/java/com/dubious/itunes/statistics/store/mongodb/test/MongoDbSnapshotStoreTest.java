@@ -1,5 +1,6 @@
 package com.dubious.itunes.statistics.store.mongodb.test;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
@@ -7,7 +8,6 @@ import static org.junit.Assert.fail;
 
 import javax.annotation.Resource;
 
-import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Test;
@@ -32,7 +32,9 @@ public class MongoDbSnapshotStoreTest {
     @Resource(name = "mongoDbSnapshotStore")
     private SnapshotStore snapshotStore;
 
-    private DateTime yesterday = new DateMidnight().minusDays(1).toDateTime();
+    private DateTime today = new DateTime();
+    private DateTime yesterday = today.minusDays(1);
+    private DateTime tomorrow = today.plusDays(1);
 
     /**
      * Tear down tests.
@@ -89,16 +91,17 @@ public class MongoDbSnapshotStoreTest {
      */
     @Test
     public final void testWriteAndGetWithSongStatistic() throws StoreException {
+        //@formatter:off
         Snapshot snapshot =
                 new Snapshot()
                         .withName("A Snapshot")
-                        .withDate(new DateTime())
-                        .addStatistic(
-                                new Song()
-                                        .withArtistName("Artist")
-                                        .withAlbumName("Album")
-                                        .withName("Song"),
+                        .withDate(today)
+                        .addStatistic(new Song()
+                                .withArtistName("Artist")
+                                .withAlbumName("Album")
+                                .withName("Song"),
                                 new SongStatistics().withPlayCount(12));
+        //@formatter:on
         snapshotStore.writeSnapshot(snapshot);
 
         Snapshot snapshotGet = snapshotStore.getSnapshot("A Snapshot");
@@ -112,28 +115,27 @@ public class MongoDbSnapshotStoreTest {
      */
     @Test
     public final void testWriteAndGetWithSongStatistics() throws StoreException {
+        //@formatter:off
         Snapshot snapshot =
                 new Snapshot()
                         .withName("A Snapshot")
-                        .withDate(new DateTime())
-                        .addStatistic(
-                                new Song()
-                                        .withArtistName("Artist")
-                                        .withAlbumName("Album")
-                                        .withName("Song"),
+                        .withDate(today)
+                        .addStatistic(new Song()
+                                .withArtistName("Artist")
+                                .withAlbumName("Album")
+                                .withName("Song"),
                                 new SongStatistics().withPlayCount(12))
-                        .addStatistic(
-                                new Song()
-                                        .withArtistName("Artist2")
-                                        .withAlbumName("Album2")
-                                        .withName("Song2"),
+                        .addStatistic(new Song()
+                                .withArtistName("Artist2")
+                                .withAlbumName("Album2")
+                                .withName("Song2"),
                                 new SongStatistics().withPlayCount(1))
-                        .addStatistic(
-                                new Song()
-                                        .withArtistName("Artist3")
-                                        .withAlbumName("Album3")
-                                        .withName("Song3"),
+                        .addStatistic(new Song()
+                                .withArtistName("Artist3")
+                                .withAlbumName("Album3")
+                                .withName("Song3"),
                                 new SongStatistics().withPlayCount(500));
+        //@formatter:on
         snapshotStore.writeSnapshot(snapshot);
 
         Snapshot snapshotGet = snapshotStore.getSnapshot("A Snapshot");
@@ -148,7 +150,7 @@ public class MongoDbSnapshotStoreTest {
      */
     @Test
     public final void testWriteSnapshotMultipleTimes() throws StoreException {
-        Snapshot snapshot = new Snapshot().withName("Snapshot").withDate(new DateTime());
+        Snapshot snapshot = new Snapshot().withName("Snapshot").withDate(today);
         snapshotStore.writeSnapshot(snapshot);
 
         try {
@@ -169,55 +171,65 @@ public class MongoDbSnapshotStoreTest {
      */
     @Test
     public final void testWritesAndGets() throws StoreException {
+        //@formatter:off
         Snapshot snapshot1 =
                 new Snapshot()
                         .withName("Snapshot1")
-                        .withDate(new DateTime())
-                        .addStatistic(
-                                new Song()
-                                        .withArtistName("Artist")
-                                        .withAlbumName("Album")
-                                        .withName("Song"),
+                        .withDate(today)
+                        .addStatistic(new Song()
+                                .withArtistName("Artist")
+                                .withAlbumName("Album")
+                                .withName("Song"),
                                 new SongStatistics().withPlayCount(12));
-        snapshotStore.writeSnapshot(snapshot1);
         Snapshot snapshot2 =
                 new Snapshot()
                         .withName("Snapshot2")
-                        .withDate(yesterday)
-                        .addStatistic(
-                                new Song()
-                                        .withArtistName("Artist1")
-                                        .withAlbumName("Album1")
-                                        .withName("Song1"),
+                        .withDate(tomorrow)
+                        .addStatistic(new Song()
+                                .withArtistName("Artist1")
+                                .withAlbumName("Album1")
+                                .withName("Song1"),
                                 new SongStatistics().withPlayCount(1))
-                        .addStatistic(
-                                new Song()
-                                        .withArtistName("Artist2")
-                                        .withAlbumName("Album2")
-                                        .withName("Song2"),
+                        .addStatistic(new Song()
+                                .withArtistName("Artist2")
+                                .withAlbumName("Album2")
+                                .withName("Song2"),
                                 new SongStatistics().withPlayCount(2));
-        snapshotStore.writeSnapshot(snapshot2);
         Snapshot snapshot3 =
                 new Snapshot()
                         .withName("Snapshot3")
                         .withDate(yesterday)
-                        .addStatistic(
-                                new Song()
-                                        .withArtistName("Artist1")
-                                        .withAlbumName("Album1")
-                                        .withName("Song2"),
+                        .addStatistic(new Song()
+                                .withArtistName("Artist1")
+                                .withAlbumName("Album1")
+                                .withName("Song2"),
                                 new SongStatistics().withPlayCount(400))
-                        .addStatistic(
-                                new Song()
-                                        .withArtistName("Artist3")
-                                        .withAlbumName("Album3")
-                                        .withName("Song3"),
+                        .addStatistic(new Song()
+                                .withArtistName("Artist3")
+                                .withAlbumName("Album3")
+                                .withName("Song3"),
                                 new SongStatistics().withPlayCount(35));
+        //@formatter:on
+        snapshotStore.writeSnapshot(snapshot1);
+        snapshotStore.writeSnapshot(snapshot2);
         snapshotStore.writeSnapshot(snapshot3);
 
+        // test get individually
         assertEquals(snapshot1, snapshotStore.getSnapshot("Snapshot1"));
         assertEquals(snapshot2, snapshotStore.getSnapshot("Snapshot2"));
         assertEquals(snapshot3, snapshotStore.getSnapshot("Snapshot3"));
+
+        // test get all (note they are ordered by date)
+        assertEquals(asList(snapshot3, snapshot1, snapshot2), snapshotStore.getSnapshots());
+
+        // test get all without statistics (note they are ordered by date)
+        assertEquals(
+                asList(new Snapshot().withName("Snapshot3").withDate(yesterday), new Snapshot()
+                        .withName("Snapshot1")
+                        .withDate(today), new Snapshot()
+                        .withName("Snapshot2")
+                        .withDate(tomorrow)),
+                snapshotStore.getSnapshotsWithoutStatistics());
     }
 
     /**
@@ -229,15 +241,16 @@ public class MongoDbSnapshotStoreTest {
     public final void testDeleteAllWithOne() throws StoreException {
         String snapshotName = "Snapshot";
 
+        //@formatter:off
         snapshotStore.writeSnapshot(new Snapshot()
                 .withName(snapshotName)
                 .withDate(new DateTime())
-                .addStatistic(
-                        new Song()
-                                .withArtistName("Artist")
-                                .withAlbumName("Album")
-                                .withName("Song"),
+                .addStatistic(new Song()
+                        .withArtistName("Artist")
+                        .withAlbumName("Album")
+                        .withName("Song"),
                         new SongStatistics().withPlayCount(1)));
+        //@formatter:on
         // sanity check
         assertNotNull(snapshotStore.getSnapshot(snapshotName));
 

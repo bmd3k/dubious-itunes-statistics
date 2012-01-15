@@ -21,6 +21,14 @@ public interface SnapshotStore {
     Snapshot getSnapshot(String snapshotName) throws StoreException;
 
     /**
+     * Get all snapshots in the store.
+     * 
+     * @return All snapshots.
+     * @throws StoreException On error.
+     */
+    List<Snapshot> getSnapshots() throws StoreException;
+
+    /**
      * Retrieve a list of snapshots, omitting statistics.
      * 
      * @param snapshotNames The names of the snapshots to retrieve.
@@ -29,6 +37,14 @@ public interface SnapshotStore {
      */
     Map<String, Snapshot> getSnapshotsWithoutStatistics(List<String> snapshotNames)
             throws StoreException;
+
+    /**
+     * Retrieve all snapshots in the store, omitting statistics.
+     * 
+     * @return All snapshots.
+     * @throws StoreException On error.
+     */
+    List<Snapshot> getSnapshotsWithoutStatistics() throws StoreException;
 
     /**
      * Retrieve the statistics for a song from a list of snapshots.

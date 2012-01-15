@@ -5,6 +5,7 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <!-- Services -->
     <bean name="analysisService" class="com.dubious.itunes.statistics.service.AnalysisServiceImpl">
     </bean>
 
@@ -12,6 +13,13 @@
         <constructor-arg name="snapshotStore" ref="mongoDbSnapshotStore"/>
     </bean>
     
+    <bean name="fileToMongoDbSnapshotSynchronizeService" 
+        class="com.dubious.itunes.statistics.service.SnapshotSynchronizeServiceImpl">
+        <constructor-arg name="sourceSnapshotStore" ref="fileSnapshotStore"/>
+        <constructor-arg name="targetSnapshotStore" ref="mongoDbSnapshotStore"/>
+    </bean>
+    
+    <!-- MongoDb-based storage -->
     <bean name="mongoDbSnapshotStore" class="com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore">
         <constructor-arg name="mongoDbDataSource" ref="mongoDbDataSource"/>
     </bean>
@@ -21,6 +29,7 @@
         <constructor-arg name="dbName" value="${store.mongodb.db.name}"/>
     </bean>
     
+    <!-- File-based storage -->
     <bean name="fileSnapshotStore" class="com.dubious.itunes.statistics.store.file.FileSnapshotStore">
         <constructor-arg name="fileStoreProperties" ref="fileStoreProperties"/>
     </bean>
