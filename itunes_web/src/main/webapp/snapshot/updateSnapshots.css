@@ -1,0 +1,15 @@
+form {
+  margin: 20px;
+}
+
+input {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border:1px solid #ccc;
+  font-size:15px;
+  width:280px;
+  border-radius:5px;
+}
+
+input[type=submit] {
+  padding:10px;
+}
