@@ -9,7 +9,7 @@
     </header>
     <nav>
       <ul>
-        <li><a href="snapshot/updateSnapshots.jsp">Update Snapshots</a></li>
+        <li><a href="snapshot/snapshotSynchronize.jsp">Synchronize Snapshots</a></li>
       </ul>
     </nav>
     <footer>
