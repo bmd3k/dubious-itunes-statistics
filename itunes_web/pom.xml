@@ -13,6 +13,17 @@
              on the tomcat server.
   -->
   
+  <!-- TODO: Should consider moving out the js parts of this project using the new maven
+       support for javascript projects:
+  
+       http://mojo.codehaus.org/javascript-maven-tools/
+       http://mojo.codehaus.org/js-import-maven-plugin/
+       
+       But these are really new projects.  We should check on them again in a month or two
+       to see if anybody has been uploading the, for example, jquery library in the maven
+       central repository.
+   -->
+  
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.dubious.itunes</groupId>
   <artifactId>itunes_web</artifactId>
@@ -40,6 +51,12 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
       <version>${org.springframework.version}</version>
+    </dependency>
+    <!-- Jackson JSON Mapper -->
+    <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-mapper-asl</artifactId>
+        <version>1.5.3</version>
     </dependency>
   </dependencies>
   
