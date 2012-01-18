@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.dubious.itunes.statistics.exception.StatisticsException;
@@ -22,6 +23,7 @@ public class GetSongStatisticsController {
     @Resource(name = "historyService")
     private HistoryService historyService;
 
+    // TODO: Calculate this "quarterly view" on the fly
     private static final List<String> QUARTERLY_SNAPSHOT_HISTORY = Arrays.asList(
             "080930 - Music.txt",
             "081218 - Music.txt",
@@ -40,14 +42,17 @@ public class GetSongStatisticsController {
 
     @RequestMapping(value = "/song/getSongStatistics.do", method = RequestMethod.GET)
     public @ResponseBody
-    List<Integer> getSongStatistics() throws StatisticsException {
+    List<Integer> getSongStatistics(
+            @RequestParam String artistName,
+            @RequestParam String albumName,
+            @RequestParam String songName) throws StatisticsException {
 
         // TODO: This functionality needs to be moved into the core service layer and tested
         SongHistory songHistory =
                 historyService.generateSongHistory(
-                        "Radiohead",
-                        "Kid A",
-                        "Morning Bell",
+                        artistName,
+                        albumName,
+                        songName,
                         QUARTERLY_SNAPSHOT_HISTORY);
 
         List<Integer> allStatistics =

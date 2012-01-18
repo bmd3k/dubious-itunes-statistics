@@ -9,21 +9,26 @@
     
     <script type="text/javascript">  
     $(document).ready(function(){
-        draw();
+        drawGraph([0,0,0,0,0,0,0,0,0,0]);
     });
     
-    function getGraphValues() {
-        var values = [0,0,0,0,0,0,0,0,0,0];
+    function drawGraphFromForm() {
+        alert('Hello!');
+        
+        var artistName = $('#artistName').val();
+        var albumName = $('#albumName').val();
+        var songName = $('#songName').val();
         
         $.ajax({
             url: 'getSongStatistics.do',
+            data: {'artistName': artistName, 'albumName': albumName, 'songName': songName},
             dataType: 'json',
             async: false})
-            .fail(function() {
-                // alert('fail!');
+            .fail(function(jqXHR, textStatus) {
+                alert('Request Failed: ' + textStatus);
             }).done(function(data) {
                 // alert('done!');
-                values = data;
+                drawGraph(data);
             }).always(function() {
                 // alert('always!');  
             });
@@ -31,8 +36,11 @@
         return values;
     }
     
-    function draw() {  
+    function drawGraph(values) {  
         var canvas = document.getElementById('graph');  
+        // reset the canvas
+        canvas.width = canvas.width;
+        
         if (canvas.getContext){  
             var ctx = canvas.getContext('2d');  
         }   
@@ -44,7 +52,6 @@
             
         var minValue = 0;
         var maxValue = 15;
-        var values = getGraphValues();
             
         // build x=0 and y=0 grid lines
         ctx.fillRect(graphXMin-2, graphYMin, 4, graphYMax-graphYMin+2);
@@ -92,7 +99,14 @@
   </head>
   <body>
     <canvas id="graph" width="600" height="400">
-    Your browser does not support this.
+    This has only ever been tested on Google Chrome 16.0.912.75.
     </canvas>
+    
+    <form id="songForm" action="javascript:drawGraphFromForm();">
+      Artist Name: <input id="artistName" type="text" size="30"/><br>
+      Album Name: <input id="albumName" type="text" size="30"/><br>
+      Song Name: <input id="songName" type="text" size="30"/><br>
+      <input id="songSubmit" type="submit" value="Click Me"/>
+    </form>
   </body>
 </html>

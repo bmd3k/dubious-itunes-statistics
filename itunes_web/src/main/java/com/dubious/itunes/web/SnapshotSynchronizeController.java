@@ -16,6 +16,8 @@ public class SnapshotSynchronizeController implements Controller {
         this.snapshotSynchronizeService = snapshotSynchronizeService;
     }
 
+    // TODO: use Spring annotations
+
     @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
