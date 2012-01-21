@@ -10,6 +10,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public class SongStatistics {
     private Integer playCount;
+    private Integer difference;
 
     /**
      * Set the play count for the song.
@@ -23,12 +24,34 @@ public class SongStatistics {
     }
 
     /**
+     * Set the difference in play counts between this snapshot of the song and a previous snapshot.
+     * 
+     * @param difference Difference in play counts between this snapshot of the song and previous
+     *        snapshot.
+     * @return This.
+     */
+    public final SongStatistics withDifference(Integer difference) {
+        this.difference = difference;
+        return this;
+    }
+
+    /**
      * Get the play count for the song.
      * 
      * @return Play count for the song.
      */
     public final Integer getPlayCount() {
         return playCount;
+    }
+
+    /**
+     * Retrieve the difference in play counts between this snapshot of the song and a previous
+     * snapshot.
+     * 
+     * @return The difference in play counts.
+     */
+    public final Integer getDifference() {
+        return difference;
     }
 
     @Override

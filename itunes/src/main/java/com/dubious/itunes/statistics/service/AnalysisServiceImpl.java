@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import com.dubious.itunes.statistics.exception.FileCouldNotBeWrittenException;
 import com.dubious.itunes.statistics.exception.StatisticsException;
@@ -172,5 +173,40 @@ public class AnalysisServiceImpl implements AnalysisService {
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public final SongHistory enrichSongHistory(SongHistory songHistory) {
+
+        SongHistory newSongHistory =
+                new SongHistory()
+                        .withArtistName(songHistory.getArtistName())
+                        .withAlbumName(songHistory.getAlbumName())
+                        .withSongName(songHistory.getSongName());
+
+        // note that we are relying on the fact that the underlying Map of the SongHistory object is
+        // a LinkedHashMap and has well-defined order.
+        Integer previousPlayCount = null;
+        for (Map.Entry<String, SongStatistics> entry : songHistory
+                .getSongStatistics()
+                .entrySet()) {
+            Integer playCount = 0;
+            if (entry.getValue() != null && entry.getValue().getPlayCount() != null) {
+                playCount = entry.getValue().getPlayCount();
+            }
+            // if the first element in the map then the difference is the play count, otherwise
+            // it is the actual difference between the previous and current play count.
+            Integer difference = playCount;
+            if (previousPlayCount != null) {
+                difference = playCount - previousPlayCount;
+            }
+
+            newSongHistory.addSongStatistics(
+                    entry.getKey(),
+                    new SongStatistics().withPlayCount(playCount).withDifference(difference));
+            previousPlayCount = playCount;
+        }
+
+        return newSongHistory;
     }
 }

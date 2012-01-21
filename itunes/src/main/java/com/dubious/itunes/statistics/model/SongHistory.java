@@ -9,16 +9,11 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-import com.dubious.itunes.model.Song;
-
 /**
  * Statistical history of a song.
  */
-public class SongHistory {
+public class SongHistory extends SongKey<SongHistory> {
 
-    private String artistName;
-    private String albumName;
-    private String songName;
     private Map<String, SongStatistics> songStatistics;
 
     /**
@@ -28,49 +23,9 @@ public class SongHistory {
         this.songStatistics = new LinkedHashMap<String, SongStatistics>();
     }
 
-    /**
-     * Set the name of the artist.
-     * 
-     * @param artistName Name of the artist.
-     * @return This.
-     */
-    public final SongHistory withArtistName(String artistName) {
-        this.artistName = artistName;
+    @Override
+    public final SongHistory getThis() {
         return this;
-    }
-
-    /**
-     * Set the name of the album.
-     * 
-     * @param albumName Name of the album.
-     * @return This.
-     */
-    public final SongHistory withAlbumName(String albumName) {
-        this.albumName = albumName;
-        return this;
-    }
-
-    /**
-     * Set the name of the song.
-     * 
-     * @param songName The name of the song.
-     * @return This.
-     */
-    public final SongHistory withSongName(String songName) {
-        this.songName = songName;
-        return this;
-    }
-
-    /**
-     * Populate song-specific information using a given song. This is a shortcut method.
-     * 
-     * @param song The song with the information.
-     * @return This.
-     */
-    public final SongHistory withSong(Song song) {
-        return withArtistName(song.getArtistName())
-                .withAlbumName(song.getAlbumName())
-                .withSongName(song.getName());
     }
 
     /**
@@ -83,33 +38,6 @@ public class SongHistory {
     public final SongHistory addSongStatistics(String snapshotName, SongStatistics songStatistics) {
         this.songStatistics.put(snapshotName, songStatistics);
         return this;
-    }
-
-    /**
-     * Get the artist name.
-     * 
-     * @return Artist name.
-     */
-    public final String getArtistName() {
-        return artistName;
-    }
-
-    /**
-     * Get the album name.
-     * 
-     * @return Album name.
-     */
-    public final String getAlbumName() {
-        return albumName;
-    }
-
-    /**
-     * Get the song name.
-     * 
-     * @return Song name.
-     */
-    public final String getSongName() {
-        return songName;
     }
 
     /**
