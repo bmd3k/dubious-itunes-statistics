@@ -24,8 +24,6 @@ import com.dubious.itunes.statistics.service.AnalysisService;
 @ContextConfiguration(locations = {"classpath:com/dubious/itunes/test/itunes-test-context.xml" })
 public class AnalysisServiceEnrichSnapshotsHistoryTest {
 
-    // TODO: Should have an integration test with HistoryService
-
     @Resource(name = "analysisService")
     private AnalysisService analysisService;
 

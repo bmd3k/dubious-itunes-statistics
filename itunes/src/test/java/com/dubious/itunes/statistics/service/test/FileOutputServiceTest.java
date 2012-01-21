@@ -23,23 +23,26 @@ import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.exception.StatisticsException;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
-import com.dubious.itunes.statistics.service.AnalysisService;
+import com.dubious.itunes.statistics.service.FileOutputService;
+import com.dubious.itunes.statistics.service.FileOutputService.Order;
 import com.dubious.itunes.statistics.service.HistoryService;
 import com.dubious.itunes.statistics.store.SnapshotStore;
 
 /**
- * Tests for the {@link AnalysisService}.
+ * Tests for the {@link FileOutputService}. Acts as integration tests between
+ * {@link FileOutputService}, {@link HistoryService}, and
+ * {@link com.dubious.itunes.statistics.service.AnalysisService}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:com/dubious/itunes/test/itunes-test-context.xml" })
-public class AnalysisServiceTest {
+public class FileOutputServiceTest {
 
     @Resource(name = "mongoDbSnapshotStore")
     private SnapshotStore snapshotStore;
     @Resource(name = "historyService")
     private HistoryService historyService;
-    @Resource(name = "analysisService")
-    private AnalysisService analysisService;
+    @Resource(name = "fileOutputService")
+    private FileOutputService fileOutputService;
 
     private String snapshot1 = "snapshot1";
     private String snapshot2 = "snapshot2";
@@ -107,17 +110,17 @@ public class AnalysisServiceTest {
     }
 
     /**
-     * Test the ability to write an analysis of history of two snapshots with default order.
+     * Test the ability to write history with two snapshots with default order.
      * 
      * @throws StatisticsException On unexpected error.
      * @throws IOException On unexpected error.
      */
     @Test
-    public final void testWriteAnalysisWithTwoSnapshots() throws StatisticsException,
-            IOException {
-        analysisService.writeAnalysis(
+    public final void testWriteWithTwoSnapshots() throws StatisticsException, IOException {
+        fileOutputService.writeSnapshotsHistory(
                 historyService.generateSnapshotHistory(asList(snapshot3, snapshot4)),
-                "test_files/output/output.txt");
+                "test_files/output/output.txt",
+                Order.PlayCount);
 
         //@formatter:off
         assertEquals(readLines(new File(
@@ -128,19 +131,18 @@ public class AnalysisServiceTest {
     }
 
     /**
-     * Test the ability to write an analysis of history of many snapshots with default order.
+     * Test the ability to write history with many snapshots.
      * 
      * @throws StatisticsException On unexpected error.
      * @throws IOException On unexpected error.
      */
     @Test
-    public final void testWriteAnalysisWithManySnapshots() throws StatisticsException,
-            IOException {
-        analysisService.writeAnalysis(historyService.generateSnapshotHistory(asList(
+    public final void testWriteWithManySnapshots() throws StatisticsException, IOException {
+        fileOutputService.writeSnapshotsHistory(historyService.generateSnapshotHistory(asList(
                 snapshot1,
                 snapshot2,
                 snapshot3,
-                snapshot4)), "test_files/output/output.txt");
+                snapshot4)), "test_files/output/output.txt", Order.PlayCount);
 
         //@formatter:off
         assertEquals(readLines(new File(
@@ -151,22 +153,19 @@ public class AnalysisServiceTest {
     }
 
     /**
-     * Test the ability to write an analysis, ordered by the difference between the earliest and
-     * latest snapshot.
+     * Test the ability to write history ordered by the difference between the earliest and latest
+     * snapshot.
      * 
      * @throws StatisticsException On unexpected error.
      * @throws IOException On unexpected error.
      */
     @Test
-    public final void testWriteAnalysisOrderByDifference() throws StatisticsException,
-            IOException {
-        analysisService.writeAnalysisOrderByDifference(
-                historyService.generateSnapshotHistory(asList(
-                        snapshot1,
-                        snapshot2,
-                        snapshot3,
-                        snapshot4)),
-                "test_files/output/output.txt");
+    public final void testWriteWithOrderByDifference() throws StatisticsException, IOException {
+        fileOutputService.writeSnapshotsHistory(historyService.generateSnapshotHistory(asList(
+                snapshot1,
+                snapshot2,
+                snapshot3,
+                snapshot4)), "test_files/output/output.txt", Order.Difference);
 
         //@formatter:off
         assertEquals(readLines(new File(
