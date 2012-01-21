@@ -1,5 +1,6 @@
 function Graph(canvas)
 {
+    // TODO: Consider using the KineticJs library to have multi-layered canvas
     // canvas elements
     this.canvas = canvas;
     // attach a reference to this graph object through the canvas
@@ -31,7 +32,7 @@ function draw(values) {
     // reset the canvases
     this.canvas.width = this.canvas.width;
     
-    // determine the area surrounding the graph
+    // determine the graph area
     var graphXMax = this.canvas.width*9/10;
     var graphYMax = this.canvas.height*9/10;
     var graphXMin = (this.canvas.width - graphXMax);
@@ -64,36 +65,6 @@ function draw(values) {
     
     drawGraphingArea(this.ctx, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew);
     drawData(this.ctx, this.dataPoints, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew);
-}
-
-function eventMouseMove(event)
-{
-    var thisGraph = event.srcElement._dubious_graph
-    var dataPoints = thisGraph.dataPoints;
-    var values = thisGraph.values;
-    var ctx = thisGraph.ctx;
-    
-    if(dataPoints == null)
-    {
-        // there is no data in the graph
-        return;
-    }
-    
-    // determine if the mouse is near to any of the data points
-    for(var i=0; i<dataPoints.length;i++)
-    {
-        if(event.offsetX - dataPoints[i].x < 8 && dataPoints[i].x - event.offsetX < 8
-           && event.offsetY - dataPoints[i].y < 8 && dataPoints[i].y - event.offsetY < 8)
-        {
-            thisGraph.redraw();
-            // draw a node around this data point
-            ctx.beginPath();
-            ctx.arc(dataPoints[i].x, dataPoints[i].y, 4, 0, Math.PI*2, false);
-            ctx.fill();
-            // output the value of this node, just above the node
-            ctx.fillText("Value: " + values[i], dataPoints[i].x - 15, dataPoints[i].y - 18)
-        }
-    }
 }
 
 function drawGraphingArea(ctx, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew)
@@ -202,4 +173,64 @@ function drawData(ctx, dataPoints, graphXMin, graphYMin, graphXMax, graphYMax, x
     ctx.fill();
     ctx.fillStyle = '#000000';
     ctx.stroke();
+}
+
+function eventMouseMove(event)
+{
+    var thisGraph = event.srcElement._dubious_graph
+    var dataPoints = thisGraph.dataPoints;
+    var values = thisGraph.values;
+    var ctx = thisGraph.ctx;
+    
+    if(dataPoints == null)
+    {
+        // there is no data in the graph
+        return;
+    }
+    
+    var radius = 10;
+    
+    // determine if the mouse is near to any of the data points
+    for(var i=0; i<dataPoints.length;i++)
+    {
+        if(event.offsetX - dataPoints[i].x < radius && dataPoints[i].x - event.offsetX < radius
+           && event.offsetY - dataPoints[i].y < radius && dataPoints[i].y - event.offsetY < radius)
+        {
+            thisGraph.redraw();
+            // draw a node around this data point
+            ctx.beginPath();
+            ctx.arc(dataPoints[i].x, dataPoints[i].y, 4, 0, Math.PI*2, false);
+            ctx.fill();
+            drawValueBox(ctx, dataPoints[i].x, dataPoints[i].y, values[i]);
+        }
+    }
+}
+
+function drawValueBox(ctx, x, y, value)
+{
+    var text = "Value: " + value;
+    var textMetrics = ctx.measureText(text);
+    
+    // draw a box with a border and output a value into it
+    var boxXMin = x - textMetrics.width/2 - 5;
+    var boxXMax = x + textMetrics.width/2 + 5;
+    // we have to make some assumptions about the height of the text
+    var boxYMin = y - 32;
+    var boxYMax = y - 15;
+    ctx.beginPath();
+    ctx.moveTo(boxXMin, boxYMin);
+    ctx.lineTo(boxXMin, boxYMax);
+    ctx.lineTo(boxXMax, boxYMax);
+    ctx.lineTo(boxXMax, boxYMin);
+    ctx.closePath();
+    ctx.fillStyle = "#DDDDDD";
+    ctx.fill();
+    ctx.fillStyle = "#222222";
+    ctx.stroke();
+    
+    // the size of the box, depends on the size of the text
+    
+    // output the value of this node, just above the node
+    ctx.fillStyle = "#000000";
+    ctx.fillText("Value: " + value, boxXMin + 5, boxYMax - 5);
 }
