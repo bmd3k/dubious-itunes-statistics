@@ -49,7 +49,15 @@
         var graphYMin = (canvas.height - graphYMax);
             
         var minValue = 0;
-        var maxValue = 15;
+        // determine the maximum value.  it has to be at least 1.
+        var maxValue = 5;
+        for(i=0;i<values.length;i++)
+        {
+            if(values[i] > maxValue)
+            {
+                maxValue = values[i];
+            }
+        }
             
         // build x=0 and y=0 grid lines
         ctx.fillRect(graphXMin-2, graphYMin, 4, graphYMax-graphYMin+2);
@@ -60,8 +68,8 @@
         var lastY = null;
         for(i=0;i<values.length;i++)
         {
-            var x = graphXMin + (graphXMax/values.length*(i));
-            var y = graphYMax - (graphYMax/maxValue*values[i]);
+            var x = graphXMin + (graphXMax/(values.length+1)*(i));
+            var y = graphYMax - (graphYMax/(maxValue+1)*values[i]);
                    
             drawPoint(ctx,x,y);
             if(lastX != null && lastY != null)

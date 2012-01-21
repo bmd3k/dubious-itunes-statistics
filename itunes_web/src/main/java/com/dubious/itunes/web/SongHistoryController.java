@@ -37,7 +37,7 @@ public class SongHistoryController {
     }
 
     /**
-     * Construtor.
+     * Constructor.
      * 
      * @param historyService {@link HistoryService} to inject.
      * @param analysisService {@link AnalysisService} to inject.
@@ -48,9 +48,7 @@ public class SongHistoryController {
     }
 
     /**
-     * Describes the set of snapshots that are the "Quarterly View"
-     * 
-     * TODO: This should be calculated.
+     * Describes the set of snapshots that are the "Quarterly View".
      */
     public static final List<String> QUARTERLY_SNAPSHOT_HISTORY = Arrays.asList(
             "080930 - Music.txt",
