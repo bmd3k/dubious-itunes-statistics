@@ -68,8 +68,9 @@ public class AnalysisServiceImpl implements AnalysisService {
             SnapshotsHistory history,
             String outputPath,
             Comparator<SongHistory> comparator) throws StatisticsException {
+        SnapshotsHistory enrichedHistory = enrichSnapshotsHistory(history);
         List<SongHistory> sortedSongHistories =
-                new ArrayList<SongHistory>(history.getSongHistories());
+                new ArrayList<SongHistory>(enrichedHistory.getSongHistories());
         Collections.sort(sortedSongHistories, comparator);
 
         try {
@@ -101,11 +102,9 @@ public class AnalysisServiceImpl implements AnalysisService {
             //@formatter:on
 
             // write play count from earliest snapshot
-            SongStatistics earliestStatistics =
-                    songHistory.getSongStatistics().get(snapshots.get(0));
-            line.append(earliestStatistics == null ? "(0)" : "("
-                    + earliestStatistics.getPlayCount() + ")");
-            line.append("\t");
+            line.append("("
+                    + songHistory.getSongStatistics().get(snapshots.get(0)).getDifference()
+                    + ")\t");
 
             // write differences in play count between each snapshot
             line.append("(");
@@ -113,10 +112,10 @@ public class AnalysisServiceImpl implements AnalysisService {
             int totalDifference = 0;
             for (index = 1; index < snapshots.size(); index++) {
                 int difference =
-                        calculatePlayDifference(
-                                songHistory,
-                                snapshots.get(index - 1),
-                                snapshots.get(index));
+                        songHistory
+                                .getSongStatistics()
+                                .get(snapshots.get(index))
+                                .getDifference();
                 totalDifference += difference;
                 line.append(difference + ",");
             }
@@ -127,11 +126,12 @@ public class AnalysisServiceImpl implements AnalysisService {
             }
             line.append(")\t");
 
-            // write playcount from the latest snapshot
-            SongStatistics latestStatistics =
-                    songHistory.getSongStatistics().get(snapshots.get(snapshots.size() - 1));
-            line.append(latestStatistics == null ? "(0)" : "(" + latestStatistics.getPlayCount()
-                    + ")");
+            // write playcount from the latest snapshot ;
+            line.append("("
+                    + songHistory
+                            .getSongStatistics()
+                            .get(snapshots.get(snapshots.size() - 1))
+                            .getPlayCount() + ")");
 
             lines.add(line.toString());
         }
@@ -173,6 +173,17 @@ public class AnalysisServiceImpl implements AnalysisService {
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public final SnapshotsHistory enrichSnapshotsHistory(SnapshotsHistory history) {
+        SnapshotsHistory newHistory =
+                new SnapshotsHistory().addSnapshots(history.getSnapshots());
+        for (SongHistory songHistory : history.getSongHistories()) {
+            newHistory.addSongHistory(enrichSongHistory(songHistory));
+        }
+
+        return newHistory;
     }
 
     @Override

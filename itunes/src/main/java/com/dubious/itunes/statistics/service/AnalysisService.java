@@ -29,6 +29,14 @@ public interface AnalysisService {
             throws StatisticsException;
 
     /**
+     * Enrich a snapshots history with other analysis.
+     * 
+     * @param history The history to analyze.
+     * @return Enriched ersion of history.
+     */
+    SnapshotsHistory enrichSnapshotsHistory(SnapshotsHistory history);
+
+    /**
      * Enrich a song history with other analysis.
      * 
      * @param songHistory The history to analyze.
