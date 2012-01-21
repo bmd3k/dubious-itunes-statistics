@@ -8,8 +8,11 @@
     <script src="../js/graph.js"></script>
     
     <script type="text/javascript">  
+    var graph;
+    
     $(document).ready(function(){
-        drawSongGraph([0,0,0,0,0,0,0,0,0,0]);
+        graph = new Graph(document.getElementById('graph'));
+        graph.draw([0,0,0,0,0,0,0,0,0,0]);
     });
     
     function drawGraphFromForm() {        
@@ -26,15 +29,11 @@
                 alert('Request Failed: ' + textStatus);
             }).done(function(data) {
                 // alert('done!');
-                drawSongGraph(data);
+                graph.draw(data);
             }).always(function() {
                 // alert('always!');  
             });
-    }
-    
-    function drawSongGraph(values) {  
-        drawGraph(document.getElementById('graph'), values);
-    }       
+    }      
     </script>  
 
     <style type="text/css">  

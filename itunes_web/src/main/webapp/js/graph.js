@@ -1,21 +1,46 @@
-function drawGraph(canvas, values) {       
-    // reset the canvas
-    canvas.width = canvas.width;
-    var ctx = null;
-    if (canvas.getContext){  
-        ctx = canvas.getContext('2d'); 
-    }    
+function Graph(canvas)
+{
+    // canvas elements
+    this.canvas = canvas;
+    // attach a reference to this graph object through the canvas
+    canvas._dubious_graph = this;
+    this.ctx = null;
+    if (this.canvas.getContext){  
+        this.ctx = this.canvas.getContext('2d'); 
+    }
+
+    // methods
+    this.draw = draw;
+    this.redraw = redraw;
+    
+    // initialize other data
+    this.values = null;
+    this.dataPoints = null;
+    
+    // event handling
+    canvas.addEventListener('mousemove', eventMouseMove, true);
+}
+
+function redraw() {
+    this.draw(this.values);
+}
+
+function draw(values) {       
+    this.values = values;
+    
+    // reset the canvases
+    this.canvas.width = this.canvas.width;
     
     // determine the area surrounding the graph
-    var graphXMax = canvas.width*9/10;
-    var graphYMax = canvas.height*9/10;
-    var graphXMin = (canvas.width - graphXMax);
-    var graphYMin = (canvas.height - graphYMax);
+    var graphXMax = this.canvas.width*9/10;
+    var graphYMax = this.canvas.height*9/10;
+    var graphXMin = (this.canvas.width - graphXMax);
+    var graphYMin = (this.canvas.height - graphYMax);
         
     var minValue = 0;
     // determine the maximum value.  it has to be at least 1.
     var maxValue = 1;
-    for(i=0;i<values.length;i++)
+    for(var i=0;i<values.length;i++)
     {
         if(values[i] > maxValue)
         {
@@ -24,21 +49,51 @@ function drawGraph(canvas, values) {
     }
                 
     // collect the location of elements in the graph
-    var dataPoints = [];
-    for(i=0;i<values.length;i++)
+    this.dataPoints = [];
+    for(var i=0;i<values.length;i++)
     {
         var x = graphXMin + (graphXMax/(values.length+1)*(i));
         var y = graphYMax - (graphYMax/(maxValue+2)*values[i]);
                
-        dataPoints[i] = {x: x, y: y};
+        this.dataPoints[i] = {x: x, y: y};
     }
 
     // specify the skew that gives the 3D effect
     var xSkew = 8;
     var ySkew = -6;
     
-    drawGraphingArea(ctx, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew);
-    drawData(ctx, dataPoints, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew);
+    drawGraphingArea(this.ctx, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew);
+    drawData(this.ctx, this.dataPoints, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew);
+}
+
+function eventMouseMove(event)
+{
+    var thisGraph = event.srcElement._dubious_graph
+    var dataPoints = thisGraph.dataPoints;
+    var values = thisGraph.values;
+    var ctx = thisGraph.ctx;
+    
+    if(dataPoints == null)
+    {
+        // there is no data in the graph
+        return;
+    }
+    
+    // determine if the mouse is near to any of the data points
+    for(var i=0; i<dataPoints.length;i++)
+    {
+        if(event.offsetX - dataPoints[i].x < 8 && dataPoints[i].x - event.offsetX < 8
+           && event.offsetY - dataPoints[i].y < 8 && dataPoints[i].y - event.offsetY < 8)
+        {
+            thisGraph.redraw();
+            // draw a node around this data point
+            ctx.beginPath();
+            ctx.arc(dataPoints[i].x, dataPoints[i].y, 4, 0, Math.PI*2, false);
+            ctx.fill();
+            // output the value of this node, just above the node
+            ctx.fillText("Value: " + values[i], dataPoints[i].x - 15, dataPoints[i].y - 18)
+        }
+    }
 }
 
 function drawGraphingArea(ctx, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew)
@@ -90,7 +145,7 @@ function drawData(ctx, dataPoints, graphXMin, graphYMin, graphXMax, graphYMax, x
     // iterate over the data points to draw the outline of the back of the graph
     ctx.beginPath();
     ctx.moveTo(graphXMin + xSkew, graphYMax + ySkew);
-    for(i=0;i<dataPoints.length;i++)
+    for(var i=0;i<dataPoints.length;i++)
     {
         ctx.lineTo(dataPoints[i].x + xSkew, dataPoints[i].y + ySkew);
     }
@@ -100,7 +155,7 @@ function drawData(ctx, dataPoints, graphXMin, graphYMin, graphXMax, graphYMax, x
     
     // iterate over the data points to draw the top of the graph area
     ctx.fillStyle = '#F6EE20';
-    for(i=0;i<dataPoints.length-1;i++)
+    for(var i=0;i<dataPoints.length-1;i++)
     {
         ctx.beginPath();
         ctx.moveTo(dataPoints[i].x, dataPoints[i].y);
@@ -121,7 +176,7 @@ function drawData(ctx, dataPoints, graphXMin, graphYMin, graphXMax, graphYMax, x
     
     // iterate over the data points to draw connecting lines between front and back graph
     ctx.fillStyle = '#000000';
-    for(i=0;i<dataPoints.length;i++)
+    for(var i=0;i<dataPoints.length;i++)
     {
         ctx.beginPath();
         ctx.moveTo(dataPoints[i].x, dataPoints[i].y);
@@ -137,7 +192,7 @@ function drawData(ctx, dataPoints, graphXMin, graphYMin, graphXMax, graphYMax, x
     // iterate over the data points to draw the front of the graph area and its outline
     ctx.beginPath();
     ctx.moveTo(graphXMin, graphYMax);
-    for(i=0;i<dataPoints.length;i++)
+    for(var i=0;i<dataPoints.length;i++)
     {
         ctx.lineTo(dataPoints[i].x, dataPoints[i].y);
     }
