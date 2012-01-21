@@ -12,15 +12,13 @@
         drawGraph([0,0,0,0,0,0,0,0,0,0]);
     });
     
-    function drawGraphFromForm() {
-        alert('Hello!');
-        
+    function drawGraphFromForm() {        
         var artistName = $('#artistName').val();
         var albumName = $('#albumName').val();
         var songName = $('#songName').val();
         
         $.ajax({
-            url: 'getSongStatistics.do',
+            url: 'getSongHistory.do',
             data: {'artistName': artistName, 'albumName': albumName, 'songName': songName},
             dataType: 'json',
             async: false})
@@ -93,6 +91,7 @@
         ctx.stroke();
     }
     </script>  
+
     <style type="text/css">  
       canvas { border: 1px solid black; }  
     </style>  

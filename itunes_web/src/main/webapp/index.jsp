@@ -9,6 +9,9 @@
     </header>
     <nav>
       <ul>
+        <li><a href="song/songHistoryGraph.jsp">View Song History</a></li>
+      </ul>
+      <ul>
         <li><a href="snapshot/snapshotSynchronize.jsp">Synchronize Snapshots</a></li>
       </ul>
     </nav>

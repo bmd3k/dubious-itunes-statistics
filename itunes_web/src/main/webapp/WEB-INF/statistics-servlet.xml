@@ -20,8 +20,4 @@
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="classpath:itunes_web.properties"/>
     </bean>
-    
-    <bean name="/snapshot/snapshotSynchronize.do" class="com.dubious.itunes.web.SnapshotSynchronizeController">
-        <constructor-arg name="snapshotSynchronizeService" ref="fileToMongoDbSnapshotSynchronizeService"/>
-    </bean>
 </beans>
