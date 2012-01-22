@@ -1,6 +1,5 @@
 function Graph(canvas)
 {
-    // TODO: Consider using the KineticJs library to have multi-layered canvas
     // canvas elements
     this.canvas = canvas;
     // attach a reference to this graph object through the canvas
@@ -18,25 +17,28 @@ function Graph(canvas)
     this.values = null;
     this.dataPoints = null;
     
+    var thisGraph = this;
+    
     // event handling
-    canvas.addEventListener('mousemove', eventMouseMove, true);
+    canvas.addEventListener(
+            'mousemove', 
+            function(event) 
+            {
+                eventMouseMove(event, thisGraph);
+            }, 
+            true);
 }
 
 function redraw() {
     this.draw(this.values);
 }
 
-function draw(values) {       
+function draw(values) {  
+    var oldDataPoints = this.dataPoints;
+    var oldValues = this.values;
     this.values = values;
     
-    // reset the canvases
-    this.canvas.width = this.canvas.width;
-    
-    // determine the graph area
-    var graphXMax = this.canvas.width*9/10;
-    var graphYMax = this.canvas.height*9/10;
-    var graphXMin = (this.canvas.width - graphXMax);
-    var graphYMin = (this.canvas.height - graphYMax);
+    var graphDimensions = getGraphDimensions(this.canvas);
         
     var minValue = 0;
     // determine the maximum value.  it has to be at least 1.
@@ -53,22 +55,98 @@ function draw(values) {
     this.dataPoints = [];
     for(var i=0;i<values.length;i++)
     {
-        var x = graphXMin + (graphXMax/(values.length+1)*(i));
-        var y = graphYMax - (graphYMax/(maxValue+2)*values[i]);
+        var x = graphDimensions.graphXMin + (graphDimensions.graphXMax/(values.length+1)*(i));
+        var y = graphDimensions.graphYMax - (graphDimensions.graphYMax/(maxValue+2)*values[i]);
                
         this.dataPoints[i] = {x: x, y: y};
     }
-
-    // specify the skew that gives the 3D effect
-    var xSkew = 8;
-    var ySkew = -6;
     
-    drawGraphingArea(this.ctx, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew);
-    drawData(this.ctx, this.dataPoints, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew);
+    if(oldValues == values || oldValues == null)
+    {
+        // reset the canvases
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // same set of values as before, nothing to animate
+        drawGraphingArea(this.ctx, graphDimensions);
+        drawData(this.ctx, this.dataPoints, graphDimensions);
+    } else
+    {
+        if(oldValues.length != values.length)
+        {
+            alert('handle this case');
+        }
+        animateDraw(1, this.canvas, this.ctx, values, oldDataPoints, this.dataPoints);
+    }
 }
 
-function drawGraphingArea(ctx, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew)
+window.requestAnimFrame = (function(callback){
+    return window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.oRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    function(callback){
+        window.setTimeout(callback, 1000 / 60);
+    };
+})();
+
+function animateDraw(currentFrame, canvas, ctx, values, oldDataPoints, dataPoints)
 {
+    var frames = 30;
+    var graphDimensions = getGraphDimensions(canvas);
+    
+    // determine the points to draw
+    var scaledDataPoints = [];
+    for(var i=0;i<dataPoints.length;i++)
+    {
+        scaledDataPoints[i] =
+            {x: dataPoints[i].x,
+             y: oldDataPoints[i].y - ((oldDataPoints[i].y - dataPoints[i].y) * currentFrame / frames)}
+    }
+
+    // reset the canvases
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // draw values
+    drawGraphingArea(ctx, graphDimensions);
+    drawData(ctx, scaledDataPoints, graphDimensions);
+    
+    if(currentFrame < frames)
+    {
+        // continue animation
+        requestAnimFrame(
+                function() 
+                { 
+                    animateDraw(currentFrame+1, canvas, ctx, values, oldDataPoints, dataPoints) 
+                });
+    }
+}
+
+function getGraphDimensions(canvas)
+{
+    var graphDimensions = new Object();
+    
+    // graph area
+    graphDimensions.graphXMax = canvas.width * 9/10;
+    graphDimensions.graphYMax = canvas.height * 9/10;
+    graphDimensions.graphXMin = canvas.width - graphDimensions.graphXMax;
+    graphDimensions.graphYMin = canvas.height - graphDimensions.graphYMax;
+    
+    // skew parameters give the 3D affect
+    graphDimensions.xSkew = 8;
+    graphDimensions.ySkew = -6;
+    
+    return graphDimensions;
+}
+
+function drawGraphingArea(ctx, graphDimensions)
+{
+    var graphXMin = graphDimensions.graphXMin;
+    var graphXMax = graphDimensions.graphXMax;
+    var graphYMin = graphDimensions.graphYMin;
+    var graphYMax = graphDimensions.graphYMax;
+    var xSkew = graphDimensions.xSkew;
+    var ySkew = graphDimensions.ySkew;
+    
     // colour between the the y=0 and x=0 axes and their skews
     // the points are out of order but it gives a cool effect
     ctx.beginPath();
@@ -111,8 +189,15 @@ function drawGraphingArea(ctx, graphXMin, graphYMin, graphXMax, graphYMax, xSkew
     ctx.stroke();
 }
 
-function drawData(ctx, dataPoints, graphXMin, graphYMin, graphXMax, graphYMax, xSkew, ySkew)
+function drawData(ctx, dataPoints, graphDimensions)
 {
+    var graphXMin = graphDimensions.graphXMin;
+    var graphXMax = graphDimensions.graphXMax;
+    var graphYMin = graphDimensions.graphYMin;
+    var graphYMax = graphDimensions.graphYMax;
+    var xSkew = graphDimensions.xSkew;
+    var ySkew = graphDimensions.ySkew;
+    
     // iterate over the data points to draw the outline of the back of the graph
     ctx.beginPath();
     ctx.moveTo(graphXMin + xSkew, graphYMax + ySkew);
@@ -175,9 +260,9 @@ function drawData(ctx, dataPoints, graphXMin, graphYMin, graphXMax, graphYMax, x
     ctx.stroke();
 }
 
-function eventMouseMove(event)
+function eventMouseMove(event, thisGraph)
 {
-    var thisGraph = event.srcElement._dubious_graph
+    var thisGraph = thisGraph;
     var dataPoints = thisGraph.dataPoints;
     var values = thisGraph.values;
     var ctx = thisGraph.ctx;

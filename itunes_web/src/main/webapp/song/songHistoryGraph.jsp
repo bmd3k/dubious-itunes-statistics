@@ -12,7 +12,7 @@
     
     $(document).ready(function(){
         graph = new Graph(document.getElementById('graph'));
-        graph.draw([0,0,0,0,0,0,0,0,0,0]);
+        graph.draw([0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
     });
     
     function drawGraphFromForm() {        
