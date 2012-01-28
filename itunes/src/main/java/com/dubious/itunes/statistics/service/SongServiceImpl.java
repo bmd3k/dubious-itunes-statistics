@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.dubious.itunes.model.Album;
 import com.dubious.itunes.model.Song;
+import com.dubious.itunes.statistics.exception.AlbumDoesNotExistException;
+import com.dubious.itunes.statistics.exception.StatisticsException;
 import com.dubious.itunes.statistics.store.SongStore;
 
 /**
@@ -28,7 +30,12 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public final List<Song> getSongsForAlbum(Album album) {
-        return songStore.getSongsForAlbum(album);
+    public final List<Song> getSongsForAlbum(String artistName, String albumName)
+            throws StatisticsException {
+        List<Song> songs = songStore.getSongsForAlbum(artistName, albumName);
+        if (songs.size() == 0) {
+            throw new AlbumDoesNotExistException(artistName, albumName);
+        }
+        return songs;
     }
 }

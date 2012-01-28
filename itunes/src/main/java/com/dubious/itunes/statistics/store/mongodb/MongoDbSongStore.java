@@ -3,6 +3,7 @@ package com.dubious.itunes.statistics.store.mongodb;
 import static com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore.SONG_STATISTICS_ALBUM_NAME;
 import static com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore.SONG_STATISTICS_ARTIST_NAME;
 import static com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore.SONG_STATISTICS_COLLECTION_NAME;
+import static com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore.SONG_STATISTICS_SONG_NAME;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,12 +39,9 @@ public class MongoDbSongStore implements SongStore {
 
     @Override
     public final List<Album> getAllAlbums() {
-        // @SuppressWarnings("unchecked")
-        // List<String> albums = (List<String>) songStatisticsCollection.distinct("album_name");
-
         // NOTE: group breaks in sharded environments
         // NOTE: group is inefficient with larger datasets
-        // TODO: Convert to map/reduce algorithm to solve both those issues
+        // TODO: Convert group operations to map/reduce algorithm to solve both those issues
         @SuppressWarnings("unchecked")
         List<BasicDBObject> albums =
                 (List<BasicDBObject>) songStatisticsCollection.group(
@@ -78,7 +76,33 @@ public class MongoDbSongStore implements SongStore {
     }
 
     @Override
-    public final List<Song> getSongsForAlbum(Album album) {
-        throw new UnsupportedOperationException("Not yet Implemented");
+    public final List<Song> getSongsForAlbum(String artistName, String albumName) {
+        @SuppressWarnings("unchecked")
+        List<BasicDBObject> songs =
+                (List<BasicDBObject>) songStatisticsCollection.group(
+                        new BasicDBObject().append(SONG_STATISTICS_SONG_NAME, true),
+                        new BasicDBObject()
+                                .append(SONG_STATISTICS_ARTIST_NAME, artistName)
+                                .append(SONG_STATISTICS_ALBUM_NAME, albumName),
+                        new BasicDBObject().append("count", 0),
+                        "function(obj,prev) { prev.count += 1; }");
+
+        List<Song> songsToReturn = new ArrayList<Song>(songs.size());
+        for (BasicDBObject song : songs) {
+            songsToReturn.add(new Song()
+                    .withArtistName(artistName)
+                    .withAlbumName(albumName)
+                    .withName(song.getString(SONG_STATISTICS_SONG_NAME)));
+        }
+
+        Collections.sort(songsToReturn, new Comparator<Song>() {
+
+            @Override
+            public int compare(Song song1, Song song2) {
+                return song1.getName().compareTo(song2.getName());
+            }
+        });
+
+        return songsToReturn;
     }
 }

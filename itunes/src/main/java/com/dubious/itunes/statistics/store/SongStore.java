@@ -20,8 +20,9 @@ public interface SongStore {
     /**
      * Retrieve all songs for an album.
      * 
-     * @param album The album.
+     * @param artistName The artist name.
+     * @param albumName The album name.
      * @return The songs for the album.
      */
-    List<Song> getSongsForAlbum(Album album);
+    List<Song> getSongsForAlbum(String artistName, String albumName);
 }

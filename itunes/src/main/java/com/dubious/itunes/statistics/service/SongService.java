@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.dubious.itunes.model.Album;
 import com.dubious.itunes.model.Song;
+import com.dubious.itunes.statistics.exception.StatisticsException;
 
 /**
  * Service for retrieving information about artists, albums, and songs.
@@ -20,8 +21,10 @@ public interface SongService {
     /**
      * Retrieve all songs for an album.
      * 
-     * @param album The album.
+     * @param artistName The name of the artist.
+     * @param albumName The album name.
      * @return The songs of the album.
+     * @throws StatisticsException On error.
      */
-    List<Song> getSongsForAlbum(Album album);
+    List<Song> getSongsForAlbum(String artistName, String albumName) throws StatisticsException;
 }
