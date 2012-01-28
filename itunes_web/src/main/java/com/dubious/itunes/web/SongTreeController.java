@@ -2,19 +2,28 @@ package com.dubious.itunes.web;
 
 import static java.util.Arrays.asList;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.dubious.itunes.model.Album;
+import com.dubious.itunes.statistics.service.SongService;
+
 /**
  * Controller for the song tree component.
  */
 @Controller
 public class SongTreeController {
+
+    @Resource(name = "songService")
+    private SongService songService;
 
     /**
      * Get the top level items in the tree.
@@ -24,10 +33,14 @@ public class SongTreeController {
     @RequestMapping(value = "/song/getSongTreeAlbums.do", method = RequestMethod.GET)
     @ResponseBody
     public final List<SongTreeAlbum> getSongTreeAlbums() {
-        return asList(
-                new SongTreeAlbum().withArtistName("Radiohead").withAlbumName("Kid A"),
-                new SongTreeAlbum().withArtistName("Animal Collective").withAlbumName(
-                        "Strawberry Jam"));
+        List<Album> albums = songService.getAllAlbums();
+        List<SongTreeAlbum> songTreeAlbums = new ArrayList<SongTreeAlbum>();
+        for (Album album : albums) {
+            songTreeAlbums.add(new SongTreeAlbum()
+                    .withArtistName(album.getArtistName())
+                    .withAlbumName(album.getName()));
+        }
+        return songTreeAlbums;
     }
 
     /**

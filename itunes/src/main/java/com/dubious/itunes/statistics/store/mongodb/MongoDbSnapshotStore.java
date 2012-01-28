@@ -30,17 +30,43 @@ public class MongoDbSnapshotStore implements SnapshotStore {
     private DBCollection snapshotCollection;
     private DBCollection songStatisticsCollection;
 
-    private static final String SNAPSHOT_COLLECTION_NAME = "snapshot";
-    private static final String SNAPSHOT_NAME = "_id";
-    private static final String SNAPSHOT_DATE = "date";
+    /**
+     * Snapshot collection.
+     */
+    public static final String SNAPSHOT_COLLECTION_NAME = "snapshot";
+    /**
+     * Snapshot id.
+     */
+    public static final String SNAPSHOT_NAME = "_id";
+    /**
+     * Snapshot date.
+     */
+    public static final String SNAPSHOT_DATE = "date";
 
-    private static final String SONG_STATISTICS_COLLECTION_NAME = "song_history";
-    private static final String SONG_STATISTICS_ARTIST_NAME = "artist_name";
-    private static final String SONG_STATISTICS_ALBUM_NAME = "album_name";
-    private static final String SONG_STATISTICS_SONG_NAME = "name";
-    private static final String SONG_STATISTICS_SNAPSHOT_FK = "snapshot";
-
-    private static final String SONG_STATISTICS_PLAY_COUNT = "play_count";
+    /**
+     * Song statistics collection.
+     */
+    public static final String SONG_STATISTICS_COLLECTION_NAME = "song_history";
+    /**
+     * Song artist name.
+     */
+    public static final String SONG_STATISTICS_ARTIST_NAME = "artist_name";
+    /**
+     * Song album name.
+     */
+    public static final String SONG_STATISTICS_ALBUM_NAME = "album_name";
+    /**
+     * Song name.
+     */
+    public static final String SONG_STATISTICS_SONG_NAME = "name";
+    /**
+     * Song foreign key to snapshot.
+     */
+    public static final String SONG_STATISTICS_SNAPSHOT_FK = "snapshot";
+    /**
+     * Song play count.
+     */
+    public static final String SONG_STATISTICS_PLAY_COUNT = "play_count";
 
     /**
      * Constructor.
