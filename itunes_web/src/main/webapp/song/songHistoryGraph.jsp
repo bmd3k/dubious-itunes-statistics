@@ -5,6 +5,7 @@
     <title>Brian's iTunes Statistics</title>
     
     <link type="text/css" href="../css/jquery.ui/smoothness/jquery-ui-1.8.17.custom.css" rel="Stylesheet" />
+    <link type="text/css" href="../css/jquery.dynatree/skin-custom/ui.dynatree.css" rel="Stylesheet" />
       
     <script src="../js/jquery/jquery-1.7.1.js"></script>
     <script src="../js/jquery.ui/jquery-ui-1.8.17.custom.min.js"></script>
@@ -95,20 +96,20 @@
     <style type="text/css">  
       #songTree {
         position: absolute;
-        left: 0px;
-        top: 0px;
+        left: 5px;
+        top: 5px;
         width: 225px;
         height: 600px;
-        border: 1px solid red;
+        border: 2px solid black;
       }
       
       #graphAndSongForm {
         position: absolute;
-        left: 230px;
-        top: 0px;
+        left: 235px;
+        top: 5px;
         width: 650px;
         height: 600px;
-        border: 1px solid blue;
+        border: 2px solid black;
       }
       
       #graph { 
@@ -117,7 +118,7 @@
         top: 25px;
         width: 600px;
         height: 400px;
-        border: 1px solid black; 
+        border: 2px solid black; 
       }
       
       #songForm {
@@ -127,7 +128,7 @@
         width: 590px;
         height: 135px;
         padding: 5px;
-        border: 1px solid purple;
+        border: 2px solid black;
       }
     </style>  
   </head>
