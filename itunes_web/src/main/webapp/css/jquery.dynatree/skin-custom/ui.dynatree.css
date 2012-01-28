@@ -60,6 +60,7 @@ ul.dynatree-no-connector > li
 /*******************************************************************************
  * Common icon definitions
  */
+ 
 span.dynatree-empty,
 span.dynatree-vline,
 span.dynatree-connector,
@@ -246,17 +247,25 @@ span.dynatree-icon /* Default icon */
 
 .dynatree-has-children span.dynatree-icon /* Default icon */
 {
-/*    background-position: 0px -16px; */
+    /*background-position: 0px -16px;*/
 }
 
 .dynatree-ico-cf span.dynatree-icon  /* Collapsed Folder */
 {
-	background-position: 0px -16px;
+    background-position: 0px 0px;
+    background-image: url("album.png");
 }
 
 .dynatree-ico-ef span.dynatree-icon  /* Expanded Folder */
 {
-	background-position: -64px -16px;
+    background-position: 0px 0px;
+    background-image: url("album.png");
+}
+
+.dynatree-ico-c span.dynatree-icon  /* Leaf */
+{
+    background-position: 0px 0px;
+    background-image: url("song.png");
 }
 
 /* Status node icons */
