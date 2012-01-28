@@ -33,37 +33,65 @@
             onActivate: function(node) {
                 // A DynaTreeNode object is passed to the activation handler
                 // Note: we also get this event, if persistence is on, and the page is reloaded.
-                if(node.data.isFolder == false && node.data.artist && node.data.album && node.data.title)
+                if(node.data.isFolder == false && node.data.artistName && node.data.albumName && node.data.songName)
                 {
-                    drawGraph(node.data.artist, node.data.album, node.data.song);
+                    drawGraph(node.data.artistName, node.data.albumName, node.data.songName);
                 } else if (node.isFolder = false)
                 {
                     alert('Error retrieving artist information');
                 }
             },
-            children: [ // Pass an array of nodes.
-                {title: 'Radiohead - Kid A', isFolder: true,
-                    children: [
-                        {title: 'Morning Bell', artist:'Radiohead', album:'Kid A', song:'Morning Bell'},
-                        {title: 'Optimistic', artist:'Radiohead', album:'Kid A', song:'Optimistic'},
-                        {title: 'Idioteque', artist:'Radiohead', album:'Kid A', song:'Idioteque'}
-                    ]
-                },
-                {title: 'Radiohead - OK Computer', isFolder: true,
-                    children: [
-                        {title: 'Karma Police', artist:'Radiohead', album:'OK Computer', song:'Karma Police'},
-                        {title: 'Electioneering', artist:'Radiohead', album:'OK Computer', song:'Electioneering'}
-                    ]
-                },
-                {title: 'Silverchair - Freak Show', isFolder: true,
-                    children: [
-                        {title: 'Cemetery', artist:'Silverchair', album:'Freak Show', song:'Cemetery'},
-                        {title: 'The Door', artist:'Silverchair', album:'Freak Show', song:'The Door'}
-                    ]
-                }
-            ]
+            children: loadSongTreeAlbums(),
+            onLazyRead: function(node) {
+                loadSongTreeSongs(node);
+            }
         });
     });
+    
+    function loadSongTreeAlbums()
+    {
+        var returnData;
+        
+        $.ajax({
+            url: 'getSongTreeAlbums.do',
+            dataType: 'json',
+            async: false})
+            .fail(function(jqXHR, textStatus) {
+                alert('Request Failed: ' + textStatus);
+            }).done(function(albums) {
+                for(var i=0; i<albums.length; i++)
+                {
+                    var album = albums[i];
+                    album.title = album.artistName + ' - ' + album.albumName;
+                    album.isFolder = true;
+                    album.isLazy = true;
+                }
+                
+                returnData = albums;
+            }).always(function() {
+            });
+        
+        return returnData;
+    }
+    
+    function loadSongTreeSongs(node)
+    {
+        $.ajax({
+            url: 'getSongTreeSongs.do',
+            data: {'artistName': node.data.artistName, 'albumName': node.data.albumName},
+            dataType: 'json'})
+            .done(function(songs) {
+                for(var i=0; i<songs.length; i++)
+                {
+                    var song = songs[i];
+                    song.title = song.artistName + ' - ' + song.songName;
+                }
+                node.addChild(songs);
+            })
+            .always(function() {
+                node.setLazyNodeStatus(DTNodeStatus_Ok);
+            });
+    }
     
     function drawGraph(artistName, albumName, songName)
     {        
@@ -98,14 +126,14 @@
         position: absolute;
         left: 5px;
         top: 5px;
-        width: 225px;
+        width: 300px;
         height: 600px;
         border: 2px solid black;
       }
       
       #graphAndSongForm {
         position: absolute;
-        left: 235px;
+        left: 305px;
         top: 5px;
         width: 650px;
         height: 600px;
