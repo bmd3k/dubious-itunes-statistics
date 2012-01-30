@@ -130,37 +130,37 @@
         position: absolute;
         left: 5px;
         top: 5px;
-        width: 400px;
-        height: 600px;
+        width: 350px;
+        height: 460px;
         border: 2px solid black;
         background-color: #FAFAFD;
       }
       
       #graphAndSongForm {
         position: absolute;
-        left: 405px;
+        left: 355px;
         top: 5px;
         width: 650px;
-        height: 600px;
+        height: 460px;
         border: 2px solid black;
         background-color: #FAFAFD;
       }
       
       #graph { 
         position: absolute;
-        left: 25px;
-        top: 25px;
-        width: 600px;
-        height: 400px;
+        left: 20px;
+        top: 20px;
+        width: 610px;
+        height: 300px;
         border: 2px solid black; 
       }
       
       #songForm {
         position: absolute;
-        left: 25px;
-        top: 430px;
-        width: 590px;
-        height: 135px;
+        left: 20px;
+        top: 325px;
+        width: 600px;
+        height: 105px;
         padding: 5px;
         border: 2px solid black;
       }
@@ -172,7 +172,7 @@
     </nav>
     
     <section id="graphAndSongForm">
-      <canvas id="graph" width="600" height="400">
+      <canvas id="graph" width="610" height="300">
       This has only ever been tested on Google Chrome 16.0.912.75.
       </canvas>
     
