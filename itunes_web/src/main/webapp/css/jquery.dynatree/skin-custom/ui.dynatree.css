@@ -308,7 +308,7 @@ ul.dynatree-container a
 	/* Set transparent border to prevent jumping when active node gets a border
 	   (we can do this, because this theme doesn't use vertical lines)
 	   */
-	border: 1px solid white; /* Note: 'transparent' would not work in IE6 */
+	border: 2px solid transparent; /* Note: 'transparent' would not work in IE6 */
 
 }
 

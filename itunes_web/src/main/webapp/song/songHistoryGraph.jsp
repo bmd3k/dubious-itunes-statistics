@@ -122,22 +122,28 @@
     </script>  
 
     <style type="text/css">  
+      body {
+          background-color: #FCFCFD;
+      }
+    
       #songTree {
         position: absolute;
         left: 5px;
         top: 5px;
-        width: 300px;
+        width: 400px;
         height: 600px;
         border: 2px solid black;
+        background-color: #FAFAFD;
       }
       
       #graphAndSongForm {
         position: absolute;
-        left: 305px;
+        left: 405px;
         top: 5px;
         width: 650px;
         height: 600px;
         border: 2px solid black;
+        background-color: #FAFAFD;
       }
       
       #graph { 
@@ -171,10 +177,10 @@
       </canvas>
     
       <div id="songForm">
-        <div class="songFormField">Artist Name: <input id="artistName" type="text" size="30" value="Radiohead"/></div>
-        <div class="songFormField">Album Name: <input id="albumName" type="text" size="30" value="Kid A"/></div>
-        <div class="songFormField">Song Name: <input id="songName" type="text" size="30" value="Morning Bell"/></div>
-        <div class="songFormField"><input id="songSubmit" type="submit" value="Click Me"/></div>
+        <div class="songFormField">Artist Name: <input id="artistName" type="text" size="30"/></div>
+        <div class="songFormField">Album Name: <input id="albumName" type="text" size="30"/></div>
+        <div class="songFormField">Song Name: <input id="songName" type="text" size="30"/></div>
+        <div class="songFormField"><input id="songSubmit" type="submit" value="Get Statistics"/></div>
       </div>
     </section>
   </body>

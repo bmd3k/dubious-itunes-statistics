@@ -1,34 +1,56 @@
 function Graph(canvas)
 {
-    // canvas elements
-    this.canvas = canvas;
-    // attach a reference to this graph object through the canvas
-    canvas._dubious_graph = this;
-    this.ctx = null;
-    if (this.canvas.getContext){  
-        this.ctx = this.canvas.getContext('2d'); 
-    }
-
     // methods
     this.draw = draw;
     this.redraw = redraw;
+    this.drawGraphingArea = drawGraphingArea;
+    this.drawData = drawData;
+    this.animateDraw = animateDraw;
+    this.drawContextFromEvent = drawContextFromEvent;
+    this.drawContextBox = drawContextBox;
     
-    // initialize other data
+    // canvas elements
+    this.canvas = canvas;
+    this.ctx = this.canvas.getContext('2d');
     this.values = null;
     this.dataPoints = null;
     
-    var thisGraph = this;
+    // colour constants
+    this.COLOUR_AXIS_LINE = '#000000';
+    this.COLOUR_AXIS_FILL = '#A0A0A0';
+    this.COLOUR_GRAPH_LINE = '#000000';
+    this.COLOUR_GRAPH_TOP_AREA = '#AAAACC';
+    this.COLOUR_GRAPH_FRONT_AREA = '#6774B0'; 
+    this.COLOUR_CONTEXT_DOT = '#000000';
+    this.COLOUR_CONTEXT_AREA = '#AAAAAA';
+    this.COLOUR_CONTEXT_LINE = '#111111';
+    this.COLOUR_CONTEXT_TEXT = '#111111';
     
     // event handling
+    var thisGraph = this;
     canvas.addEventListener(
             'mousemove', 
             function(event) 
             {
-                eventMouseMove(event, thisGraph);
+                thisGraph.drawContextFromEvent(event);
             }, 
             true);
 }
 
+window.requestAnimFrame = (function(callback){
+    return window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.oRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    function(callback){
+        window.setTimeout(callback, 1000 / 60);
+    };
+})();
+
+//
+// graph-specific methods
+//
 function redraw() {
     this.draw(this.values);
 }
@@ -67,28 +89,17 @@ function draw(values) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
         // same set of values as before, nothing to animate
-        drawGraphingArea(this.ctx, graphDimensions);
-        drawData(this.ctx, this.dataPoints, graphDimensions);
+        this.drawGraphingArea(this.ctx, graphDimensions);
+        this.drawData(this.ctx, this.dataPoints, graphDimensions);
     } else
     {
         if(oldValues.length != values.length)
         {
             alert('handle this case');
         }
-        animateDraw(1, this.canvas, this.ctx, values, oldDataPoints, this.dataPoints);
+        this.animateDraw(1, this.canvas, this.ctx, values, oldDataPoints, this.dataPoints);
     }
 }
-
-window.requestAnimFrame = (function(callback){
-    return window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    window.oRequestAnimationFrame ||
-    window.msRequestAnimationFrame ||
-    function(callback){
-        window.setTimeout(callback, 1000 / 60);
-    };
-})();
 
 function animateDraw(currentFrame, canvas, ctx, values, oldDataPoints, dataPoints)
 {
@@ -107,16 +118,17 @@ function animateDraw(currentFrame, canvas, ctx, values, oldDataPoints, dataPoint
     // reset the canvases
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // draw values
-    drawGraphingArea(ctx, graphDimensions);
-    drawData(ctx, scaledDataPoints, graphDimensions);
+    this.drawGraphingArea(ctx, graphDimensions);
+    this.drawData(ctx, scaledDataPoints, graphDimensions);
     
     if(currentFrame < frames)
     {
         // continue animation
+        var thisGraph = this;
         requestAnimFrame(
                 function() 
                 { 
-                    animateDraw(currentFrame+1, canvas, ctx, values, oldDataPoints, dataPoints) 
+                    thisGraph.animateDraw(currentFrame+1, canvas, ctx, values, oldDataPoints, dataPoints) 
                 });
     }
 }
@@ -154,7 +166,7 @@ function drawGraphingArea(ctx, graphDimensions)
     ctx.lineTo(graphXMin + xSkew, graphYMin + ySkew);
     ctx.lineTo(graphXMin, graphYMax);
     ctx.lineTo(graphXMin + xSkew, graphYMax + ySkew);
-    ctx.fillStyle = '#A0A0A0';
+    ctx.fillStyle = this.COLOUR_AXIS_FILL;
     ctx.fill();
 
     ctx.beginPath();
@@ -162,11 +174,12 @@ function drawGraphingArea(ctx, graphDimensions)
     ctx.lineTo(graphXMin + xSkew, graphYMax + ySkew);
     ctx.lineTo(graphXMax, graphYMax);
     ctx.lineTo(graphXMax + xSkew, graphYMax + ySkew);
-    ctx.fillStyle = '#A0A0A0';
+    ctx.fillStyle = this.COLOUR_AXIS_FILL;
     ctx.fill();
     
     // draw x=0 and y=0 grid lines
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = this.COLOUR_AXIS_LINE;
+    ctx.strokeStyle = this.COLOUR_AXIS_LINE;
     ctx.fillRect(graphXMin-2, graphYMin, 4, graphYMax-graphYMin+2);
     ctx.fillRect(graphXMin, graphYMax-2, graphXMax-graphXMin, 4);
     ctx.fillRect(graphXMin+xSkew-2, graphYMin+ySkew, 2, graphYMax-graphYMin+1);
@@ -206,11 +219,11 @@ function drawData(ctx, dataPoints, graphDimensions)
         ctx.lineTo(dataPoints[i].x + xSkew, dataPoints[i].y + ySkew);
     }
     ctx.lineTo(dataPoints[dataPoints.length-1].x + xSkew, graphYMax + ySkew);
-    ctx.fillStyle = '#000000';
+    ctx.strokeStyle = this.COLOUR_GRAPH_LINE;
     ctx.stroke();
     
     // iterate over the data points to draw the top of the graph area
-    ctx.fillStyle = '#F6EE20';
+    ctx.fillStyle = this.COLOUR_GRAPH_TOP_AREA;
     for(var i=0;i<dataPoints.length-1;i++)
     {
         ctx.beginPath();
@@ -231,7 +244,7 @@ function drawData(ctx, dataPoints, graphDimensions)
     ctx.fill();
     
     // iterate over the data points to draw connecting lines between front and back graph
-    ctx.fillStyle = '#000000';
+    ctx.strokeStyle = this.COLOUR_GRAPH_LINE;
     for(var i=0;i<dataPoints.length;i++)
     {
         ctx.beginPath();
@@ -254,20 +267,15 @@ function drawData(ctx, dataPoints, graphDimensions)
     }
     ctx.lineTo(dataPoints[dataPoints.length-1].x, graphYMax);
     ctx.closePath();
-    ctx.fillStyle = '#5CB6DC';
+    ctx.fillStyle = this.COLOUR_GRAPH_FRONT_AREA;
     ctx.fill();
-    ctx.fillStyle = '#000000';
+    ctx.strokeStyle = this.COLOUR_GRAPH_LINE;
     ctx.stroke();
 }
 
-function eventMouseMove(event, thisGraph)
-{
-    var thisGraph = thisGraph;
-    var dataPoints = thisGraph.dataPoints;
-    var values = thisGraph.values;
-    var ctx = thisGraph.ctx;
-    
-    if(dataPoints == null)
+function drawContextFromEvent(event)
+{   
+    if(this.dataPoints == null)
     {
         // there is no data in the graph
         return;
@@ -276,22 +284,24 @@ function eventMouseMove(event, thisGraph)
     var radius = 10;
     
     // determine if the mouse is near to any of the data points
-    for(var i=0; i<dataPoints.length;i++)
+    for(var i=0; i<this.dataPoints.length;i++)
     {
-        if(event.offsetX - dataPoints[i].x < radius && dataPoints[i].x - event.offsetX < radius
-           && event.offsetY - dataPoints[i].y < radius && dataPoints[i].y - event.offsetY < radius)
+        if(event.offsetX - this.dataPoints[i].x < radius && this.dataPoints[i].x - event.offsetX < radius
+           && event.offsetY - this.dataPoints[i].y < radius && this.dataPoints[i].y - event.offsetY < radius)
         {
-            thisGraph.redraw();
+            this.redraw();
             // draw a node around this data point
-            ctx.beginPath();
-            ctx.arc(dataPoints[i].x, dataPoints[i].y, 4, 0, Math.PI*2, false);
-            ctx.fill();
-            drawValueBox(ctx, dataPoints[i].x, dataPoints[i].y, values[i]);
+            this.ctx.beginPath();
+            this.ctx.arc(this.dataPoints[i].x, this.dataPoints[i].y, 4, 0, Math.PI*2, false);
+            this.ctx.fillStyle = this.COLOUR_CONTEXT_DOT;
+            this.ctx.fill();
+            // draw context box
+            this.drawContextBox(this.ctx, this.dataPoints[i].x, this.dataPoints[i].y, this.values[i]);
         }
     }
 }
 
-function drawValueBox(ctx, x, y, value)
+function drawContextBox(ctx, x, y, value)
 {
     var text = "Value: " + value;
     var textMetrics = ctx.measureText(text);
@@ -308,14 +318,14 @@ function drawValueBox(ctx, x, y, value)
     ctx.lineTo(boxXMax, boxYMax);
     ctx.lineTo(boxXMax, boxYMin);
     ctx.closePath();
-    ctx.fillStyle = "#DDDDDD";
+    ctx.fillStyle = graph.COLOUR_CONTEXT_AREA;
+    ctx.strokeStyle = graph.COLOUR_CONTEXT_LINE;
     ctx.fill();
-    ctx.fillStyle = "#222222";
     ctx.stroke();
     
     // the size of the box, depends on the size of the text
     
     // output the value of this node, just above the node
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = graph.COLOUR_CONTEXT_TEXT;
     ctx.fillText("Value: " + value, boxXMin + 5, boxYMax - 5);
 }
