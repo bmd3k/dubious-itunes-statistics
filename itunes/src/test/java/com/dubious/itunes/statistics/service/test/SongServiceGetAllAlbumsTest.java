@@ -73,9 +73,10 @@ public class SongServiceGetAllAlbumsTest {
                         .withAlbumName("album1")
                         .withName("song1")));
 
-        assertEquals(
-                asList(new Album().withArtistName("artist1").withName("album1")),
-                songService.getAllAlbums());
+        assertEquals(asList(new Album()
+                .withArtistName("artist1")
+                .withName("album1")
+                .withSongCount(1)), songService.getAllAlbums());
     }
 
     /**
@@ -98,9 +99,10 @@ public class SongServiceGetAllAlbumsTest {
                                 .withAlbumName("album1")
                                 .withName("song2")));
 
-        assertEquals(
-                asList(new Album().withArtistName("artist1").withName("album1")),
-                songService.getAllAlbums());
+        assertEquals(asList(new Album()
+                .withArtistName("artist1")
+                .withName("album1")
+                .withSongCount(2)), songService.getAllAlbums());
     }
 
     /**
@@ -123,9 +125,15 @@ public class SongServiceGetAllAlbumsTest {
                                 .withName("song2_1")));
 
         assertEquals(
-                asList(new Album().withArtistName("artist1").withName("album1"), new Album()
-                        .withArtistName("artist1")
-                        .withName("album2")),
+                asList(
+                        new Album()
+                                .withArtistName("artist1")
+                                .withName("album1")
+                                .withSongCount(1),
+                        new Album()
+                                .withArtistName("artist1")
+                                .withName("album2")
+                                .withSongCount(1)),
                 songService.getAllAlbums());
     }
 
@@ -149,10 +157,59 @@ public class SongServiceGetAllAlbumsTest {
                                 .withName("song2_1")));
 
         assertEquals(
-                asList(new Album().withArtistName("artist1").withName("album1"), new Album()
-                        .withArtistName("artist2")
-                        .withName("album1")),
+                asList(
+                        new Album()
+                                .withArtistName("artist1")
+                                .withName("album1")
+                                .withSongCount(1),
+                        new Album()
+                                .withArtistName("artist2")
+                                .withName("album1")
+                                .withSongCount(1)),
                 songService.getAllAlbums());
+    }
+
+    /**
+     * Test with same album over multiple snapshots.
+     * 
+     * @throws StatisticsException On error.
+     */
+    @Test
+    public final void testWithMultipleSnapshotsOneArtistOneAlbum() throws StatisticsException {
+        writeSnapshot(
+                "snapshot1",
+                asList(
+                        new Song()
+                                .withArtistName("artist1")
+                                .withAlbumName("album1")
+                                .withName("song1_1"),
+                        new Song()
+                                .withArtistName("artist1")
+                                .withAlbumName("album1")
+                                .withName("song1_2"),
+                        new Song()
+                                .withArtistName("artist1")
+                                .withAlbumName("album1")
+                                .withName("song1_3")));
+        writeSnapshot(
+                "snapshot2",
+                asList(
+                        new Song()
+                                .withArtistName("artist1")
+                                .withAlbumName("album1")
+                                .withName("song1_1"),
+                        new Song()
+                                .withArtistName("artist1")
+                                .withAlbumName("album1")
+                                .withName("song1_2"),
+                        new Song()
+                                .withArtistName("artist1")
+                                .withAlbumName("album1")
+                                .withName("song1_4")));
+        assertEquals(asList(new Album()
+                .withArtistName("artist1")
+                .withName("album1")
+                .withSongCount(4)), songService.getAllAlbums());
     }
 
     /**
@@ -191,10 +248,22 @@ public class SongServiceGetAllAlbumsTest {
 
         assertEquals(
                 asList(
-                        new Album().withArtistName("artist1").withName("album1"),
-                        new Album().withArtistName("artist1").withName("album2"),
-                        new Album().withArtistName("artist3").withName("album1"),
-                        new Album().withArtistName("b-artist2").withName("album1")),
+                        new Album()
+                                .withArtistName("artist1")
+                                .withName("album1")
+                                .withSongCount(1),
+                        new Album()
+                                .withArtistName("artist1")
+                                .withName("album2")
+                                .withSongCount(1),
+                        new Album()
+                                .withArtistName("artist3")
+                                .withName("album1")
+                                .withSongCount(1),
+                        new Album()
+                                .withArtistName("b-artist2")
+                                .withName("album1")
+                                .withSongCount(1)),
                 songService.getAllAlbums());
     }
 

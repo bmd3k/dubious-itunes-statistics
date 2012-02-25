@@ -42,6 +42,19 @@ public class MongoDbSongStore implements SongStore {
         // NOTE: group breaks in sharded environments
         // NOTE: group is inefficient with larger datasets
         // TODO: Convert group operations to map/reduce algorithm to solve both those issues
+
+        // reduce command - count unique songs belonging to the album as we are grouping them
+        // @formatter:off
+        String reduce = 
+                "function(obj,prev) { "
+                    + " if(prev.songList[obj.name] == null)"
+                        + "{"
+                            + " prev.songList[obj.name] = 1;"
+                            + " prev.count += 1; "
+                        + "}"
+                 + "}";
+        // @formatter:on
+
         @SuppressWarnings("unchecked")
         List<BasicDBObject> albums =
                 (List<BasicDBObject>) songStatisticsCollection.group(
@@ -49,14 +62,17 @@ public class MongoDbSongStore implements SongStore {
                                 SONG_STATISTICS_ALBUM_NAME,
                                 true),
                         new BasicDBObject(),
-                        new BasicDBObject().append("count", 0),
-                        "function(obj,prev) { prev.dummy += 1; }");
+                        new BasicDBObject().append("count", 0).append(
+                                "songList",
+                                new BasicDBObject()),
+                        reduce);
 
         List<Album> albumsToReturn = new ArrayList<Album>(albums.size());
         for (BasicDBObject album : albums) {
-            albumsToReturn.add(new Album().withArtistName(
-                    album.getString(SONG_STATISTICS_ARTIST_NAME)).withName(
-                    album.getString(SONG_STATISTICS_ALBUM_NAME)));
+            albumsToReturn.add(new Album()
+                    .withArtistName(album.getString(SONG_STATISTICS_ARTIST_NAME))
+                    .withName(album.getString(SONG_STATISTICS_ALBUM_NAME))
+                    .withSongCount(album.getInt("count")));
         }
 
         Collections.sort(albumsToReturn, new Comparator<Album>() {

@@ -12,6 +12,7 @@ public class Album {
 
     private String artistName;
     private String name;
+    private Integer songCount;
 
     /**
      * Name of the artist.
@@ -36,6 +37,17 @@ public class Album {
     }
 
     /**
+     * Number of songs in the album.
+     * 
+     * @param songCount Number of songs in the album.
+     * @return This.
+     */
+    public final Album withSongCount(Integer songCount) {
+        this.songCount = songCount;
+        return this;
+    }
+
+    /**
      * Get the name of the artist.
      * 
      * @return Name of the artist.
@@ -51,6 +63,15 @@ public class Album {
      */
     public final String getName() {
         return name;
+    }
+
+    /**
+     * Get the number of songs in the album.
+     * 
+     * @return Number of songs in the album.
+     */
+    public final Integer getSongCount() {
+        return songCount;
     }
 
     @Override
