@@ -152,7 +152,8 @@ public class HistoryServiceImpl implements HistoryService {
     @Override
     public final List<String> getQuarterlySnapshots() throws StatisticsException {
         List<Snapshot> snapshots =
-                snapshotFilter.filterByLastInQuarter(snapshotStore.getSnapshots());
+                snapshotFilter.filterByLastInQuarter(snapshotStore
+                        .getSnapshotsWithoutStatistics());
         List<String> snapshotNames = new ArrayList<String>(snapshots.size());
         for (Snapshot snapshot : snapshots) {
             snapshotNames.add(snapshot.getName());
