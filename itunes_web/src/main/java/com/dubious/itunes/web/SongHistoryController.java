@@ -88,6 +88,29 @@ public class SongHistoryController {
     }
 
     /**
+     * Retrieve a zeroed data set of song history. It returns a number of elements equal to the
+     * number of quarters expected for song history.
+     * 
+     * @return Zeroed data set.
+     * @throws StatisticsException On error.
+     */
+    @RequestMapping(value = "/song/getEmptyHistory.do", method = RequestMethod.GET)
+    @ResponseBody
+    public final List<Integer> getEmptyHistory() throws StatisticsException {
+
+        if (quarterlySnapshotHistory == null) {
+            quarterlySnapshotHistory = historyService.getQuarterlySnapshots();
+        }
+
+        List<Integer> emptyStatistics = new ArrayList<Integer>(quarterlySnapshotHistory.size());
+        for (int i = 0; i < quarterlySnapshotHistory.size(); i++) {
+            emptyStatistics.add(0);
+        }
+
+        return emptyStatistics;
+    }
+
+    /**
      * Clear the cached view of quarterly snapshots.
      */
     public final void clearQuarterlySnapshotHistoryInCache() {

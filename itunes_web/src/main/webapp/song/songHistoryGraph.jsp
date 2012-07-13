@@ -19,7 +19,7 @@
     
     $(document).ready(function(){
         graph = new Graph(document.getElementById('graph'));
-        graph.draw([0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+        initializeGraph();
         
         $('#songSubmit').click(function(event) {
             drawGraphFromForm();
@@ -90,6 +90,20 @@
             })
             .always(function() {
                 node.setLazyNodeStatus(DTNodeStatus_Ok);
+            });
+    }
+    
+    function initializeGraph()
+    {
+        $.ajax({
+            url: 'getEmptyHistory.do',
+            dataType: 'json',
+            async: false})
+            .fail(function(jqXHR, textStatus) {
+                alert('Request Failed: ' + textStatus);
+            }).done(function(data) {
+                graph.draw(data);
+            }).always(function() {
             });
     }
     

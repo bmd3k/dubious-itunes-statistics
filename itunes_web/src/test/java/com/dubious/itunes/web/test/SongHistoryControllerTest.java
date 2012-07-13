@@ -68,7 +68,7 @@ public class SongHistoryControllerTest {
     }
 
     /**
-     * Test the basic functionality.
+     * Test getting song history.
      * 
      * @throws StatisticsException On unexpected error.
      */
@@ -80,6 +80,16 @@ public class SongHistoryControllerTest {
     }
 
     /**
+     * Test getting empty song history.
+     * 
+     * @throws StatisticsException On unexpected error.
+     */
+    @Test
+    public final void testGetEmptyHistory() throws StatisticsException {
+        assertEquals(asList(0, 0), songHistoryController.getEmptyHistory());
+    }
+
+    /**
      * Test that on multiple calls to GetSongHistory the quarterly snapshot is determined only once.
      * 
      * @throws StatisticsException On unexpected error.
@@ -87,13 +97,17 @@ public class SongHistoryControllerTest {
     @Test
     public final void testGetQuarterlySnapshotsCalledOnce() throws StatisticsException {
         songHistoryController.clearQuarterlySnapshotHistoryInCache();
-        assertEquals(
-                asList(4, 2),
-                songHistoryController.getSongHistory("artist", "album", "song"));
+        songHistoryController.getSongHistory("artist", "album", "song");
         verify(historyService, times(1)).getQuarterlySnapshots();
-        assertEquals(
-                asList(4, 2),
-                songHistoryController.getSongHistory("artist", "album", "song"));
+        songHistoryController.getSongHistory("artist", "album", "song");
+        songHistoryController.getEmptyHistory();
         verify(historyService, times(1)).getQuarterlySnapshots();
+
+        songHistoryController.clearQuarterlySnapshotHistoryInCache();
+        songHistoryController.getEmptyHistory();
+        verify(historyService, times(2)).getQuarterlySnapshots();
+        songHistoryController.getSongHistory("artist", "album", "song");
+        songHistoryController.getEmptyHistory();
+        verify(historyService, times(2)).getQuarterlySnapshots();
     }
 }
