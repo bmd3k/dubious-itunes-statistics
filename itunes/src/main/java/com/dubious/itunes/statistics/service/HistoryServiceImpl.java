@@ -1,9 +1,6 @@
 package com.dubious.itunes.statistics.service;
 
-import static java.util.Collections.sort;
-
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,14 +23,17 @@ public class HistoryServiceImpl implements HistoryService {
     private static final Integer MIN_SNAPSHOTS_FOR_HISTORY = 2;
 
     private SnapshotStore snapshotStore;
+    private SnapshotFilter snapshotFilter;
 
     /**
      * Constructor.
      * 
-     * @param snapshotStore {@link ReadOnlySnapshotStore} to inject.
+     * @param snapshotStore {@link SnapshotStore} to inject.
+     * @param snapshotFilter {@link SnapshotFilter} to inject.
      */
-    public HistoryServiceImpl(SnapshotStore snapshotStore) {
+    public HistoryServiceImpl(SnapshotStore snapshotStore, SnapshotFilter snapshotFilter) {
         this.snapshotStore = snapshotStore;
+        this.snapshotFilter = snapshotFilter;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class HistoryServiceImpl implements HistoryService {
         // order the snapshots by date and choose the last as the root of the histories. It means
         // that any songs that the earlier snapshots have that is not in the latest will be ignored.
         // This is ok because these tend to be songs that have been deleted from the system.
-        sortSnapshotsByDate(snapshots);
+        snapshotFilter.sortSnapshotsByDate(snapshots);
         Snapshot latestSnapshot = snapshots.get(snapshots.size() - 1);
 
         SnapshotsHistory history = new SnapshotsHistory();
@@ -133,7 +133,7 @@ public class HistoryServiceImpl implements HistoryService {
         }
 
         List<Snapshot> snapshots = new ArrayList<Snapshot>(snapshotsByName.values());
-        sortSnapshotsByDate(snapshots);
+        snapshotFilter.sortSnapshotsByDate(snapshots);
 
         SongHistory songHistory =
                 new SongHistory()
@@ -149,22 +149,14 @@ public class HistoryServiceImpl implements HistoryService {
         return songHistory;
     }
 
-    /**
-     * Sort snapshots by the date of the snapshots.
-     * 
-     * @param snapshots The snapshots to sort.
-     */
-    private void sortSnapshotsByDate(List<Snapshot> snapshots) {
-        sort(snapshots, new Comparator<Snapshot>() {
-            @Override
-            public int compare(Snapshot first, Snapshot second) {
-                return first.getDate().compareTo(second.getDate());
-            }
-        });
-    }
-
     @Override
     public final List<String> getQuarterlySnapshots() throws StatisticsException {
-        throw new UnsupportedOperationException("Not Yet Implemented");
+        List<Snapshot> snapshots =
+                snapshotFilter.filterByLastInQuarter(snapshotStore.getSnapshots());
+        List<String> snapshotNames = new ArrayList<String>(snapshots.size());
+        for (Snapshot snapshot : snapshots) {
+            snapshotNames.add(snapshot.getName());
+        }
+        return snapshotNames;
     }
 }

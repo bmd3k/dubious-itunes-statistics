@@ -15,6 +15,7 @@
 
     <bean name="historyService" class="com.dubious.itunes.statistics.service.HistoryServiceImpl">
         <constructor-arg name="snapshotStore" ref="mongoDbSnapshotStore"/>
+        <constructor-arg name="snapshotFilter" ref="snapshotFilter"/>
     </bean>
 
     <bean name="fileOutputService" class="com.dubious.itunes.statistics.service.FileOutputServiceImpl">

@@ -38,11 +38,11 @@ public interface HistoryService {
             List<String> snapshots) throws StatisticsException;
 
     /**
-     * Get a "quarterly" set of snapshots. There is one snapshot returned representing each quarter
-     * of a year. The snapshot returned is generally the last snapshot of the quarter although
-     * sometimes exceptions are made.
+     * Determine a "quarterly" set of snapshots. One snapshot is chosen to represent each quarter of
+     * a year. The snapshot chosen is generally the last snapshot of the quarter although sometimes
+     * exceptions are made.
      * 
-     * @return The "quarterly" set of snapshots.
+     * @return The names of the "quarterly" set of snapshots.
      * @throws StatisticsException On error.
      */
     List<String> getQuarterlySnapshots() throws StatisticsException;

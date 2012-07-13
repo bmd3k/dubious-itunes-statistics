@@ -1,5 +1,7 @@
 package com.dubious.itunes.statistics.service;
 
+import static java.util.Collections.sort;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,13 +31,7 @@ public class SnapshotFilter {
         }
 
         List<Snapshot> sortedSnapshots = new ArrayList<Snapshot>(snapshots);
-        Collections.sort(sortedSnapshots, new Comparator<Snapshot>() {
-
-            @Override
-            public int compare(Snapshot o1, Snapshot o2) {
-                return o1.getDate().compareTo(o2.getDate());
-            }
-        });
+        sortSnapshotsByDate(sortedSnapshots);
 
         // List is now sorted. Iterate through the snapshots and find the latest in each quarter.
         List<Snapshot> filteredSnapshots = new ArrayList<Snapshot>();
@@ -59,5 +55,19 @@ public class SnapshotFilter {
         }
 
         return filteredSnapshots;
+    }
+
+    /**
+     * Sort snapshots by the date of the snapshots.
+     * 
+     * @param snapshots The snapshots to sort.
+     */
+    public final void sortSnapshotsByDate(List<Snapshot> snapshots) {
+        sort(snapshots, new Comparator<Snapshot>() {
+            @Override
+            public int compare(Snapshot first, Snapshot second) {
+                return first.getDate().compareTo(second.getDate());
+            }
+        });
     }
 }
