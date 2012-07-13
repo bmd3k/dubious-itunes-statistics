@@ -31,6 +31,12 @@
         <constructor-arg name="songStore" ref="mongoDbSongStore"/>
     </bean>
     
+    <!-- 
+      -
+      - Additional Logic
+      -
+      -->
+    <bean name="snapshotFilter" class="com.dubious.itunes.statistics.service.SnapshotFilter"/>
     
     <!-- 
       -

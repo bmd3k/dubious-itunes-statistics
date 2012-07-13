@@ -36,4 +36,14 @@ public interface HistoryService {
             String albumName,
             String songName,
             List<String> snapshots) throws StatisticsException;
+
+    /**
+     * Get a "quarterly" set of snapshots. There is one snapshot returned representing each quarter
+     * of a year. The snapshot returned is generally the last snapshot of the quarter although
+     * sometimes exceptions are made.
+     * 
+     * @return The "quarterly" set of snapshots.
+     * @throws StatisticsException On error.
+     */
+    List<String> getQuarterlySnapshots() throws StatisticsException;
 }

@@ -162,4 +162,9 @@ public class HistoryServiceImpl implements HistoryService {
             }
         });
     }
+
+    @Override
+    public final List<String> getQuarterlySnapshots() throws StatisticsException {
+        throw new UnsupportedOperationException("Not Yet Implemented");
+    }
 }
