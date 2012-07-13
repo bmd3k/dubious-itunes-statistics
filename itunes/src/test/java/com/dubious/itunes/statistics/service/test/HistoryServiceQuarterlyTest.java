@@ -32,8 +32,6 @@ public class HistoryServiceQuarterlyTest {
     @Resource(name = "historyService")
     private HistoryService historyService;
 
-    // TODO: Need to ensure the Store-layer returns objects without history
-
     /**
      * Tear down tests.
      * 

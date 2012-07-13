@@ -1,7 +1,6 @@
 package com.dubious.itunes.web;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -50,21 +49,7 @@ public class SongHistoryController {
     /**
      * Describes the set of snapshots that are the "Quarterly View".
      */
-    public static final List<String> QUARTERLY_SNAPSHOT_HISTORY = Arrays.asList(
-            "080930 - Music.txt",
-            "081218 - Music.txt",
-            "090330 - Music.txt",
-            "090625 - Music.txt",
-            "090930 - Music.txt",
-            "091230 - Music.txt",
-            "100324 - Music.txt",
-            "100628 - Music.txt",
-            "100930 - Music.txt",
-            "101218 - Music.txt",
-            "110330 - Music.txt",
-            "110623 - Music.txt",
-            "111006 - Music.txt",
-            "111228 - Music.txt");
+    private static List<String> quarterlySnapshotHistory = null;
 
     /**
      * Retrieve the differences in play counts of the song throughout its history.
@@ -82,12 +67,16 @@ public class SongHistoryController {
             @RequestParam String albumName,
             @RequestParam String songName) throws StatisticsException {
 
+        if (quarterlySnapshotHistory == null) {
+            quarterlySnapshotHistory = historyService.getQuarterlySnapshots();
+        }
+
         SongHistory songHistory =
                 analysisService.enrichSongHistory(historyService.generateSongHistory(
                         artistName,
                         albumName,
                         songName,
-                        QUARTERLY_SNAPSHOT_HISTORY));
+                        quarterlySnapshotHistory));
 
         List<Integer> songStatistics = new ArrayList<Integer>();
         for (Map.Entry<String, SongStatistics> statistics : songHistory
@@ -96,6 +85,13 @@ public class SongHistoryController {
             songStatistics.add(statistics.getValue().getDifference());
         }
         return songStatistics;
+    }
+
+    /**
+     * Clear the cached view of quarterly snapshots.
+     */
+    public final void clearQuarterlySnapshotHistoryInCache() {
+        quarterlySnapshotHistory = null;
     }
 
 }

@@ -3,8 +3,11 @@ package com.dubious.itunes.web.test;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.dubious.itunes.statistics.exception.StatisticsException;
@@ -19,17 +22,20 @@ import com.dubious.itunes.web.SongHistoryController;
  */
 public class SongHistoryControllerTest {
 
+    private SongHistoryController songHistoryController;
+    private HistoryService historyService;
+
     /**
-     * Test.
+     * Setup.
      * 
      * @throws StatisticsException On unexpected error.
      */
-    @Test
-    public final void testGetSongHistory() throws StatisticsException {
-        HistoryService historyService = mock(HistoryService.class);
+    @Before
+    public final void setUp() throws StatisticsException {
+
+        historyService = mock(HistoryService.class);
         AnalysisService analysisService = mock(AnalysisService.class);
-        SongHistoryController songHistoryController =
-                new SongHistoryController(historyService, analysisService);
+        songHistoryController = new SongHistoryController(historyService, analysisService);
 
         SongHistory fromHistory =
                 new SongHistory()
@@ -49,16 +55,45 @@ public class SongHistoryControllerTest {
                         .addSongStatistics(
                                 "snapshot2",
                                 new SongStatistics().withPlayCount(6).withDifference(2));
+
+        when(historyService.getQuarterlySnapshots())
+                .thenReturn(asList("snapshot1", "snapshot2"));
         when(
                 historyService.generateSongHistory(
                         "artist",
                         "album",
                         "song",
-                        SongHistoryController.QUARTERLY_SNAPSHOT_HISTORY)).thenReturn(
-                fromHistory);
+                        asList("snapshot1", "snapshot2"))).thenReturn(fromHistory);
         when(analysisService.enrichSongHistory(fromHistory)).thenReturn(fromAnalysis);
+    }
+
+    /**
+     * Test the basic functionality.
+     * 
+     * @throws StatisticsException On unexpected error.
+     */
+    @Test
+    public final void testGetSongHistory() throws StatisticsException {
         assertEquals(
                 asList(4, 2),
                 songHistoryController.getSongHistory("artist", "album", "song"));
+    }
+
+    /**
+     * Test that on multiple calls to GetSongHistory the quarterly snapshot is determined only once.
+     * 
+     * @throws StatisticsException On unexpected error.
+     */
+    @Test
+    public final void testGetQuarterlySnapshotsCalledOnce() throws StatisticsException {
+        songHistoryController.clearQuarterlySnapshotHistoryInCache();
+        assertEquals(
+                asList(4, 2),
+                songHistoryController.getSongHistory("artist", "album", "song"));
+        verify(historyService, times(1)).getQuarterlySnapshots();
+        assertEquals(
+                asList(4, 2),
+                songHistoryController.getSongHistory("artist", "album", "song"));
+        verify(historyService, times(1)).getQuarterlySnapshots();
     }
 }
