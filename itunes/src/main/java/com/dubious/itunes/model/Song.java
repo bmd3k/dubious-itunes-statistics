@@ -10,9 +10,26 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public class Song {
 
+    // TODO: Things to consider:
+
+    // TODO: things to consider when loading from file:
+    // TODO: is album and track number available?
+    // TODO: album available, track number not available
+    // TODO: album not available, track number available
+    // TODO: album not available, track number not available
+    // TODO: only 1 to 3 songs in album (maybe indicates a problem in the data)
+
+    // TODO: things to consider in save and load with mongo:
+    // TODO: simple case: both album and track number available
+    // TODO: album not available
+    // TODO: album available but track not available
+    // TODO: Never should have album not available but track available (check for this condition)
+    // TODO: how do display album with 1 to 3 songs?
+
     private String artistName;
     private String albumName;
     private String name;
+    private Integer trackNumber;
 
     /**
      * Name of the artist.
@@ -48,6 +65,17 @@ public class Song {
     }
 
     /**
+     * Track number of the song within the album.
+     * 
+     * @param trackNumber Track number of the song within the album.
+     * @return This
+     */
+    public final Song withTrackNumber(Integer trackNumber) {
+        this.trackNumber = trackNumber;
+        return this;
+    }
+
+    /**
      * Get the name of the artist.
      * 
      * @return Name of the artist.
@@ -72,6 +100,15 @@ public class Song {
      */
     public final String getName() {
         return name;
+    }
+
+    /**
+     * Get the track number of the song within the album.
+     * 
+     * @return track number of the song within the album.
+     */
+    public final Integer getTrackNumber() {
+        return trackNumber;
     }
 
     @Override

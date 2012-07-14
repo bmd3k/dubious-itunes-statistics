@@ -1,5 +1,7 @@
 package com.dubious.itunes.statistics.store.mongodb;
 
+import static com.dubious.itunes.statistics.store.mongodb.MongoDbSongStore.SONGS_COLLECTION_NAME;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
 import com.dubious.itunes.statistics.store.SnapshotStore;
+import com.dubious.itunes.statistics.store.SongStore;
 import com.dubious.itunes.statistics.store.StoreException;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
@@ -27,6 +30,7 @@ import com.mongodb.WriteConcern;
 public class MongoDbSnapshotStore implements SnapshotStore {
 
     private DB mongoDb;
+    private SongStore songStore;
     private DBCollection snapshotCollection;
     private DBCollection songStatisticsCollection;
 
@@ -72,9 +76,11 @@ public class MongoDbSnapshotStore implements SnapshotStore {
      * Constructor.
      * 
      * @param mongoDbDataSource The mongodb data source.
+     * @param songStore {@link SongStore} to inject.
      */
-    public MongoDbSnapshotStore(MongoDbDataSource mongoDbDataSource) {
+    public MongoDbSnapshotStore(MongoDbDataSource mongoDbDataSource, SongStore songStore) {
         this.mongoDb = mongoDbDataSource.getDB();
+        this.songStore = songStore;
         snapshotCollection = mongoDb.getCollection(SNAPSHOT_COLLECTION_NAME);
         snapshotCollection.setWriteConcern(WriteConcern.SAFE);
         songStatisticsCollection = mongoDb.getCollection(SONG_STATISTICS_COLLECTION_NAME);
@@ -175,6 +181,7 @@ public class MongoDbSnapshotStore implements SnapshotStore {
                 .add(SNAPSHOT_DATE, getDate(snapshot.getDate()))
                 .get());
 
+        songStore.writeSongs(snapshot.getStatistics().keySet());
         writeSongStatistics(snapshot);
     }
 
@@ -201,6 +208,7 @@ public class MongoDbSnapshotStore implements SnapshotStore {
     public final void deleteAll() {
         mongoDb.getCollection(SNAPSHOT_COLLECTION_NAME).remove(new BasicDBObject());
         mongoDb.getCollection(SONG_STATISTICS_COLLECTION_NAME).remove(new BasicDBObject());
+        mongoDb.getCollection(SONGS_COLLECTION_NAME).remove(new BasicDBObject());
     }
 
     /**

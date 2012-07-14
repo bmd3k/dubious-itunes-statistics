@@ -1,9 +1,14 @@
 package com.dubious.itunes.statistics.model;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 import com.dubious.itunes.model.Song;
 
 /**
- * Represents the functional key of a Song.
+ * Abstract class representing the functional key of a Song.
  * 
  * @param <T>
  */
@@ -90,5 +95,30 @@ public abstract class SongKey<T extends SongKey<T>> {
      */
     public final String getSongName() {
         return songName;
+    }
+
+    @Override
+    public final boolean equals(Object other) {
+        if (other == null) {
+            return false;
+        }
+        if (other == this) {
+            return true;
+        }
+        if (other.getClass() != getClass()) {
+            return false;
+        }
+
+        return EqualsBuilder.reflectionEquals(this, other);
+    }
+
+    @Override
+    public final int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public final String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
 }

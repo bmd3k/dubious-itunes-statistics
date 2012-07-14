@@ -46,13 +46,14 @@
       -->
     <bean name="mongoDbSnapshotStore" class="com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore">
         <constructor-arg name="mongoDbDataSource" ref="mongoDbDataSource"/>
+        <constructor-arg name="songStore" ref="mongoDbSongStore"/>
     </bean>
     
     <bean name="mongoDbSongStore" class="com.dubious.itunes.statistics.store.mongodb.MongoDbSongStore">
         <constructor-arg name="mongoDbDataSource" ref="mongoDbDataSource"/>
     </bean>
     
-    <bean name="mongoDbDataSource" class="com.dubious.itunes.statistics.store.mongodb.MongoDbDataSource">
+    <bean name="mongoDbDataSource" class="com.dubious.itunes.statistics.store.mongodb.MongoDbDataSourceImpl">
         <constructor-arg name="host" value="${store.mongodb.host}"/>
         <constructor-arg name="dbName" value="${store.mongodb.db.name}"/>
     </bean>

@@ -4,11 +4,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
 /**
  * Statistical history of a song.
  */
@@ -47,30 +42,5 @@ public class SongHistory extends SongKey<SongHistory> {
      */
     public final Map<String, SongStatistics> getSongStatistics() {
         return Collections.unmodifiableMap(songStatistics);
-    }
-
-    @Override
-    public final boolean equals(Object other) {
-        if (other == null) {
-            return false;
-        }
-        if (other == this) {
-            return true;
-        }
-        if (other.getClass() != getClass()) {
-            return false;
-        }
-
-        return EqualsBuilder.reflectionEquals(this, other);
-    }
-
-    @Override
-    public final int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
-    }
-
-    @Override
-    public final String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
     }
 }

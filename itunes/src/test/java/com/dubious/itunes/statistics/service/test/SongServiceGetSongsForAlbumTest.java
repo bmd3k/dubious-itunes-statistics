@@ -39,27 +39,38 @@ public class SongServiceGetSongsForAlbumTest {
     private Song artist1Album1Song1 = new Song()
             .withArtistName("artist1")
             .withAlbumName("album1")
-            .withName("song1");
+            .withName("songOne")
+            .withTrackNumber(1);
     private Song artist1Album1Song2 = new Song()
             .withArtistName("artist1")
             .withAlbumName("album1")
-            .withName("song2");
+            .withName("songTwo")
+            .withTrackNumber(2);
     private Song artist1Album1Song3 = new Song()
             .withArtistName("artist1")
             .withAlbumName("album1")
-            .withName("song3");
+            .withName("songThree")
+            .withTrackNumber(3);
+    private Song artist1Album1Song4 = new Song()
+            .withArtistName("artist1")
+            .withAlbumName("album1")
+            .withName("songFour")
+            .withTrackNumber(4);
     private Song artist1Album2Song1 = new Song()
             .withArtistName("artist1")
             .withAlbumName("album2")
-            .withName("song1");
+            .withName("songOne")
+            .withTrackNumber(1);
     private Song artist2Album1Song1 = new Song()
             .withArtistName("artist2")
             .withAlbumName("album1")
-            .withName("song1");
+            .withName("songOne")
+            .withTrackNumber(1);
     private Song artist2Album1Song2 = new Song()
             .withArtistName("artist2")
             .withAlbumName("album1")
-            .withName("song2");
+            .withName("songTwo")
+            .withTrackNumber(2);
 
     /**
      * Write snapshot to the store.
@@ -150,11 +161,16 @@ public class SongServiceGetSongsForAlbumTest {
                         artist1Album1Song1,
                         artist2Album1Song1,
                         artist1Album2Song1,
+                        artist1Album1Song4,
                         artist1Album1Song3,
                         artist1Album1Song2));
 
         assertEquals(
-                asList(artist1Album1Song1, artist1Album1Song2, artist1Album1Song3),
+                asList(
+                        artist1Album1Song1,
+                        artist1Album1Song2,
+                        artist1Album1Song3,
+                        artist1Album1Song4),
                 songService.getSongsForAlbum("artist1", "album1"));
         assertEquals(
                 asList(artist1Album2Song1),

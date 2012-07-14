@@ -8,6 +8,12 @@
   <name>itunes</name>
   <url>http://maven.apache.org</url>
   
+  <!-- Note: Some useful mvn commands:
+   
+       mvn install -> builds, tests, and installs in repository
+       mvn eclipse:eclipse -> generates an eclipse project 
+   -->
+  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
@@ -36,6 +42,12 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>1.9.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

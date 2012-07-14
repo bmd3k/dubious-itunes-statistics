@@ -1,11 +1,7 @@
 package com.dubious.itunes.statistics.store.mongodb;
 
-import static com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore.SONG_STATISTICS_ALBUM_NAME;
-import static com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore.SONG_STATISTICS_ARTIST_NAME;
-import static com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore.SONG_STATISTICS_COLLECTION_NAME;
-import static com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore.SONG_STATISTICS_SONG_NAME;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -14,8 +10,10 @@ import com.dubious.itunes.model.Album;
 import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.store.SongStore;
 import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.WriteConcern;
 
 /**
@@ -23,8 +21,29 @@ import com.mongodb.WriteConcern;
  */
 public class MongoDbSongStore implements SongStore {
 
+    /**
+     * Name of Songs collection.
+     */
+    public static final String SONGS_COLLECTION_NAME = "song";
+    /**
+     * artist_name field in Songs collection.
+     */
+    public static final String SONGS_ARTIST_NAME = "artist_name";
+    /**
+     * album_name field in Songs collection.
+     */
+    public static final String SONGS_ALBUM_NAME = "album_name";
+    /**
+     * name field in Songs collection.
+     */
+    public static final String SONGS_SONG_NAME = "name";
+    /**
+     * track_number field in Songs collection.
+     */
+    public static final String SONGS_TRACK_NUMBER = "track_number";
+
     private DB mongoDb;
-    private DBCollection songStatisticsCollection;
+    private DBCollection songsCollection;
 
     /**
      * Constructor.
@@ -33,8 +52,28 @@ public class MongoDbSongStore implements SongStore {
      */
     public MongoDbSongStore(MongoDbDataSource mongoDbDataSource) {
         this.mongoDb = mongoDbDataSource.getDB();
-        songStatisticsCollection = mongoDb.getCollection(SONG_STATISTICS_COLLECTION_NAME);
-        songStatisticsCollection.setWriteConcern(WriteConcern.SAFE);
+        songsCollection = mongoDb.getCollection(SONGS_COLLECTION_NAME);
+        songsCollection.setWriteConcern(WriteConcern.SAFE);
+    }
+
+    @Override
+    public final void writeSongs(Collection<Song> songs) {
+        for (Song song : songs) {
+            songsCollection.update(
+                    new BasicDBObjectBuilder()
+                            .add(SONGS_ARTIST_NAME, song.getArtistName())
+                            .add(SONGS_ALBUM_NAME, song.getAlbumName())
+                            .add(SONGS_SONG_NAME, song.getName())
+                            .get(),
+                    new BasicDBObjectBuilder()
+                            .add(SONGS_ARTIST_NAME, song.getArtistName())
+                            .add(SONGS_ALBUM_NAME, song.getAlbumName())
+                            .add(SONGS_SONG_NAME, song.getName())
+                            .add(SONGS_TRACK_NUMBER, song.getTrackNumber())
+                            .get(),
+                    true,
+                    false);
+        }
     }
 
     @Override
@@ -57,9 +96,9 @@ public class MongoDbSongStore implements SongStore {
 
         @SuppressWarnings("unchecked")
         List<BasicDBObject> albums =
-                (List<BasicDBObject>) songStatisticsCollection.group(
-                        new BasicDBObject().append(SONG_STATISTICS_ARTIST_NAME, true).append(
-                                SONG_STATISTICS_ALBUM_NAME,
+                (List<BasicDBObject>) songsCollection.group(
+                        new BasicDBObject().append(SONGS_ARTIST_NAME, true).append(
+                                SONGS_ALBUM_NAME,
                                 true),
                         new BasicDBObject(),
                         new BasicDBObject().append("count", 0).append(
@@ -70,8 +109,8 @@ public class MongoDbSongStore implements SongStore {
         List<Album> albumsToReturn = new ArrayList<Album>(albums.size());
         for (BasicDBObject album : albums) {
             albumsToReturn.add(new Album()
-                    .withArtistName(album.getString(SONG_STATISTICS_ARTIST_NAME))
-                    .withName(album.getString(SONG_STATISTICS_ALBUM_NAME))
+                    .withArtistName(album.getString(SONGS_ARTIST_NAME))
+                    .withName(album.getString(SONGS_ALBUM_NAME))
                     .withSongCount(album.getInt("count")));
         }
 
@@ -93,31 +132,22 @@ public class MongoDbSongStore implements SongStore {
 
     @Override
     public final List<Song> getSongsForAlbum(String artistName, String albumName) {
-        @SuppressWarnings("unchecked")
-        List<BasicDBObject> songs =
-                (List<BasicDBObject>) songStatisticsCollection.group(
-                        new BasicDBObject().append(SONG_STATISTICS_SONG_NAME, true),
-                        new BasicDBObject()
-                                .append(SONG_STATISTICS_ARTIST_NAME, artistName)
-                                .append(SONG_STATISTICS_ALBUM_NAME, albumName),
-                        new BasicDBObject().append("count", 0),
-                        "function(obj,prev) { prev.count += 1; }");
+        DBCursor resultSet =
+                songsCollection.find(
+                        new BasicDBObject().append(SONGS_ARTIST_NAME, artistName).append(
+                                SONGS_ALBUM_NAME,
+                                albumName)).sort(
+                        new BasicDBObject().append(SONGS_TRACK_NUMBER, 1));
 
-        List<Song> songsToReturn = new ArrayList<Song>(songs.size());
-        for (BasicDBObject song : songs) {
+        List<Song> songsToReturn = new ArrayList<Song>(resultSet.size());
+        while (resultSet.hasNext()) {
+            BasicDBObject song = (BasicDBObject) resultSet.next();
             songsToReturn.add(new Song()
                     .withArtistName(artistName)
                     .withAlbumName(albumName)
-                    .withName(song.getString(SONG_STATISTICS_SONG_NAME)));
+                    .withName(song.getString(SONGS_SONG_NAME))
+                    .withTrackNumber(song.getInt(SONGS_TRACK_NUMBER)));
         }
-
-        Collections.sort(songsToReturn, new Comparator<Song>() {
-
-            @Override
-            public int compare(Song song1, Song song2) {
-                return song1.getName().compareTo(song2.getName());
-            }
-        });
 
         return songsToReturn;
     }
