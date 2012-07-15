@@ -34,6 +34,7 @@ public class FileSnapshotStore implements SnapshotStore {
     private static final Integer COLUMN_INDEX_ARTIST_NAME = 1;
     private static final Integer COLUMN_INDEX_ALBUM_NAME = 3;
     private static final Integer COLUMN_INDEX_PLAY_COUNT = 21;
+    private static final Integer COLUMN_INDEX_TRACK_NUMBER = 10;
 
     private static final String COLUMN_SONG_NAME = "Name";
     private static final String COLUMN_ARTIST_NAME = "Artist";
@@ -41,6 +42,7 @@ public class FileSnapshotStore implements SnapshotStore {
     // Note that some versions of the file have "Plays" column while others have "Play Count" column
     private static final String COLUMN_PLAYS = "Plays";
     private static final String COLUMN_PLAY_COUNT = "Play Count";
+    private static final String COLUMN_TRACK_NUMBER = "Track Number";
 
     private static final String MATCHING_FILE_PATTERN = "\\d\\d\\d\\d\\d\\d - Music.txt";
 
@@ -177,18 +179,26 @@ public class FileSnapshotStore implements SnapshotStore {
         // check the fields of interest exist where we expect them to be
         String[] columns = headerLine.split("\t", -1);
         if (!columns[COLUMN_INDEX_SONG_NAME].equals(COLUMN_SONG_NAME)) {
-            throw new FileStoreException("Column [Name] does not exist where it should exist.");
+            throw new FileStoreException("Column [" + COLUMN_SONG_NAME
+                    + "] does not exist where it should exist.");
         }
         if (!columns[COLUMN_INDEX_ARTIST_NAME].equals(COLUMN_ARTIST_NAME)) {
-            throw new FileStoreException("Column [Artist] does not exist where it should exist.");
+            throw new FileStoreException("Column [" + COLUMN_ARTIST_NAME
+                    + "] does not exist where it should exist.");
         }
         if (!columns[COLUMN_INDEX_ALBUM_NAME].equals(COLUMN_ALBUM_NAME)) {
-            throw new FileStoreException("Column [Album] does not exist where it should exist.");
+            throw new FileStoreException("Column [" + COLUMN_ALBUM_NAME
+                    + "] does not exist where it should exist.");
         }
         if (!columns[COLUMN_INDEX_PLAY_COUNT].equals(COLUMN_PLAYS)
                 && !columns[COLUMN_INDEX_PLAY_COUNT].equals(COLUMN_PLAY_COUNT)) {
             // older versions of the file use a different column name
-            throw new FileStoreException("Column [Plays] does not exist where it should exist.");
+            throw new FileStoreException("Column [" + COLUMN_PLAYS + "] or ["
+                    + COLUMN_PLAY_COUNT + "] do not exist where it should exist.");
+        }
+        if (!columns[COLUMN_INDEX_TRACK_NUMBER].equals(COLUMN_TRACK_NUMBER)) {
+            throw new FileStoreException("Column [" + COLUMN_TRACK_NUMBER
+                    + "] does not exist where it should exist.");
         }
     }
 
@@ -200,14 +210,17 @@ public class FileSnapshotStore implements SnapshotStore {
      */
     private StatisticsFromLine generateSongStatisticsFromLine(String line) {
         String[] columns = line.split("\t", -1);
-        return new StatisticsFromLine(
-                new Song()
-                        .withArtistName(columns[COLUMN_INDEX_ARTIST_NAME])
-                        .withAlbumName(columns[COLUMN_INDEX_ALBUM_NAME])
-                        .withName(columns[COLUMN_INDEX_SONG_NAME]),
-                new SongStatistics().withPlayCount(Integer
-                        .parseInt(columns[COLUMN_INDEX_PLAY_COUNT].length() == 0 ? "0"
-                                : columns[COLUMN_INDEX_PLAY_COUNT])));
+        Integer trackNumber = null;
+        if (columns[COLUMN_INDEX_TRACK_NUMBER].length() != 0) {
+            trackNumber = Integer.parseInt(columns[COLUMN_INDEX_TRACK_NUMBER]);
+        }
+        return new StatisticsFromLine(new Song()
+                .withArtistName(columns[COLUMN_INDEX_ARTIST_NAME])
+                .withAlbumName(columns[COLUMN_INDEX_ALBUM_NAME])
+                .withName(columns[COLUMN_INDEX_SONG_NAME])
+                .withTrackNumber(trackNumber), new SongStatistics().withPlayCount(Integer
+                .parseInt(columns[COLUMN_INDEX_PLAY_COUNT].length() == 0 ? "0"
+                        : columns[COLUMN_INDEX_PLAY_COUNT])));
     }
 
     /**

@@ -35,17 +35,20 @@ public class FileSnapshotStoreTest {
                     .addStatistic(new Song()
                             .withArtistName("Arctic Monkeys")
                             .withAlbumName("Whatever People Say I Am, That's What I'm Not")
-                            .withName("Mardy Bum"),
+                            .withName("Mardy Bum")
+                            .withTrackNumber(9),
                             new SongStatistics().withPlayCount(61))
                     .addStatistic(new Song()
                             .withArtistName("Nada Surf")
                             .withAlbumName("The Weight is a Gift")
-                            .withName("Blankest Year"),
+                            .withName("Blankest Year")
+                            .withTrackNumber(7),
                             new SongStatistics().withPlayCount(56))
                     .addStatistic(new Song()
                             .withArtistName("Death From Above 1979")
                             .withAlbumName("You're A Woman I'm A Machine")
-                            .withName("Going Steady"),
+                            .withName("Going Steady")
+                            .withTrackNumber(3),
                             new SongStatistics().withPlayCount(55));
     private Snapshot snapshot101130 = 
             new Snapshot()
@@ -54,12 +57,14 @@ public class FileSnapshotStoreTest {
                     .addStatistic(new Song()
                             .withArtistName("Arctic Monkeys")
                             .withAlbumName("Whatever People Say I Am, That's What I'm Not")
-                            .withName("Mardy Bum"),
+                            .withName("Mardy Bum")
+                            .withTrackNumber(9),
                             new SongStatistics().withPlayCount(34))
                     .addStatistic(new Song()
                             .withArtistName("Death From Above 1979")
                             .withAlbumName("You're A Woman I'm A Machine")
-                            .withName("Going Steady"),
+                            .withName("Going Steady")
+                            .withTrackNumber(3),
                             new SongStatistics().withPlayCount(30));
     private Snapshot snapshot091130 = 
             new Snapshot()
@@ -68,13 +73,25 @@ public class FileSnapshotStoreTest {
                     .addStatistic(new Song()
                             .withArtistName("Arctic Monkeys")
                             .withAlbumName("Whatever People Say I Am, That's What I'm Not")
-                            .withName("Mardy Bum"),
+                            .withName("Mardy Bum")
+                            .withTrackNumber(9),
                             new SongStatistics().withPlayCount(4))
                     .addStatistic(new Song()
                             .withArtistName("Death From Above 1979")
                             .withAlbumName("You're A Woman I'm A Machine")
-                            .withName("Going Steady"),
+                            .withName("Going Steady")
+                            .withTrackNumber(3),
                             new SongStatistics().withPlayCount(0));
+    
+    private Snapshot snapshotNoTrackNumber = 
+            new Snapshot()
+                    .withName("050505 - Music.txt")
+                    .withDate(new DateTime(2005, 05, 05, 0, 0))
+                    .addStatistic(new Song()
+                            .withArtistName("Arctic Monkeys")
+                            .withAlbumName("Whatever People Say I Am, That's What I'm Not")
+                            .withName("Mardy Bum"),
+                            new SongStatistics().withPlayCount(4));
     //@formatter:on
 
     /**
@@ -109,6 +126,18 @@ public class FileSnapshotStoreTest {
     }
 
     /**
+     * Test load of snapshot from file where a line has empty track number. It represents null.
+     * 
+     * @throws StoreException On unexpected error.
+     */
+    @Test
+    public final void testWithEmptyTrackNumber() throws StoreException {
+        assertEquals(
+                snapshotNoTrackNumber,
+                fileSnapshotStore.getSnapshot(snapshotNoTrackNumber.getName()));
+    }
+
+    /**
      * Test retrieval all snapshots in the store.
      * 
      * @throws StoreException On unexpected error.
@@ -116,7 +145,7 @@ public class FileSnapshotStoreTest {
     @Test
     public final void testGetSnapshots() throws StoreException {
         assertEquals(
-                asList(snapshot091130, snapshot101130, snapshot111201),
+                asList(snapshotNoTrackNumber, snapshot091130, snapshot101130, snapshot111201),
                 fileSnapshotStore.getSnapshots());
     }
 
@@ -129,6 +158,8 @@ public class FileSnapshotStoreTest {
     public final void testGetSnapshotsWithoutStatistics() throws StoreException {
         assertEquals(
                 asList(
+                        new Snapshot().withName(snapshotNoTrackNumber.getName()).withDate(
+                                snapshotNoTrackNumber.getDate()),
                         new Snapshot().withName(snapshot091130.getName()).withDate(
                                 snapshot091130.getDate()),
                         new Snapshot().withName(snapshot101130.getName()).withDate(
