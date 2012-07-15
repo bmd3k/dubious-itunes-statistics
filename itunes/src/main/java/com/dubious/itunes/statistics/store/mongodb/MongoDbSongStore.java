@@ -142,11 +142,12 @@ public class MongoDbSongStore implements SongStore {
         List<Song> songsToReturn = new ArrayList<Song>(resultSet.size());
         while (resultSet.hasNext()) {
             BasicDBObject song = (BasicDBObject) resultSet.next();
+
             songsToReturn.add(new Song()
                     .withArtistName(artistName)
                     .withAlbumName(albumName)
                     .withName(song.getString(SONGS_SONG_NAME))
-                    .withTrackNumber(song.getInt(SONGS_TRACK_NUMBER)));
+                    .withTrackNumber((Integer) song.get(SONGS_TRACK_NUMBER)));
         }
 
         return songsToReturn;

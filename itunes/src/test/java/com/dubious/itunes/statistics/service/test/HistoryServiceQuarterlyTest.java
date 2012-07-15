@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.dubious.itunes.statistics.exception.StatisticsException;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.service.HistoryService;
+import com.dubious.itunes.statistics.service.SnapshotService;
 import com.dubious.itunes.statistics.store.SnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
 
@@ -29,6 +30,8 @@ public class HistoryServiceQuarterlyTest {
 
     @Resource(name = "mongoDbSnapshotStore")
     private SnapshotStore snapshotStore;
+    @Resource(name = "snapshotService")
+    private SnapshotService snapshotService;
     @Resource(name = "historyService")
     private HistoryService historyService;
 
@@ -59,15 +62,15 @@ public class HistoryServiceQuarterlyTest {
      */
     @Test
     public final void testWithSnapshots() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot().withName("S1").withDate(
+        snapshotService.writeSnapshot(new Snapshot().withName("S1").withDate(
                 new DateMidnight(1980, 5, 23).toDateTime()));
-        snapshotStore.writeSnapshot(new Snapshot().withName("S2").withDate(
+        snapshotService.writeSnapshot(new Snapshot().withName("S2").withDate(
                 new DateMidnight(1980, 5, 26).toDateTime()));
-        snapshotStore.writeSnapshot(new Snapshot().withName("S3").withDate(
+        snapshotService.writeSnapshot(new Snapshot().withName("S3").withDate(
                 new DateMidnight(1980, 5, 21).toDateTime()));
-        snapshotStore.writeSnapshot(new Snapshot().withName("S4").withDate(
+        snapshotService.writeSnapshot(new Snapshot().withName("S4").withDate(
                 new DateMidnight(1980, 7, 23).toDateTime()));
-        snapshotStore.writeSnapshot(new Snapshot().withName("S5").withDate(
+        snapshotService.writeSnapshot(new Snapshot().withName("S5").withDate(
                 new DateMidnight(1980, 7, 28).toDateTime()));
 
         assertEquals(asList("S2", "S5"), historyService.getQuarterlySnapshots());

@@ -15,17 +15,21 @@ public class SnapshotSynchronizeServiceImpl implements SnapshotSynchronizeServic
 
     private SnapshotStore sourceSnapshotStore;
     private SnapshotStore targetSnapshotStore;
+    private SnapshotService targetSnapshotService;
 
     /**
      * Constructor.
      * 
      * @param sourceSnapshotStore {@link SnapshotStore} to inject as synchronization source.
      * @param targetSnapshotStore {@link SnapshotStore} to inject as synchronization target.
+     * @param targetSnapshotService {@link SnapshotService} to inject as synchronization target.
      */
     public SnapshotSynchronizeServiceImpl(SnapshotStore sourceSnapshotStore,
-            SnapshotStore targetSnapshotStore) {
+            SnapshotStore targetSnapshotStore,
+            SnapshotService targetSnapshotService) {
         this.sourceSnapshotStore = sourceSnapshotStore;
         this.targetSnapshotStore = targetSnapshotStore;
+        this.targetSnapshotService = targetSnapshotService;
     }
 
     @Override
@@ -44,7 +48,8 @@ public class SnapshotSynchronizeServiceImpl implements SnapshotSynchronizeServic
         // determine the snapshots to synchronize and do it
         for (String snapshotName : sourceSnapshotNames) {
             if (targetSnapshots.get(snapshotName) == null) {
-                targetSnapshotStore.writeSnapshot(sourceSnapshotStore.getSnapshot(snapshotName));
+                targetSnapshotService.writeSnapshot(sourceSnapshotStore
+                        .getSnapshot(snapshotName));
             }
         }
     }

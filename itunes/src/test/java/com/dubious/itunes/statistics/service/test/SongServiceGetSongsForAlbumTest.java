@@ -181,6 +181,26 @@ public class SongServiceGetSongsForAlbumTest {
     }
 
     /**
+     * Test case where no track number is included in the song information.
+     * 
+     * @throws StatisticsException On unexpected error.
+     */
+    @Test
+    public final void testNoTrackNumber() throws StatisticsException {
+        writeSnapshot(
+                "snapshot1",
+                asList(new Song()
+                        .withArtistName("artist1")
+                        .withAlbumName("album1")
+                        .withName("songTwo")));
+
+        assertEquals(asList(new Song()
+                .withArtistName("artist1")
+                .withAlbumName("album1")
+                .withName("songTwo")), songService.getSongsForAlbum("artist1", "album1"));
+    }
+
+    /**
      * Tear down.
      * 
      * @throws StatisticsException On error.

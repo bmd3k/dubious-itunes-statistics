@@ -22,10 +22,16 @@
         <constructor-arg name="analysisService" ref="analysisService"/>
     </bean>
     
+    <bean name="snapshotService" class="com.dubious.itunes.statistics.service.SnapshotServiceImpl">
+        <constructor-arg name="snapshotValidation" ref="snapshotValidation"/>
+        <constructor-arg name="snapshotStore" ref="mongoDbSnapshotStore"/>
+    </bean>
+    
     <bean name="fileToMongoDbSnapshotSynchronizeService" 
         class="com.dubious.itunes.statistics.service.SnapshotSynchronizeServiceImpl">
         <constructor-arg name="sourceSnapshotStore" ref="fileSnapshotStore"/>
         <constructor-arg name="targetSnapshotStore" ref="mongoDbSnapshotStore"/>
+        <constructor-arg name="targetSnapshotService" ref="snapshotService"/>
     </bean>
     
     <bean name="songService" class="com.dubious.itunes.statistics.service.SongServiceImpl">
@@ -34,10 +40,18 @@
     
     <!-- 
       -
+      - Validation
+      -
+      -->
+    <bean name="snapshotValidation" class="com.dubious.itunes.statistics.validate.SnapshotValidator"/>
+    
+    <!-- 
+      -
       - Additional Logic
       -
       -->
     <bean name="snapshotFilter" class="com.dubious.itunes.statistics.service.SnapshotFilter"/>
+    
     
     <!-- 
       -

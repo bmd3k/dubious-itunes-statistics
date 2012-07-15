@@ -20,7 +20,6 @@ import com.dubious.itunes.statistics.store.SongStore;
 import com.dubious.itunes.statistics.store.StoreException;
 import com.dubious.itunes.statistics.store.mongodb.MongoDbDataSource;
 import com.dubious.itunes.statistics.store.mongodb.MongoDbSnapshotStore;
-import com.dubious.itunes.statistics.store.mongodb.MongoDbSongStore;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 
@@ -42,7 +41,7 @@ public class MongoDbSnapshotStoreInteractionTest {
     public final void before() throws StoreException {
         DB db = mock(DB.class);
         MongoDbDataSource dataSource = mock(MongoDbDataSource.class);
-        songStore = mock(MongoDbSongStore.class);
+        songStore = mock(SongStore.class);
 
         when(db.getCollection(SNAPSHOT_COLLECTION_NAME)).thenReturn(mock(DBCollection.class));
         when(db.getCollection(SONG_STATISTICS_COLLECTION_NAME)).thenReturn(

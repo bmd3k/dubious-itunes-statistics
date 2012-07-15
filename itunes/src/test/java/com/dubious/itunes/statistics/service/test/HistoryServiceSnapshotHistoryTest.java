@@ -25,6 +25,7 @@ import com.dubious.itunes.statistics.model.SnapshotsHistory;
 import com.dubious.itunes.statistics.model.SongHistory;
 import com.dubious.itunes.statistics.model.SongStatistics;
 import com.dubious.itunes.statistics.service.HistoryService;
+import com.dubious.itunes.statistics.service.SnapshotService;
 import com.dubious.itunes.statistics.store.SnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
 
@@ -37,6 +38,8 @@ public class HistoryServiceSnapshotHistoryTest {
 
     @Resource(name = "mongoDbSnapshotStore")
     private SnapshotStore snapshotStore;
+    @Resource(name = "snapshotService")
+    private SnapshotService snapshotService;
     @Resource(name = "historyService")
     private HistoryService historyService;
 
@@ -128,13 +131,13 @@ public class HistoryServiceSnapshotHistoryTest {
      */
     @Test
     public final void testWith2Snapshots() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot1)
                 .withDate(december1)
                 .addStatistic(song1, new SongStatistics().withPlayCount(61))
                 .addStatistic(song2, new SongStatistics().withPlayCount(56))
                 .addStatistic(song3, new SongStatistics().withPlayCount(55)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot2)
                 .withDate(december5)
                 .addStatistic(song1, new SongStatistics().withPlayCount(62))
@@ -170,17 +173,17 @@ public class HistoryServiceSnapshotHistoryTest {
      */
     @Test
     public final void testLatestHasUniqueSongs() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot1)
                 .withDate(december1)
                 .addStatistic(song1, new SongStatistics().withPlayCount(61))
                 .addStatistic(song2, new SongStatistics().withPlayCount(56)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot2)
                 .withDate(december5)
                 .addStatistic(song1, new SongStatistics().withPlayCount(62))
                 .addStatistic(song2, new SongStatistics().withPlayCount(59)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot3)
                 .withDate(december10)
                 .addStatistic(song1, new SongStatistics().withPlayCount(64))
@@ -220,17 +223,17 @@ public class HistoryServiceSnapshotHistoryTest {
      */
     @Test
     public final void testLatestMissingSongs() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot1)
                 .withDate(december1)
                 .addStatistic(song1, new SongStatistics().withPlayCount(61))
                 .addStatistic(song2, new SongStatistics().withPlayCount(56)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot2)
                 .withDate(december5)
                 .addStatistic(song1, new SongStatistics().withPlayCount(62))
                 .addStatistic(song3, new SongStatistics().withPlayCount(59)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot3)
                 .withDate(december10)
                 .addStatistic(song1, new SongStatistics().withPlayCount(64)));
@@ -258,19 +261,19 @@ public class HistoryServiceSnapshotHistoryTest {
      */
     @Test
     public final void testDifferentSongOrders() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot1)
                 .withDate(december1)
                 .addStatistic(song1, new SongStatistics().withPlayCount(15))
                 .addStatistic(song2, new SongStatistics().withPlayCount(10))
                 .addStatistic(song3, new SongStatistics().withPlayCount(9)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot2)
                 .withDate(december5)
                 .addStatistic(song1, new SongStatistics().withPlayCount(17))
                 .addStatistic(song3, new SongStatistics().withPlayCount(16))
                 .addStatistic(song2, new SongStatistics().withPlayCount(14)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot3)
                 .withDate(december10)
                 .addStatistic(song3, new SongStatistics().withPlayCount(20))
@@ -309,11 +312,11 @@ public class HistoryServiceSnapshotHistoryTest {
      */
     @Test
     public final void testSnapshotOrdering() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot1)
                 .withDate(december5)
                 .addStatistic(song1, new SongStatistics().withPlayCount(10)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot2)
                 .withDate(december1)
                 .addStatistic(song1, new SongStatistics().withPlayCount(9)));

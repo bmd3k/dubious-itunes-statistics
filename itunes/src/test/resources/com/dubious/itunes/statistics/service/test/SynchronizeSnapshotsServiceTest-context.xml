@@ -11,6 +11,7 @@
         class="com.dubious.itunes.statistics.service.SnapshotSynchronizeServiceImpl">
         <constructor-arg name="sourceSnapshotStore" ref="testSourceMongoDbSnapshotStore"/>
         <constructor-arg name="targetSnapshotStore" ref="mongoDbSnapshotStore"/>
+        <constructor-arg name="targetSnapshotService" ref="snapshotService"/>
     </bean>
     
     <bean id="testSourceMongoDbSnapshotStore" parent="mongoDbSnapshotStore">

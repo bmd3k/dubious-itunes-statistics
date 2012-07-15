@@ -19,9 +19,9 @@ import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.exception.StatisticsException;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
+import com.dubious.itunes.statistics.service.SnapshotService;
 import com.dubious.itunes.statistics.service.SongService;
 import com.dubious.itunes.statistics.store.SnapshotStore;
-import com.dubious.itunes.statistics.store.StoreException;
 
 /**
  * Tests of {@link SongService#getAllAlbums()}.
@@ -32,6 +32,8 @@ public class SongServiceGetAllAlbumsTest {
 
     @Resource(name = "mongoDbSnapshotStore")
     private SnapshotStore snapshotStore;
+    @Resource(name = "snapshotService")
+    private SnapshotService snapshotService;
     @Resource(name = "songService")
     private SongService songService;
 
@@ -40,15 +42,15 @@ public class SongServiceGetAllAlbumsTest {
      * 
      * @param snapshotName The name of the snapshot.
      * @param songsInSnapshot The songs in the snapshot.
-     * @throws StoreException On error.
+     * @throws StatisticsException On error.
      */
     private void writeSnapshot(String snapshotName, List<Song> songsInSnapshot)
-            throws StoreException {
+            throws StatisticsException {
         Snapshot snapshot = new Snapshot().withName(snapshotName).withDate(new DateTime());
         for (Song song : songsInSnapshot) {
             snapshot.addStatistic(song, new SongStatistics().withPlayCount(1));
         }
-        snapshotStore.writeSnapshot(snapshot);
+        snapshotService.writeSnapshot(snapshot);
     }
 
     /**

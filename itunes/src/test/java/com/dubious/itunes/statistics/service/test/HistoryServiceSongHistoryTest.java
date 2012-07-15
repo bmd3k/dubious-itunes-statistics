@@ -25,6 +25,7 @@ import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongHistory;
 import com.dubious.itunes.statistics.model.SongStatistics;
 import com.dubious.itunes.statistics.service.HistoryService;
+import com.dubious.itunes.statistics.service.SnapshotService;
 import com.dubious.itunes.statistics.store.SnapshotStore;
 import com.dubious.itunes.statistics.store.StoreException;
 
@@ -37,6 +38,8 @@ public class HistoryServiceSongHistoryTest {
 
     @Resource(name = "mongoDbSnapshotStore")
     private SnapshotStore snapshotStore;
+    @Resource(name = "snapshotService")
+    private SnapshotService snapshotService;
     @Resource(name = "historyService")
     private HistoryService historyService;
 
@@ -134,11 +137,11 @@ public class HistoryServiceSongHistoryTest {
      */
     @Test
     public final void testSongDoesNotExistForSnapshots() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot1)
                 .withDate(december1)
                 .addStatistic(song2, new SongStatistics().withPlayCount(5)));
-        snapshotStore.writeSnapshot(new Snapshot().withName(snapshot2).withDate(december1));
+        snapshotService.writeSnapshot(new Snapshot().withName(snapshot2).withDate(december1));
 
         try {
             historyService.generateSongHistory(
@@ -163,11 +166,11 @@ public class HistoryServiceSongHistoryTest {
      */
     @Test
     public final void testWith2Snapshots() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot1)
                 .withDate(december1)
                 .addStatistic(song1, new SongStatistics().withPlayCount(5)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot2)
                 .withDate(december5)
                 .addStatistic(song1, new SongStatistics().withPlayCount(8)));
@@ -191,19 +194,19 @@ public class HistoryServiceSongHistoryTest {
      */
     @Test
     public final void testWithManySnapshots() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot1)
                 .withDate(december1)
                 .addStatistic(song1, new SongStatistics().withPlayCount(5)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot2)
                 .withDate(december5)
                 .addStatistic(song1, new SongStatistics().withPlayCount(8)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot3)
                 .withDate(december10)
                 .addStatistic(song1, new SongStatistics().withPlayCount(8)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot4)
                 .withDate(december12)
                 .addStatistic(song1, new SongStatistics().withPlayCount(9)));
@@ -242,22 +245,22 @@ public class HistoryServiceSongHistoryTest {
      */
     @Test
     public final void testWithDifferentSongs() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot1)
                 .withDate(december1)
                 .addStatistic(song1, new SongStatistics().withPlayCount(5))
                 .addStatistic(song2, new SongStatistics().withPlayCount(1)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot2)
                 .withDate(december5)
                 .addStatistic(song1, new SongStatistics().withPlayCount(8))
                 .addStatistic(song2, new SongStatistics().withPlayCount(3)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot3)
                 .withDate(december10)
                 .addStatistic(song1, new SongStatistics().withPlayCount(8))
                 .addStatistic(song2, new SongStatistics().withPlayCount(6)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot4)
                 .withDate(december12)
                 .addStatistic(song2, new SongStatistics().withPlayCount(12))
@@ -298,16 +301,16 @@ public class HistoryServiceSongHistoryTest {
      */
     @Test
     public final void testSnapshotMissingSong() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot1)
                 .withDate(december1)
                 .addStatistic(song1, new SongStatistics().withPlayCount(5)));
-        snapshotStore.writeSnapshot(new Snapshot().withName(snapshot2).withDate(december5));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot().withName(snapshot2).withDate(december5));
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot3)
                 .withDate(december10)
                 .addStatistic(song1, new SongStatistics().withPlayCount(8)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot4)
                 .withDate(december12)
                 .addStatistic(song1, new SongStatistics().withPlayCount(9)));
@@ -334,11 +337,11 @@ public class HistoryServiceSongHistoryTest {
      */
     @Test
     public final void testSnapshotOrdering() throws StatisticsException {
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot1)
                 .withDate(december5)
                 .addStatistic(song1, new SongStatistics().withPlayCount(10)));
-        snapshotStore.writeSnapshot(new Snapshot()
+        snapshotService.writeSnapshot(new Snapshot()
                 .withName(snapshot2)
                 .withDate(december1)
                 .addStatistic(song1, new SongStatistics().withPlayCount(9)));
