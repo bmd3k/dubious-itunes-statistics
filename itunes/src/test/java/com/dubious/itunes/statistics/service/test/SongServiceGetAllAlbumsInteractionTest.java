@@ -17,7 +17,7 @@ import com.dubious.itunes.statistics.store.SongStore;
 /**
  * Tests interactions of the method {@link SongService#getAllAlbums()}.
  */
-public class SongServiceGetSongsForAlbumInteractionTest {
+public class SongServiceGetAllAlbumsInteractionTest {
 
     private SongStore songStore;
     private AlbumGrouping albumGrouping;
