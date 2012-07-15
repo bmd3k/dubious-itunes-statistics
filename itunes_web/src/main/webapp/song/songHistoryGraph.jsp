@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!--  https://developer.mozilla.org/en/Canvas_tutorial -->
     <title>Brian's iTunes Statistics</title>
     
     <link type="text/css" href="../css/jquery.ui/smoothness/jquery-ui-1.8.17.custom.css" rel="Stylesheet" />
