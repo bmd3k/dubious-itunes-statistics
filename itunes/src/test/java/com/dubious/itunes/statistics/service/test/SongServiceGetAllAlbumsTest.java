@@ -155,7 +155,7 @@ public class SongServiceGetAllAlbumsTest {
                                 .withName("song1_1"),
                         new Song()
                                 .withArtistName("artist2")
-                                .withAlbumName("album1")
+                                .withAlbumName("album2")
                                 .withName("song2_1")));
 
         assertEquals(
@@ -166,7 +166,7 @@ public class SongServiceGetAllAlbumsTest {
                                 .withSongCount(1),
                         new Album()
                                 .withArtistName("artist2")
-                                .withName("album1")
+                                .withName("album2")
                                 .withSongCount(1)),
                 songService.getAllAlbums());
     }
@@ -226,45 +226,45 @@ public class SongServiceGetAllAlbumsTest {
                 asList(
                         new Song()
                                 .withArtistName("artist1")
-                                .withAlbumName("album1")
+                                .withAlbumName("album1_1")
                                 .withName("song1_1_1"),
                         new Song()
                                 .withArtistName("b-artist2")
-                                .withAlbumName("album1")
+                                .withAlbumName("album2_1")
                                 .withName("song1_1_1")));
         writeSnapshot(
                 "snapshot2",
                 asList(
                         new Song()
                                 .withArtistName("artist1")
-                                .withAlbumName("album1")
+                                .withAlbumName("album1_1")
                                 .withName("song1_1_1"),
                         new Song()
                                 .withArtistName("artist1")
-                                .withAlbumName("album2")
+                                .withAlbumName("album1_2")
                                 .withName("song1_2_1"),
                         new Song()
                                 .withArtistName("artist3")
-                                .withAlbumName("album1")
+                                .withAlbumName("album3_1")
                                 .withName("song3_1_1")));
 
         assertEquals(
                 asList(
                         new Album()
                                 .withArtistName("artist1")
-                                .withName("album1")
+                                .withName("album1_1")
                                 .withSongCount(1),
                         new Album()
                                 .withArtistName("artist1")
-                                .withName("album2")
+                                .withName("album1_2")
                                 .withSongCount(1),
                         new Album()
                                 .withArtistName("artist3")
-                                .withName("album1")
+                                .withName("album3_1")
                                 .withSongCount(1),
                         new Album()
                                 .withArtistName("b-artist2")
-                                .withName("album1")
+                                .withName("album2_1")
                                 .withSongCount(1)),
                 songService.getAllAlbums());
     }

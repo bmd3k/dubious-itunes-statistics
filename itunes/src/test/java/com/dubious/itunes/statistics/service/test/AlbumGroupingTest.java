@@ -17,7 +17,6 @@ import com.dubious.itunes.statistics.service.AlbumGrouping;
  */
 public class AlbumGroupingTest {
 
-    // TODO: Need an interaction test with getAlbums().
     // TODO: Second step is to recognize albums in getSongsForAlbums().
 
     private AlbumGrouping grouper;

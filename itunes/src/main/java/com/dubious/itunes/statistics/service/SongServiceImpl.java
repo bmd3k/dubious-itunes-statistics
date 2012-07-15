@@ -14,19 +14,22 @@ import com.dubious.itunes.statistics.store.SongStore;
 public class SongServiceImpl implements SongService {
 
     private SongStore songStore;
+    private AlbumGrouping albumGrouping;
 
     /**
      * Constructor.
      * 
+     * @param albumGrouping {@link AlbumGrouping} to inject.
      * @param songStore {@link SongStore} to inject.
      */
-    public SongServiceImpl(SongStore songStore) {
+    public SongServiceImpl(AlbumGrouping albumGrouping, SongStore songStore) {
+        this.albumGrouping = albumGrouping;
         this.songStore = songStore;
     }
 
     @Override
     public final List<Album> getAllAlbums() {
-        return songStore.getAllAlbums();
+        return albumGrouping.groupAlbums(songStore.getAllAlbums());
     }
 
     @Override
