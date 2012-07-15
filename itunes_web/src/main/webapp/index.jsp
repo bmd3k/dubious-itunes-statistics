@@ -14,6 +14,9 @@
       <ul>
         <li><a href="snapshot/snapshotSynchronize.jsp">Synchronize Snapshots</a></li>
       </ul>
+      <ul>
+        <li><a href="cleanAndDeploy/cleanAndDeploy.jsp">Clean And Deploy Entire Database</a></li>
+      </ul>
     </nav>
     <footer>
        <h5>Published By Brian Dubois, who seems to have to relearn all this web junk.</h5>

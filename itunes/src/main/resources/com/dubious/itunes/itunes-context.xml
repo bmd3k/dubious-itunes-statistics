@@ -68,6 +68,10 @@
         <constructor-arg name="mongoDbDataSource" ref="mongoDbDataSource"/>
     </bean>
     
+    <bean name="mongoDbCleanAndDeploy" class="com.dubious.itunes.statistics.store.mongodb.MongoDbCleanAndDeploy">
+        <constructor-arg name="mongoDbDataSource" ref="mongoDbDataSource"/>
+    </bean>
+    
     <bean name="mongoDbDataSource" class="com.dubious.itunes.statistics.store.mongodb.MongoDbDataSourceImpl">
         <constructor-arg name="host" value="${store.mongodb.host}"/>
         <constructor-arg name="dbName" value="${store.mongodb.db.name}"/>
