@@ -32,6 +32,7 @@
         <constructor-arg name="sourceSnapshotStore" ref="fileSnapshotStore"/>
         <constructor-arg name="targetSnapshotStore" ref="mongoDbSnapshotStore"/>
         <constructor-arg name="targetSnapshotService" ref="snapshotService"/>
+        <constructor-arg name="adjustor" ref="snapshotSynchronizationAdjustment"/>
     </bean>
     
     <bean name="songService" class="com.dubious.itunes.statistics.service.SongServiceImpl">
@@ -51,7 +52,7 @@
       -
       -->
     <bean name="snapshotFilter" class="com.dubious.itunes.statistics.service.SnapshotFilter"/>
-    
+    <bean name="snapshotSynchronizationAdjustment" class="com.dubious.itunes.statistics.service.SnapshotSynchronizationAdjuster"/>
     
     <!-- 
       -

@@ -7,11 +7,8 @@
 
     <import resource="classpath:com/dubious/itunes/test/itunes-test-context.xml"/>
     
-    <bean name="testSnapshotSynchronizeService" 
-        class="com.dubious.itunes.statistics.service.SnapshotSynchronizeServiceImpl">
+    <bean name="testSnapshotSynchronizeService" parent="fileToMongoDbSnapshotSynchronizeService">
         <constructor-arg name="sourceSnapshotStore" ref="testSourceMongoDbSnapshotStore"/>
-        <constructor-arg name="targetSnapshotStore" ref="mongoDbSnapshotStore"/>
-        <constructor-arg name="targetSnapshotService" ref="snapshotService"/>
     </bean>
     
     <bean id="testSourceMongoDbSnapshotStore" parent="mongoDbSnapshotStore">

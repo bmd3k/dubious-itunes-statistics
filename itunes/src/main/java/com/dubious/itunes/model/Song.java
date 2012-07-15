@@ -10,19 +10,12 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public class Song {
 
-    // TODO: things to consider when loading from file:
-    // TODO: is album and track number available?
-    // TODO: album available, track number not available
-    // TODO: album not available, track number available
-    // TODO: album not available, track number not available
-    // TODO: only 1 to 3 songs in album (maybe indicates a problem in the data)
-
     private String artistName;
     private String albumName;
     private String name;
     private Integer trackNumber;
 
-    // TODO: We should make these immutable.
+    // TODO: We should make these model objects immutable.
 
     /**
      * Name of the artist.
