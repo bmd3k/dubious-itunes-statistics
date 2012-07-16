@@ -32,7 +32,7 @@
             onActivate: function(node) {
                 // A DynaTreeNode object is passed to the activation handler
                 // Note: we also get this event, if persistence is on, and the page is reloaded.
-                if(node.data.isFolder == false && node.data.artistName && node.data.albumName && node.data.songName)
+                if(node.data.isFolder == false)
                 {
                     drawGraph(node.data.artistName, node.data.albumName, node.data.songName);
                 } else if (node.isFolder = false)
