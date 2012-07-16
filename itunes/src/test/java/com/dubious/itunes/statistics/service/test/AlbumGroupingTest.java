@@ -137,11 +137,14 @@ public class AlbumGroupingTest {
      * Test that no grouping is made with an album that has 4 or more songs.
      */
     @Test
-    public final void testNoGroupdingSameAlbumName() {
+    public final void testNoGroupingSameAlbumName() {
         assertEquals(
                 asList(
                         new Album().withArtistName("artist1").withName("album").withSongCount(1),
-                        new Album().withArtistName("artist2").withName("album").withSongCount(4)),
+                        new Album()
+                                .withArtistName("artist2")
+                                .withName("album")
+                                .withSongCount(AlbumGrouping.GROUP_THRESHOLD)),
                 grouper
                         .groupAlbums(asList(
                                 new Album()
@@ -151,19 +154,25 @@ public class AlbumGroupingTest {
                                 new Album()
                                         .withArtistName("artist2")
                                         .withName("album")
-                                        .withSongCount(4))));
+                                        .withSongCount(AlbumGrouping.GROUP_THRESHOLD))));
     }
 
     /**
      * Test mixed scenario with multiple instances of same album name, but some of the albums have
-     * fewer than 4 songs and others have 4 or more.
+     * fewer than the threshold and others have more.
      */
     @Test
     public final void testMix() {
         assertEquals(
                 asList(
-                        new Album().withArtistName("artist2").withName("album").withSongCount(4),
-                        new Album().withArtistName("Various").withName("album").withSongCount(4)),
+                        new Album()
+                                .withArtistName("artist2")
+                                .withName("album")
+                                .withSongCount(AlbumGrouping.GROUP_THRESHOLD + 1),
+                        new Album()
+                                .withArtistName("Various")
+                                .withName("album")
+                                .withSongCount(1 + AlbumGrouping.GROUP_THRESHOLD - 1)),
                 grouper
                         .groupAlbums(asList(
                                 new Album()
@@ -173,10 +182,10 @@ public class AlbumGroupingTest {
                                 new Album()
                                         .withArtistName("artist2")
                                         .withName("album")
-                                        .withSongCount(4),
+                                        .withSongCount(AlbumGrouping.GROUP_THRESHOLD + 1),
                                 new Album()
                                         .withArtistName("artist3")
                                         .withName("album")
-                                        .withSongCount(3))));
+                                        .withSongCount(AlbumGrouping.GROUP_THRESHOLD - 1))));
     }
 }

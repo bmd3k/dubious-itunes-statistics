@@ -35,11 +35,9 @@ public class SongTreeController {
         List<Album> albums = songService.getAllAlbums();
         List<SongTreeAlbum> songTreeAlbums = new ArrayList<SongTreeAlbum>(albums.size());
         for (Album album : albums) {
-            if (album.getSongCount() > 4) {
-                songTreeAlbums.add(new SongTreeAlbum()
-                        .withArtistName(album.getArtistName())
-                        .withAlbumName(album.getName()));
-            }
+            songTreeAlbums.add(new SongTreeAlbum()
+                    .withArtistName(album.getArtistName())
+                    .withAlbumName(album.getName()));
         }
         return songTreeAlbums;
     }

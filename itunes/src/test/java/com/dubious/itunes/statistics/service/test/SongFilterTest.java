@@ -2,13 +2,16 @@ package com.dubious.itunes.statistics.service.test;
 
 import static java.util.Arrays.asList;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.dubious.itunes.model.Song;
+import com.dubious.itunes.statistics.service.AlbumGrouping;
 import com.dubious.itunes.statistics.service.SongFilter;
 import com.dubious.itunes.statistics.service.SongFilterImpl;
 
@@ -60,49 +63,34 @@ public class SongFilterTest {
      */
     @Test
     public final void testNothingToFilter() {
-        Assert.assertEquals(
-                asList(
-                        new Song()
-                                .withArtistName("artist1")
-                                .withAlbumName("album")
-                                .withName("song1")
-                                .withTrackNumber(1),
-                        new Song()
-                                .withArtistName("artist2")
-                                .withAlbumName("album")
-                                .withName("song2")
-                                .withTrackNumber(2),
-                        new Song()
-                                .withArtistName("artist2")
-                                .withAlbumName("album")
-                                .withName("song3")
-                                .withTrackNumber(3),
-                        new Song()
-                                .withArtistName("artist2")
-                                .withAlbumName("album")
-                                .withName("song4")
-                                .withTrackNumber(4)),
-                songFilter.filterForVariousAlbum(asList(
-                        new Song()
-                                .withArtistName("artist1")
-                                .withAlbumName("album")
-                                .withName("song1")
-                                .withTrackNumber(1),
-                        new Song()
-                                .withArtistName("artist2")
-                                .withAlbumName("album")
-                                .withName("song2")
-                                .withTrackNumber(2),
-                        new Song()
-                                .withArtistName("artist2")
-                                .withAlbumName("album")
-                                .withName("song3")
-                                .withTrackNumber(3),
-                        new Song()
-                                .withArtistName("artist2")
-                                .withAlbumName("album")
-                                .withName("song4")
-                                .withTrackNumber(4))));
+        List<Song> songs = new ArrayList<Song>(AlbumGrouping.GROUP_THRESHOLD);
+        List<Song> expectedSongs = new ArrayList<Song>(AlbumGrouping.GROUP_THRESHOLD);
+        // have one artist with a single song in the album
+        songs.add(new Song()
+                .withArtistName("artist1")
+                .withAlbumName("album")
+                .withName("song1_" + 1)
+                .withTrackNumber(1));
+        expectedSongs.add(new Song()
+                .withArtistName("artist1")
+                .withAlbumName("album")
+                .withName("song1_" + 1)
+                .withTrackNumber(1));
+        // have one artist with as many songs as allowed in the same album without being filtered
+        for (int i = 1; i <= AlbumGrouping.GROUP_THRESHOLD - 1; i++) {
+            songs.add(new Song()
+                    .withArtistName("artist2")
+                    .withAlbumName("album")
+                    .withName("song2_" + i)
+                    .withTrackNumber(i));
+            expectedSongs.add(new Song()
+                    .withArtistName("artist2")
+                    .withAlbumName("album")
+                    .withName("song2_" + i)
+                    .withTrackNumber(i));
+        }
+
+        Assert.assertEquals(expectedSongs, songFilter.filterForVariousAlbum(songs));
     }
 
     /**
@@ -111,29 +99,18 @@ public class SongFilterTest {
      */
     @Test
     public final void testFilterAboveThreshold() {
+        List<Song> songs = new ArrayList<Song>(AlbumGrouping.GROUP_THRESHOLD);
+        for (int i = 1; i <= AlbumGrouping.GROUP_THRESHOLD; i++) {
+            songs.add(new Song()
+                    .withArtistName("artist")
+                    .withAlbumName("album")
+                    .withName("song" + i)
+                    .withTrackNumber(i));
+        }
+
         Assert.assertEquals(
                 Collections.<Song>emptyList(),
-                songFilter.filterForVariousAlbum(asList(
-                        new Song()
-                                .withArtistName("artist1")
-                                .withAlbumName("album")
-                                .withName("song1")
-                                .withTrackNumber(1),
-                        new Song()
-                                .withArtistName("artist1")
-                                .withAlbumName("album")
-                                .withName("song2")
-                                .withTrackNumber(2),
-                        new Song()
-                                .withArtistName("artist1")
-                                .withAlbumName("album")
-                                .withName("song3")
-                                .withTrackNumber(3),
-                        new Song()
-                                .withArtistName("artist1")
-                                .withAlbumName("album")
-                                .withName("song4")
-                                .withTrackNumber(4))));
+                songFilter.filterForVariousAlbum(songs));
     }
 
     /**
@@ -141,49 +118,52 @@ public class SongFilterTest {
      */
     @Test
     public final void testMix() {
-        Assert.assertEquals(
-                asList(
-                        new Song()
-                                .withArtistName("artist2")
-                                .withAlbumName("album")
-                                .withName("song3")
-                                .withTrackNumber(3),
-                        new Song()
-                                .withArtistName("artist3")
-                                .withAlbumName("album")
-                                .withName("song4")
-                                .withTrackNumber(4)),
-                songFilter.filterForVariousAlbum(asList(
-                        new Song()
-                                .withArtistName("artist1")
-                                .withAlbumName("album")
-                                .withName("song1")
-                                .withTrackNumber(1),
-                        new Song()
-                                .withArtistName("artist1")
-                                .withAlbumName("album")
-                                .withName("song2")
-                                .withTrackNumber(2),
-                        new Song()
-                                .withArtistName("artist2")
-                                .withAlbumName("album")
-                                .withName("song3")
-                                .withTrackNumber(3),
-                        new Song()
-                                .withArtistName("artist1")
-                                .withAlbumName("album")
-                                .withName("song5")
-                                .withTrackNumber(5),
-                        new Song()
-                                .withArtistName("artist3")
-                                .withAlbumName("album")
-                                .withName("song4")
-                                .withTrackNumber(4),
-                        new Song()
-                                .withArtistName("artist1")
-                                .withAlbumName("album")
-                                .withName("song6")
-                                .withTrackNumber(6))));
+        List<Song> songs = new ArrayList<Song>(AlbumGrouping.GROUP_THRESHOLD);
+        List<Song> expectedSongs = new ArrayList<Song>(AlbumGrouping.GROUP_THRESHOLD);
+        // have one artist with a single song in the album
+        songs.add(new Song()
+                .withArtistName("artist1")
+                .withAlbumName("album")
+                .withName("song1_1")
+                .withTrackNumber(1));
+        expectedSongs.add(new Song()
+                .withArtistName("artist1")
+                .withAlbumName("album")
+                .withName("song1_1")
+                .withTrackNumber(1));
+        // there is a second artist who will have more than the threshold. put their first and
+        // second songs next.
+        songs.add(new Song()
+                .withArtistName("artist2")
+                .withAlbumName("album")
+                .withName("song2_1")
+                .withTrackNumber(1));
+        songs.add(new Song()
+                .withArtistName("artist2")
+                .withAlbumName("album")
+                .withName("song2_2")
+                .withTrackNumber(2));
+        // there is a 3rd artist, who also will not be filtered
+        songs.add(new Song()
+                .withArtistName("artist3")
+                .withAlbumName("album")
+                .withName("song3_1")
+                .withTrackNumber(2));
+        expectedSongs.add(new Song()
+                .withArtistName("artist3")
+                .withAlbumName("album")
+                .withName("song3_1")
+                .withTrackNumber(2));
+        // now have remaining songs for the 2nd artist
+        for (int i = 3; i <= AlbumGrouping.GROUP_THRESHOLD; i++) {
+            songs.add(new Song()
+                    .withArtistName("artist2")
+                    .withAlbumName("album")
+                    .withName("song2_" + i)
+                    .withTrackNumber(i));
+        }
+
+        Assert.assertEquals(expectedSongs, songFilter.filterForVariousAlbum(songs));
     }
 
 }

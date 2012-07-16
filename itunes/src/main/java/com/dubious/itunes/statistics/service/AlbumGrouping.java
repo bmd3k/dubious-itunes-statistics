@@ -13,7 +13,7 @@ public interface AlbumGrouping {
      * The threshold that determines whether an (Artist,Album) combination should be included in a
      * Various album or not.
      */
-    int GROUP_THRESHOLD = 4;
+    int GROUP_THRESHOLD = 6;
 
     /**
      * Regroup albums beyond the (Artist,Album) combination stored in the db. (Artist,Album)
