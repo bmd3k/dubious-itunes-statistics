@@ -131,21 +131,34 @@ public class MongoDbSongStore implements SongStore {
     }
 
     @Override
-    public final List<Song> getSongsForAlbum(String artistName, String albumName) {
-        DBCursor resultSet =
-                songsCollection.find(
-                        new BasicDBObject().append(SONGS_ARTIST_NAME, artistName).append(
-                                SONGS_ALBUM_NAME,
-                                albumName)).sort(
-                        new BasicDBObject().append(SONGS_TRACK_NUMBER, 1));
+    public final List<Song> getSongsByArtistAndAlbum(String artistName, String albumName) {
+        return extractSongsFromResultSet(songsCollection.find(
+                new BasicDBObject().append(SONGS_ARTIST_NAME, artistName).append(
+                        SONGS_ALBUM_NAME,
+                        albumName)).sort(new BasicDBObject().append(SONGS_TRACK_NUMBER, 1)));
+    }
 
+    @Override
+    public final List<Song> getSongsByAlbum(String albumName) {
+        return extractSongsFromResultSet(songsCollection.find(
+                new BasicDBObject().append(SONGS_ALBUM_NAME, albumName)).sort(
+                new BasicDBObject().append(SONGS_TRACK_NUMBER, 1)));
+    }
+
+    /**
+     * Extract songs from a result set.
+     * 
+     * @param resultSet The result set.
+     * @return The songs from the result set.
+     */
+    private List<Song> extractSongsFromResultSet(DBCursor resultSet) {
         List<Song> songsToReturn = new ArrayList<Song>(resultSet.size());
         while (resultSet.hasNext()) {
             BasicDBObject song = (BasicDBObject) resultSet.next();
 
             songsToReturn.add(new Song()
-                    .withArtistName(artistName)
-                    .withAlbumName(albumName)
+                    .withArtistName(song.getString(SONGS_ARTIST_NAME))
+                    .withAlbumName((String) song.getString(SONGS_ALBUM_NAME))
                     .withName(song.getString(SONGS_SONG_NAME))
                     .withTrackNumber((Integer) song.get(SONGS_TRACK_NUMBER)));
         }

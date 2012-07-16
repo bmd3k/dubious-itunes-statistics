@@ -15,6 +15,12 @@ public interface AlbumGrouping {
     String GROUPED_ALBUM_ARTIST_NAME = "Various";
 
     /**
+     * The threshold that determines whether an (Artist,Album) combination should be included in a
+     * Various album or not.
+     */
+    int GROUP_THRESHOLD = 4;
+
+    /**
      * Regroup albums beyond the (Artist,Album) combination stored in the db. (Artist,Album)
      * combinations that only contain 3 or fewer items could be part of a larger album with various
      * artists.

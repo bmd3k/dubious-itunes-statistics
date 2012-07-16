@@ -12,8 +12,6 @@ import com.google.common.collect.ListMultimap;
  */
 public class AlbumGrouper implements AlbumGrouping {
 
-    private static final int GROUP_THRESHOLD = 4;
-
     @Override
     public final List<Album> groupAlbums(List<Album> albums) {
         List<Album> groupedAlbums = new ArrayList<Album>(albums.size());

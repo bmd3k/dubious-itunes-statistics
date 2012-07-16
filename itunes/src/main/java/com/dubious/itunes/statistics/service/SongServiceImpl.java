@@ -35,7 +35,7 @@ public class SongServiceImpl implements SongService {
     @Override
     public final List<Song> getSongsForAlbum(String artistName, String albumName)
             throws StatisticsException {
-        List<Song> songs = songStore.getSongsForAlbum(artistName, albumName);
+        List<Song> songs = songStore.getSongsByArtistAndAlbum(artistName, albumName);
         if (songs.size() == 0) {
             throw new AlbumDoesNotExistException(artistName, albumName);
         }

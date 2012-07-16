@@ -26,11 +26,19 @@ public interface SongStore {
     List<Album> getAllAlbums();
 
     /**
-     * Retrieve all songs for an album.
+     * Retrieve all songs by artist and album.
      * 
      * @param artistName The artist name.
      * @param albumName The album name.
+     * @return The songs for the (artist,album) combination.
+     */
+    List<Song> getSongsByArtistAndAlbum(String artistName, String albumName);
+
+    /**
+     * Retrieve songs by album.
+     * 
+     * @param albumName The album name.
      * @return The songs for the album.
      */
-    List<Song> getSongsForAlbum(String artistName, String albumName);
+    List<Song> getSongsByAlbum(String albumName);
 }
