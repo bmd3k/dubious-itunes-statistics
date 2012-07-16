@@ -37,6 +37,7 @@
     
     <bean name="songService" class="com.dubious.itunes.statistics.service.SongServiceImpl">
         <constructor-arg name="albumGrouping" ref="albumGrouping"/>
+        <constructor-arg name="songFilter" ref="songFilter"/>
         <constructor-arg name="songStore" ref="mongoDbSongStore"/>
     </bean>
     
@@ -54,6 +55,7 @@
       -->
     <bean name="snapshotFilter" class="com.dubious.itunes.statistics.service.SnapshotFilter"/>
     <bean name="snapshotSynchronizationAdjustment" class="com.dubious.itunes.statistics.service.SnapshotSynchronizationAdjuster"/>
+    <bean name="songFilter" class="com.dubious.itunes.statistics.service.SongFilterImpl"/>
     <bean name="albumGrouping" class="com.dubious.itunes.statistics.service.AlbumGrouper"/>
     
     <!-- 

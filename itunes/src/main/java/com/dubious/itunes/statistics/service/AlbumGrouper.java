@@ -1,5 +1,7 @@
 package com.dubious.itunes.statistics.service;
 
+import static com.dubious.itunes.statistics.service.SongService.VARIOUS_ALBUM_ARTIST_NAME;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +49,7 @@ public class AlbumGrouper implements AlbumGrouping {
                 songCount += album.getSongCount();
             }
             groupedAlbums.add(new Album()
-                    .withArtistName(GROUPED_ALBUM_ARTIST_NAME)
+                    .withArtistName(VARIOUS_ALBUM_ARTIST_NAME)
                     .withName(albumName)
                     .withSongCount(songCount));
         }

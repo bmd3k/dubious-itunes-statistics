@@ -15,15 +15,20 @@ public class SongServiceImpl implements SongService {
 
     private SongStore songStore;
     private AlbumGrouping albumGrouping;
+    private SongFilter songFilter;
 
     /**
      * Constructor.
      * 
      * @param albumGrouping {@link AlbumGrouping} to inject.
+     * @param songFilter {@link SongFilter} to inject.
      * @param songStore {@link SongStore} to inject.
      */
-    public SongServiceImpl(AlbumGrouping albumGrouping, SongStore songStore) {
+    public SongServiceImpl(AlbumGrouping albumGrouping,
+            SongFilter songFilter,
+            SongStore songStore) {
         this.albumGrouping = albumGrouping;
+        this.songFilter = songFilter;
         this.songStore = songStore;
     }
 
@@ -35,7 +40,13 @@ public class SongServiceImpl implements SongService {
     @Override
     public final List<Song> getSongsForAlbum(String artistName, String albumName)
             throws StatisticsException {
-        List<Song> songs = songStore.getSongsByArtistAndAlbum(artistName, albumName);
+        List<Song> songs = null;
+        if (artistName.equals(VARIOUS_ALBUM_ARTIST_NAME)) {
+            songs = songFilter.filterForVariousAlbum(songStore.getSongsByAlbum(albumName));
+        } else {
+            songs = songStore.getSongsByArtistAndAlbum(artistName, albumName);
+        }
+
         if (songs.size() == 0) {
             throw new AlbumDoesNotExistException(artistName, albumName);
         }

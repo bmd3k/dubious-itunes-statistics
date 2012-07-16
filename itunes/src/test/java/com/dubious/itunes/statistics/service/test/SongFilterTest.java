@@ -10,9 +10,10 @@ import org.junit.Test;
 
 import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.service.SongFilter;
+import com.dubious.itunes.statistics.service.SongFilterImpl;
 
 /**
- * Tests for {@link SongFilter}.
+ * Tests for {@link SongFilterImpl}.
  */
 public class SongFilterTest {
 
@@ -23,7 +24,7 @@ public class SongFilterTest {
      */
     @Before
     public final void before() {
-        songFilter = new SongFilter();
+        songFilter = new SongFilterImpl();
     }
 
     /**

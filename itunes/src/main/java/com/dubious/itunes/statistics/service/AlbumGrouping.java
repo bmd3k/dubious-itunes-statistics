@@ -10,11 +10,6 @@ import com.dubious.itunes.model.Album;
 public interface AlbumGrouping {
 
     /**
-     * Artist name of an album with more than one real artist.
-     */
-    String GROUPED_ALBUM_ARTIST_NAME = "Various";
-
-    /**
      * The threshold that determines whether an (Artist,Album) combination should be included in a
      * Various album or not.
      */

@@ -1,5 +1,6 @@
 package com.dubious.itunes.statistics.service.test;
 
+import static com.dubious.itunes.statistics.service.SongService.VARIOUS_ALBUM_ARTIST_NAME;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
@@ -16,8 +17,6 @@ import com.dubious.itunes.statistics.service.AlbumGrouping;
  * Test of {@link AlbumGrouping}.
  */
 public class AlbumGroupingTest {
-
-    // TODO: Second step is to recognize albums in getSongsForAlbums().
 
     private AlbumGrouping grouper;
 
@@ -80,13 +79,25 @@ public class AlbumGroupingTest {
      */
     @Test
     public final void testGroupingSameAlbumName() {
-        assertEquals(asList(new Album()
-                .withArtistName(AlbumGrouping.GROUPED_ALBUM_ARTIST_NAME)
-                .withName("album")
-                .withSongCount(6)), grouper.groupAlbums(asList(
-                new Album().withArtistName("artist1").withName("album").withSongCount(3),
-                new Album().withArtistName("artist2").withName("album").withSongCount(1),
-                new Album().withArtistName("artist3").withName("album").withSongCount(2))));
+        assertEquals(
+                asList(new Album()
+                        .withArtistName(VARIOUS_ALBUM_ARTIST_NAME)
+                        .withName("album")
+                        .withSongCount(6)),
+                grouper
+                        .groupAlbums(asList(
+                                new Album()
+                                        .withArtistName("artist1")
+                                        .withName("album")
+                                        .withSongCount(3),
+                                new Album()
+                                        .withArtistName("artist2")
+                                        .withName("album")
+                                        .withSongCount(1),
+                                new Album()
+                                        .withArtistName("artist3")
+                                        .withName("album")
+                                        .withSongCount(2))));
     }
 
     /**
@@ -96,7 +107,7 @@ public class AlbumGroupingTest {
     public final void testGroupingEmptyAlbumName() {
         assertEquals(
                 asList(new Album()
-                        .withArtistName(AlbumGrouping.GROUPED_ALBUM_ARTIST_NAME)
+                        .withArtistName(VARIOUS_ALBUM_ARTIST_NAME)
                         .withName("")
                         .withSongCount(4)),
                 grouper.groupAlbums(asList(new Album()
@@ -113,11 +124,13 @@ public class AlbumGroupingTest {
      */
     @Test
     public final void testGroupingNullAlbumName() {
-        assertEquals(asList(new Album()
-                .withArtistName(AlbumGrouping.GROUPED_ALBUM_ARTIST_NAME)
-                .withSongCount(2)), grouper.groupAlbums(asList(
-                new Album().withArtistName("artist1").withSongCount(1),
-                new Album().withArtistName("artist2").withSongCount(1))));
+        assertEquals(
+                asList(new Album().withArtistName(VARIOUS_ALBUM_ARTIST_NAME).withSongCount(2)),
+                grouper.groupAlbums(asList(new Album()
+                        .withArtistName("artist1")
+                        .withSongCount(1), new Album()
+                        .withArtistName("artist2")
+                        .withSongCount(1))));
     }
 
     /**

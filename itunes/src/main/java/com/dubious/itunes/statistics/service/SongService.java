@@ -12,6 +12,11 @@ import com.dubious.itunes.statistics.exception.StatisticsException;
 public interface SongService {
 
     /**
+     * Artist name of an album with more than one real artist.
+     */
+    String VARIOUS_ALBUM_ARTIST_NAME = "Various";
+
+    /**
      * Retrieve all albums in the system.
      * 
      * @return All albums.

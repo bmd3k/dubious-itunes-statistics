@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.dubious.itunes.model.Album;
 import com.dubious.itunes.statistics.service.AlbumGrouping;
+import com.dubious.itunes.statistics.service.SongFilter;
 import com.dubious.itunes.statistics.service.SongService;
 import com.dubious.itunes.statistics.service.SongServiceImpl;
 import com.dubious.itunes.statistics.store.SongStore;
@@ -19,8 +20,8 @@ import com.dubious.itunes.statistics.store.SongStore;
  */
 public class SongServiceGetAllAlbumsInteractionTest {
 
-    private SongStore songStore;
     private AlbumGrouping albumGrouping;
+    private SongStore songStore;
     private SongService songService;
 
     /**
@@ -30,7 +31,7 @@ public class SongServiceGetAllAlbumsInteractionTest {
     public final void before() {
         songStore = mock(SongStore.class);
         albumGrouping = mock(AlbumGrouping.class);
-        songService = new SongServiceImpl(albumGrouping, songStore);
+        songService = new SongServiceImpl(albumGrouping, mock(SongFilter.class), songStore);
     }
 
     /**
