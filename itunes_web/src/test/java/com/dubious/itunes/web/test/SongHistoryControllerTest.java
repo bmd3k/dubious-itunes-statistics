@@ -37,34 +37,26 @@ public class SongHistoryControllerTest {
         AnalysisService analysisService = mock(AnalysisService.class);
         songHistoryController = new SongHistoryController(historyService, analysisService);
 
-        SongHistory fromHistory =
-                new SongHistory()
-                        .withArtistName("artist")
-                        .withAlbumName("album")
-                        .withSongName("song")
-                        .addSongStatistics("snapshot1", new SongStatistics().withPlayCount(4))
-                        .addSongStatistics("snapshot2", new SongStatistics().withPlayCount(6));
         SongHistory fromAnalysis =
                 new SongHistory()
                         .withArtistName("artist")
                         .withAlbumName("album")
                         .withSongName("song")
-                        .addSongStatistics(
+                        .addSongStatistic(
                                 "snapshot1",
                                 new SongStatistics().withPlayCount(4).withDifference(4))
-                        .addSongStatistics(
+                        .addSongStatistic(
                                 "snapshot2",
                                 new SongStatistics().withPlayCount(6).withDifference(2));
 
         when(historyService.getQuarterlySnapshots())
                 .thenReturn(asList("snapshot1", "snapshot2"));
         when(
-                historyService.generateSongHistory(
+                analysisService.getEnrichedSongHistory(
                         "artist",
                         "album",
                         "song",
-                        asList("snapshot1", "snapshot2"))).thenReturn(fromHistory);
-        when(analysisService.enrichSongHistory(fromHistory)).thenReturn(fromAnalysis);
+                        asList("snapshot1", "snapshot2"))).thenReturn(fromAnalysis);
     }
 
     /**

@@ -72,11 +72,11 @@ public class SongHistoryController {
         }
 
         SongHistory songHistory =
-                analysisService.enrichSongHistory(historyService.generateSongHistory(
+                analysisService.getEnrichedSongHistory(
                         artistName,
                         albumName,
                         songName,
-                        quarterlySnapshotHistory));
+                        quarterlySnapshotHistory);
 
         List<Integer> songStatistics = new ArrayList<Integer>();
         for (Map.Entry<String, SongStatistics> statistics : songHistory

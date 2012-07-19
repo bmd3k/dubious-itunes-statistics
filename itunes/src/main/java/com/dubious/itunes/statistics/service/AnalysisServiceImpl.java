@@ -52,4 +52,16 @@ public class AnalysisServiceImpl implements AnalysisService {
                 .addSnapshots(snapshotsHistoryFromStore.getSnapshots())
                 .addSongHistories(songHistories);
     }
+
+    @Override
+    public final SongHistory getEnrichedSongHistory(
+            String artistName,
+            String albumName,
+            String songName,
+            List<String> snapshots) throws StatisticsException {
+        SongHistory songHistory =
+                historyService.generateSongHistory(artistName, albumName, songName, snapshots);
+        songHistoryEnricher.enrichSongHistory(songHistory);
+        return songHistory;
+    }
 }

@@ -76,12 +76,13 @@ public class AnalysisServiceInteractionTest {
     //@formatter:on
 
     /**
-     * Test interactions.
+     * Test interactions for
+     * {@link AnalysisService#getEnrichedSnapshotsHistory(java.util.List, Order)}.
      * 
      * @throws StatisticsException On unexpected error.
      */
     @Test
-    public final void testInteractions() throws StatisticsException {
+    public final void testGetEnrichedSnapshotsHistory() throws StatisticsException {
         // setup
         // this interaction also acts as verification that the history service is called
         when(
@@ -109,7 +110,8 @@ public class AnalysisServiceInteractionTest {
      * @throws StatisticsException On unexpected error.
      */
     @Test
-    public final void testOrderByDifference() throws StatisticsException {
+    public final void testGetEnrichedSnapshotsHistoryOrderByDifference()
+            throws StatisticsException {
         // setup
         when(
                 historyService.generateSnapshotHistory(asList(
@@ -128,4 +130,39 @@ public class AnalysisServiceInteractionTest {
                         Order.Difference));
     }
 
+    /**
+     * Test interactions for
+     * {@link AnalysisService#getEnrichedSongHistory(String, String, String, java.util.List)}.
+     * 
+     * @throws StatisticsException On unexpected error.
+     */
+    @Test
+    public final void testGetEnrichedSongHistory() throws StatisticsException {
+        // setup
+        when(historyService.generateSongHistory("artist", "album", "song", asList("snapshot1")))
+                .thenReturn(
+                        new SongHistory()
+                                .withArtistName("artist")
+                                .withAlbumName("album")
+                                .withSongName("song")
+                                .addSongStatistic(
+                                        "snapshot1",
+                                        new SongStatistics().withPlayCount(1)));
+
+        // execute and verify return value. This also verifies that song enrichment has been called.
+        assertEquals(
+                new SongHistory()
+                        .withArtistName("artist")
+                        .withAlbumName("album")
+                        .withSongName("song")
+                        .addSongStatistic(
+                                "snapshot1",
+                                new SongStatistics().withPlayCount(1).withDifference(1)),
+                analysisService.getEnrichedSongHistory(
+                        "artist",
+                        "album",
+                        "song",
+                        asList("snapshot1")));
+
+    }
 }
