@@ -23,15 +23,14 @@ import com.dubious.itunes.model.Song;
 import com.dubious.itunes.statistics.exception.StatisticsException;
 import com.dubious.itunes.statistics.model.Snapshot;
 import com.dubious.itunes.statistics.model.SongStatistics;
+import com.dubious.itunes.statistics.service.AnalysisService.Order;
 import com.dubious.itunes.statistics.service.FileOutputService;
-import com.dubious.itunes.statistics.service.FileOutputService.Order;
-import com.dubious.itunes.statistics.service.HistoryService;
 import com.dubious.itunes.statistics.service.SnapshotService;
 import com.dubious.itunes.statistics.store.SnapshotStore;
 
 /**
- * Tests for the {@link FileOutputService}. Acts as integration tests between
- * {@link FileOutputService}, {@link HistoryService}, and
+ * Tests for the {@link FileOutputService}. Acts as integration tests for {@link FileOutputService},
+ * {@link com.dubious.itunes.statistics.service.HistoryService}, and
  * {@link com.dubious.itunes.statistics.service.AnalysisService}.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -42,8 +41,6 @@ public class FileOutputServiceTest {
     private SnapshotService snapshotService;
     @Resource(name = "mongoDbSnapshotStore")
     private SnapshotStore snapshotStore;
-    @Resource(name = "historyService")
-    private HistoryService historyService;
     @Resource(name = "fileOutputService")
     private FileOutputService fileOutputService;
 
@@ -121,7 +118,7 @@ public class FileOutputServiceTest {
     @Test
     public final void testWriteWithTwoSnapshots() throws StatisticsException, IOException {
         fileOutputService.writeSnapshotsHistory(
-                historyService.generateSnapshotHistory(asList(snapshot3, snapshot4)),
+                asList(snapshot3, snapshot4),
                 "test_files/output/output.txt",
                 Order.PlayCount);
 
@@ -141,11 +138,10 @@ public class FileOutputServiceTest {
      */
     @Test
     public final void testWriteWithManySnapshots() throws StatisticsException, IOException {
-        fileOutputService.writeSnapshotsHistory(historyService.generateSnapshotHistory(asList(
-                snapshot1,
-                snapshot2,
-                snapshot3,
-                snapshot4)), "test_files/output/output.txt", Order.PlayCount);
+        fileOutputService.writeSnapshotsHistory(
+                asList(snapshot1, snapshot2, snapshot3, snapshot4),
+                "test_files/output/output.txt",
+                Order.PlayCount);
 
         //@formatter:off
         assertEquals(readLines(new File(
@@ -164,11 +160,10 @@ public class FileOutputServiceTest {
      */
     @Test
     public final void testWriteWithOrderByDifference() throws StatisticsException, IOException {
-        fileOutputService.writeSnapshotsHistory(historyService.generateSnapshotHistory(asList(
-                snapshot1,
-                snapshot2,
-                snapshot3,
-                snapshot4)), "test_files/output/output.txt", Order.Difference);
+        fileOutputService.writeSnapshotsHistory(
+                asList(snapshot1, snapshot2, snapshot3, snapshot4),
+                "test_files/output/output.txt",
+                Order.Difference);
 
         //@formatter:off
         assertEquals(readLines(new File(

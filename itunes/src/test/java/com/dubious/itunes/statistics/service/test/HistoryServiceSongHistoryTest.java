@@ -178,8 +178,8 @@ public class HistoryServiceSongHistoryTest {
         assertEquals(
                 new SongHistory()
                         .withSong(song1)
-                        .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(5))
-                        .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(8)),
+                        .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(5))
+                        .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(8)),
                 historyService.generateSongHistory(
                         song1.getArtistName(),
                         song1.getAlbumName(),
@@ -215,10 +215,10 @@ public class HistoryServiceSongHistoryTest {
         assertEquals(
                 new SongHistory()
                         .withSong(song1)
-                        .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(5))
-                        .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(8))
-                        .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(8))
-                        .addSongStatistics(snapshot4, new SongStatistics().withPlayCount(9)),
+                        .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(5))
+                        .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(8))
+                        .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(8))
+                        .addSongStatistic(snapshot4, new SongStatistics().withPlayCount(9)),
                 historyService.generateSongHistory(
                         song1.getArtistName(),
                         song1.getAlbumName(),
@@ -229,8 +229,8 @@ public class HistoryServiceSongHistoryTest {
         assertEquals(
                 new SongHistory()
                         .withSong(song1)
-                        .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(5))
-                        .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(8)),
+                        .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(5))
+                        .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(8)),
                 historyService.generateSongHistory(
                         song1.getArtistName(),
                         song1.getAlbumName(),
@@ -270,10 +270,10 @@ public class HistoryServiceSongHistoryTest {
         assertEquals(
                 new SongHistory()
                         .withSong(song1)
-                        .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(5))
-                        .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(8))
-                        .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(8))
-                        .addSongStatistics(snapshot4, new SongStatistics().withPlayCount(9)),
+                        .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(5))
+                        .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(8))
+                        .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(8))
+                        .addSongStatistic(snapshot4, new SongStatistics().withPlayCount(9)),
                 historyService.generateSongHistory(
                         song1.getArtistName(),
                         song1.getAlbumName(),
@@ -283,10 +283,10 @@ public class HistoryServiceSongHistoryTest {
         assertEquals(
                 new SongHistory()
                         .withSong(song2)
-                        .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(1))
-                        .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(3))
-                        .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(6))
-                        .addSongStatistics(snapshot4, new SongStatistics().withPlayCount(12)),
+                        .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(1))
+                        .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(3))
+                        .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(6))
+                        .addSongStatistic(snapshot4, new SongStatistics().withPlayCount(12)),
                 historyService.generateSongHistory(
                         song2.getArtistName(),
                         song2.getAlbumName(),
@@ -319,10 +319,10 @@ public class HistoryServiceSongHistoryTest {
         assertEquals(
                 new SongHistory()
                         .withSong(song1)
-                        .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(5))
-                        .addSongStatistics(snapshot2, null)
-                        .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(8))
-                        .addSongStatistics(snapshot4, new SongStatistics().withPlayCount(9)),
+                        .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(5))
+                        .addSongStatistic(snapshot2, null)
+                        .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(8))
+                        .addSongStatistic(snapshot4, new SongStatistics().withPlayCount(9)),
                 historyService.generateSongHistory(
                         song1.getArtistName(),
                         song1.getAlbumName(),
@@ -350,8 +350,8 @@ public class HistoryServiceSongHistoryTest {
         assertEquals(
                 new SongHistory()
                         .withSong(song1)
-                        .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(9))
-                        .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(10)),
+                        .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(9))
+                        .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(10)),
                 historyService.generateSongHistory(song1.getArtistName(),
                         song1.getAlbumName(),
                         song1.getName(),

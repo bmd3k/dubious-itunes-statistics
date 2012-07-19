@@ -30,8 +30,19 @@ public class SongHistory extends SongKey<SongHistory> {
      * @param songStatistics The statistics of the song from the snapshot.
      * @return This.
      */
-    public final SongHistory addSongStatistics(String snapshotName, SongStatistics songStatistics) {
+    public final SongHistory addSongStatistic(String snapshotName, SongStatistics songStatistics) {
         this.songStatistics.put(snapshotName, songStatistics);
+        return this;
+    }
+
+    /**
+     * Add many statistics for the song from a snapshot.
+     * 
+     * @param newSongStatistics The statistics.
+     * @return This.
+     */
+    public final SongHistory addSongStatistics(Map<String, SongStatistics> newSongStatistics) {
+        this.songStatistics.putAll(newSongStatistics);
         return this;
     }
 

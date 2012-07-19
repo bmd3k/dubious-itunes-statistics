@@ -1,7 +1,9 @@
 package com.dubious.itunes.statistics.service;
 
+import java.util.List;
+
 import com.dubious.itunes.statistics.exception.StatisticsException;
-import com.dubious.itunes.statistics.model.SnapshotsHistory;
+import com.dubious.itunes.statistics.service.AnalysisService.Order;
 
 /**
  * Operations for writing analysis to file.
@@ -9,28 +11,14 @@ import com.dubious.itunes.statistics.model.SnapshotsHistory;
 public interface FileOutputService {
 
     /**
-     * Defines order of write.
-     */
-    public enum Order {
-        /**
-         * Order by play count.
-         */
-        PlayCount,
-        /**
-         * Order by the difference in play counts during the history period.
-         */
-        Difference;
-    }
-
-    /**
      * Write history to file. Elements are sorted based on latest play count, descending.
      * 
-     * @param history The history to use for the analysis.
+     * @param snapshots The snapshots to include in the history analysis.
      * @param outputPath The output path.
      * @param order The order.
      * @throws StatisticsException On error.
      */
-    void writeSnapshotsHistory(SnapshotsHistory history, String outputPath, Order order)
+    void writeSnapshotsHistory(List<String> snapshots, String outputPath, Order order)
             throws StatisticsException;
 
 }

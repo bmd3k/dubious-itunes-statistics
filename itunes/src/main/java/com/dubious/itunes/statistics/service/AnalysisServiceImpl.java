@@ -1,59 +1,55 @@
 package com.dubious.itunes.statistics.service;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.dubious.itunes.statistics.exception.StatisticsException;
 import com.dubious.itunes.statistics.model.SnapshotsHistory;
 import com.dubious.itunes.statistics.model.SongHistory;
-import com.dubious.itunes.statistics.model.SongStatistics;
 
 /**
  * Implementation of snapshot-based statistical analysis.
  */
 public class AnalysisServiceImpl implements AnalysisService {
 
-    @Override
-    public final SnapshotsHistory enrichSnapshotsHistory(SnapshotsHistory history) {
-        SnapshotsHistory newHistory =
-                new SnapshotsHistory().addSnapshots(history.getSnapshots());
-        for (SongHistory songHistory : history.getSongHistories()) {
-            newHistory.addSongHistory(enrichSongHistory(songHistory));
-        }
+    private HistoryService historyService;
+    private SongHistoryEnricher songHistoryEnricher;
+    private SongHistorySorter songHistorySorter;
 
-        return newHistory;
+    /**
+     * Constructor.
+     * 
+     * @param historyService {@link HistoryService} to inject.
+     * @param songHistoryEnricher {@link SongHistoryEnricher} to inject.
+     * @param songHistorySorter {@link SongHistorySorting} to inject.
+     */
+    public AnalysisServiceImpl(HistoryService historyService,
+            SongHistoryEnricher songHistoryEnricher,
+            SongHistorySorter songHistorySorter) {
+        this.historyService = historyService;
+        this.songHistoryEnricher = songHistoryEnricher;
+        this.songHistorySorter = songHistorySorter;
     }
 
     @Override
-    public final SongHistory enrichSongHistory(SongHistory songHistory) {
-
-        SongHistory newSongHistory =
-                new SongHistory()
-                        .withArtistName(songHistory.getArtistName())
-                        .withAlbumName(songHistory.getAlbumName())
-                        .withSongName(songHistory.getSongName());
-
-        // note that we are relying on the fact that the underlying Map of the SongHistory object is
-        // a LinkedHashMap and has well-defined order.
-        Integer previousPlayCount = null;
-        for (Map.Entry<String, SongStatistics> entry : songHistory
-                .getSongStatistics()
-                .entrySet()) {
-            Integer playCount = 0;
-            if (entry.getValue() != null && entry.getValue().getPlayCount() != null) {
-                playCount = entry.getValue().getPlayCount();
-            }
-            // if the first element in the map then the difference is the play count, otherwise
-            // it is the actual difference between the previous and current play count.
-            Integer difference = playCount;
-            if (previousPlayCount != null) {
-                difference = playCount - previousPlayCount;
-            }
-
-            newSongHistory.addSongStatistics(
-                    entry.getKey(),
-                    new SongStatistics().withPlayCount(playCount).withDifference(difference));
-            previousPlayCount = playCount;
+    public final SnapshotsHistory getEnrichedSnapshotsHistory(List<String> snapshots, Order order)
+            throws StatisticsException {
+        SnapshotsHistory snapshotsHistoryFromStore =
+                historyService.generateSnapshotHistory(snapshots);
+        // build enriched and ordered song history list
+        List<SongHistory> songHistories =
+                new ArrayList<SongHistory>(snapshotsHistoryFromStore.getSongHistories().size());
+        for (SongHistory songHistory : snapshotsHistoryFromStore.getSongHistories()) {
+            songHistoryEnricher.enrichSongHistory(songHistory);
+            songHistories.add(songHistory);
         }
+        songHistorySorter.sortSongHistory(
+                snapshotsHistoryFromStore.getSnapshots(),
+                songHistories,
+                order);
 
-        return newSongHistory;
+        return new SnapshotsHistory()
+                .addSnapshots(snapshotsHistoryFromStore.getSnapshots())
+                .addSongHistories(songHistories);
     }
 }

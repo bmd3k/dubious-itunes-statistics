@@ -151,16 +151,16 @@ public class HistoryServiceSnapshotHistoryTest {
                         .addSnapshot(snapshot2)
                         .addSongHistory(new SongHistory()
                                 .withSong(song1)
-                                .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(61))
-                                .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(62)))
+                                .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(61))
+                                .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(62)))
                         .addSongHistory(new SongHistory()
                                 .withSong(song2)
-                                .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(56))
-                                .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(59)))
+                                .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(56))
+                                .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(59)))
                         .addSongHistory(new SongHistory()
                                 .withSong(song3)
-                                .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(55))
-                                .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(58))),
+                                .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(55))
+                                .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(58))),
                 historyService.generateSnapshotHistory(asList(snapshot1, snapshot2)));
         //@formatter:on
     }
@@ -198,19 +198,19 @@ public class HistoryServiceSnapshotHistoryTest {
                         .addSnapshot(snapshot3)
                         .addSongHistory(new SongHistory()
                                 .withSong(song1)
-                                .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(61))
-                                .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(62))
-                                .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(64)))
+                                .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(61))
+                                .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(62))
+                                .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(64)))
                         .addSongHistory(new SongHistory()
                                 .withSong(song3)
-                                .addSongStatistics(snapshot1, null)
-                                .addSongStatistics(snapshot2, null)
-                                .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(60)))
+                                .addSongStatistic(snapshot1, null)
+                                .addSongStatistic(snapshot2, null)
+                                .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(60)))
                         .addSongHistory(new SongHistory()
                                 .withSong(song2)
-                                .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(56))
-                                .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(59))
-                                .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(59))),
+                                .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(56))
+                                .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(59))
+                                .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(59))),
                 historyService.generateSnapshotHistory(asList(snapshot1, snapshot2, snapshot3)));
         //@formatter:on
     }
@@ -246,9 +246,9 @@ public class HistoryServiceSnapshotHistoryTest {
                         .addSnapshot(snapshot3)
                         .addSongHistory(new SongHistory()
                                 .withSong(song1)
-                                .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(61))
-                                .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(62))
-                                .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(64))),
+                                .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(61))
+                                .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(62))
+                                .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(64))),
                 historyService.generateSnapshotHistory(asList(snapshot1, snapshot2, snapshot3)));
         //@formatter:on
     }
@@ -288,19 +288,19 @@ public class HistoryServiceSnapshotHistoryTest {
                         .addSnapshot(snapshot3)
                         .addSongHistory(new SongHistory()
                                 .withSong(song3)
-                                .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(9))
-                                .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(16))
-                                .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(20)))
+                                .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(9))
+                                .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(16))
+                                .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(20)))
                         .addSongHistory(new SongHistory()
                                 .withSong(song2)
-                                .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(10))
-                                .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(14))
-                                .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(19)))
+                                .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(10))
+                                .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(14))
+                                .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(19)))
                         .addSongHistory(new SongHistory()
                                 .withSong(song1)
-                                .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(15))
-                                .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(17))
-                                .addSongStatistics(snapshot3, new SongStatistics().withPlayCount(18))),
+                                .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(15))
+                                .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(17))
+                                .addSongStatistic(snapshot3, new SongStatistics().withPlayCount(18))),
                 historyService.generateSnapshotHistory(asList(snapshot1, snapshot2, snapshot3)));
         //@formatter:on
     }
@@ -328,8 +328,8 @@ public class HistoryServiceSnapshotHistoryTest {
                         .addSnapshot(snapshot1)
                         .addSongHistory(new SongHistory()
                                 .withSong(song1)
-                                .addSongStatistics(snapshot2, new SongStatistics().withPlayCount(9))
-                                .addSongStatistics(snapshot1, new SongStatistics().withPlayCount(10))),
+                                .addSongStatistic(snapshot2, new SongStatistics().withPlayCount(9))
+                                .addSongStatistic(snapshot1, new SongStatistics().withPlayCount(10))),
                 historyService.generateSnapshotHistory(asList(snapshot1, snapshot2)));
         //@formatter:on
     }

@@ -11,6 +11,9 @@
       -
       -->
     <bean name="analysisService" class="com.dubious.itunes.statistics.service.AnalysisServiceImpl">
+        <constructor-arg name="historyService" ref="historyService"/>
+        <constructor-arg name="songHistoryEnricher" ref="songHistoryEnricher"/>
+        <constructor-arg name="songHistorySorter" ref="songHistorySorter"/>
     </bean>
 
     <bean name="historyService" class="com.dubious.itunes.statistics.service.HistoryServiceImpl">
@@ -57,6 +60,8 @@
     <bean name="snapshotSynchronizationAdjustment" class="com.dubious.itunes.statistics.service.SnapshotSynchronizationAdjuster"/>
     <bean name="songFilter" class="com.dubious.itunes.statistics.service.SongFilterImpl"/>
     <bean name="albumGrouping" class="com.dubious.itunes.statistics.service.AlbumGrouper"/>
+    <bean name="songHistoryEnricher" class="com.dubious.itunes.statistics.service.SongHistoryEnricher"/>
+    <bean name="songHistorySorter" class="com.dubious.itunes.statistics.service.SongHistorySorter"/>
     
     <!-- 
       -

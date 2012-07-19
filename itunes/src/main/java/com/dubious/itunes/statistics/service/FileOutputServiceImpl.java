@@ -5,15 +5,13 @@ import static org.apache.commons.io.FileUtils.writeLines;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import com.dubious.itunes.statistics.exception.FileCouldNotBeWrittenException;
 import com.dubious.itunes.statistics.exception.StatisticsException;
-import com.dubious.itunes.statistics.exception.UnexpectedStatisticsException;
 import com.dubious.itunes.statistics.model.SnapshotsHistory;
 import com.dubious.itunes.statistics.model.SongHistory;
+import com.dubious.itunes.statistics.service.AnalysisService.Order;
 
 /**
  * Write snapshot history to file.
@@ -33,48 +31,19 @@ public class FileOutputServiceImpl implements FileOutputService {
 
     @Override
     public final void writeSnapshotsHistory(
-            SnapshotsHistory history,
+            List<String> snapshots,
             String outputPath,
             Order order) throws StatisticsException {
-        Comparator<SongHistory> comparator = null;
-        if (order == Order.PlayCount) {
-            comparator =
-                    new PlayCountComparator(history.getSnapshots().get(
-                            history.getSnapshots().size() - 1));
-        } else if (order == Order.Difference) {
-            comparator =
-                    new DifferenceComparator(history.getSnapshots().get(0), history
-                            .getSnapshots()
-                            .get(history.getSnapshots().size() - 1));
-        } else {
-            throw new UnexpectedStatisticsException("Unknown Order type specified");
-        }
-
-        writeSnapshotsHistory(history, outputPath, comparator);
-    }
-
-    /**
-     * Write history to file.
-     * 
-     * @param history The history data for which to write the analysis.
-     * @param outputPath The file output path.
-     * @param comparator Describes how to sort the songs in the output of the analysis.
-     * @throws StatisticsException On error.
-     */
-    public final void writeSnapshotsHistory(
-            SnapshotsHistory history,
-            String outputPath,
-            Comparator<SongHistory> comparator) throws StatisticsException {
-        SnapshotsHistory enrichedHistory = analysisService.enrichSnapshotsHistory(history);
-        List<SongHistory> sortedSongHistories =
-                new ArrayList<SongHistory>(enrichedHistory.getSongHistories());
-        Collections.sort(sortedSongHistories, comparator);
+        SnapshotsHistory enrichedHistory =
+                analysisService.getEnrichedSnapshotsHistory(snapshots, order);
 
         try {
             writeLines(
                     new File(outputPath),
                     "UTF-8",
-                    getDataToWrite(history.getSnapshots(), sortedSongHistories),
+                    getDataToWrite(
+                            enrichedHistory.getSnapshots(),
+                            enrichedHistory.getSongHistories()),
                     false);
         } catch (IOException t) {
             throw new FileCouldNotBeWrittenException(outputPath, t);

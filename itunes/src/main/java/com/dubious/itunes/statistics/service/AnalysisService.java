@@ -1,7 +1,9 @@
 package com.dubious.itunes.statistics.service;
 
+import java.util.List;
+
+import com.dubious.itunes.statistics.exception.StatisticsException;
 import com.dubious.itunes.statistics.model.SnapshotsHistory;
-import com.dubious.itunes.statistics.model.SongHistory;
 
 /**
  * Enrich history with more analytical information.
@@ -9,18 +11,27 @@ import com.dubious.itunes.statistics.model.SongHistory;
 public interface AnalysisService {
 
     /**
-     * Enrich a snapshots history with other analysis.
-     * 
-     * @param history The history to analyze.
-     * @return Enriched ersion of history.
+     * Defines order of write.
      */
-    SnapshotsHistory enrichSnapshotsHistory(SnapshotsHistory history);
+    public enum Order {
+        /**
+         * Order by play count.
+         */
+        PlayCount,
+        /**
+         * Order by the difference in play counts during the history period.
+         */
+        Difference;
+    }
 
     /**
-     * Enrich a song history with other analysis.
+     * Get an enriched version of snapshots history.
      * 
-     * @param songHistory The history to analyze.
-     * @return Enriched version of songHistory.
+     * @param snapshots The snapshots to use in the history.
+     * @param order How to order the song histories.
+     * @return The snapshots history.
+     * @throws StatisticsException On error.
      */
-    SongHistory enrichSongHistory(SongHistory songHistory);
+    SnapshotsHistory getEnrichedSnapshotsHistory(List<String> snapshots, Order order)
+            throws StatisticsException;
 }

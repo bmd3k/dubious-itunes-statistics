@@ -73,7 +73,7 @@ public class HistoryServiceImpl implements HistoryService {
                             .withAlbumName(song.getAlbumName())
                             .withSongName(song.getName());
             for (Snapshot snapshot : snapshots) {
-                songHistory.addSongStatistics(
+                songHistory.addSongStatistic(
                         snapshot.getName(),
                         snapshot.getStatistics().get(song));
             }
@@ -141,7 +141,7 @@ public class HistoryServiceImpl implements HistoryService {
                         .withAlbumName(albumName)
                         .withSongName(songName);
         for (Snapshot snapshot : snapshots) {
-            songHistory.addSongStatistics(
+            songHistory.addSongStatistic(
                     snapshot.getName(),
                     allStatistics.get(snapshot.getName()));
         }
